@@ -15,8 +15,13 @@ class GeofenceManager(context: Context) {
     private val geofencingClient = LocationServices.getGeofencingClient(appContext)
     private val geofenceList = mutableListOf<Geofence>()
 
-    fun createGeoFence(latitude: Double, longitude: Double, radiusMeter: Float, requestId: String) {
-        Timber.w("zeze create geofence")
+    fun addGeofenceToList(
+        latitude: Double,
+        longitude: Double,
+        requestId: String,
+        radiusMeter: Float = 1000.0f
+    ) {
+        Timber.w("zeze add geofence " + requestId)
         geofenceList.add(
             Geofence.Builder()
                 .setRequestId(requestId)
@@ -29,6 +34,10 @@ class GeofenceManager(context: Context) {
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
                 .build()
         )
+    }
+
+    fun createGeoFence() {
+        Timber.w("zeze create geofence")
 
         val task = geofencingClient.addGeofences(geoFencingRequest(), geofencePendingIntent)
         task.addOnSuccessListener {
@@ -37,18 +46,6 @@ class GeofenceManager(context: Context) {
         task.addOnFailureListener {
             Timber.w("zeze pending error: " + it.message)
         }
-    }
-
-    fun removeAllGeofences() {
-        geofencingClient.removeGeofences(geofencePendingIntent)
-        geofenceList.clear()
-    }
-
-    private fun geoFencingRequest(): GeofencingRequest? {
-        return GeofencingRequest.Builder()
-            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)//si on est a l'interieur on veut declenche
-            .addGeofences(geofenceList)
-            .build()
     }
 
     val geofencePendingIntent: PendingIntent by lazy {
@@ -60,4 +57,19 @@ class GeofenceManager(context: Context) {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
+
+    private fun geoFencingRequest(): GeofencingRequest? {
+        Timber.w("zeze list size " + geofenceList.size)
+        return GeofencingRequest.Builder()
+            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)//si on est a l'interieur on veut declenche
+            .addGeofences(geofenceList)
+            .build()
+    }
+
+    fun removeAllGeofences() {
+        geofencingClient.removeGeofences(geofencePendingIntent)
+        geofenceList.clear()
+    }
+
+
 }

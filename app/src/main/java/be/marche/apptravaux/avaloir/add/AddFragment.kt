@@ -15,6 +15,7 @@ import be.marche.apptravaux.databinding.FragmentAvaloirAddBinding
 import be.marche.apptravaux.geofence.GeofenceManager
 import be.marche.apptravaux.location.LocationViewModel
 import be.marche.apptravaux.permission.PermissionUtil
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 
@@ -25,7 +26,8 @@ class AddFragment : Fragment() {
     private val locationViewModel: LocationViewModel by sharedViewModel()
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
     lateinit var permissionUtil: PermissionUtil
-    lateinit var geofenceManager: GeofenceManager
+    val geofenceManager : GeofenceManager by inject()
+
     private lateinit var avaloirNew: Avaloir
     private var latitude: Double? = 0.0
     private var longitude: Double? = 0.0
@@ -43,7 +45,7 @@ class AddFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         getLocation()
 
-        geofenceManager = GeofenceManager(requireActivity().applicationContext)
+        //geofenceManager = GeofenceManager(requireActivity().applicationContext)
 
         binding.btnCancel.setOnClickListener {
             findNavController().navigate(R.id.action_addFragment_to_homeFragment)
@@ -53,7 +55,8 @@ class AddFragment : Fragment() {
         longitude = 5.3619
         Timber.w("zeze ma location $latitude $longitude")
 
-        geofenceManager.createGeoFence(latitude!!, longitude!!, 1000.0f, "mageofence")
+        //geofenceManager.addGeofenceToList(latitude!!, longitude!!, "mageofence")
+        geofenceManager.createGeoFence()
 
         binding.btnValider.setOnClickListener {
             if (longitude == null && longitude == null) {
@@ -65,7 +68,7 @@ class AddFragment : Fragment() {
                 geofenceManager.removeAllGeofences()
             } else {
 
-               // geofenceManager.geofencePendingIntent
+                // geofenceManager.geofencePendingIntent
                 //add(latitude!!, longitude!!)
 
                 Toast.makeText(

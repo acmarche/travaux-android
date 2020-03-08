@@ -3,6 +3,7 @@ package be.marche.apptravaux.avaloir.di
 import be.marche.apptravaux.avaloir.database.AppDatabase
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.avaloir.repository.AvaloirRepository
+import be.marche.apptravaux.geofence.GeofenceManager
 import be.marche.apptravaux.location.LocationViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -25,6 +26,7 @@ val appModule = module {
      }*/
 
     single { AppDatabase.buildDatabase(androidApplication()) }
+    single { GeofenceManager(androidApplication()) }
 
     single { get<AppDatabase>().avaloirDao() }
 
