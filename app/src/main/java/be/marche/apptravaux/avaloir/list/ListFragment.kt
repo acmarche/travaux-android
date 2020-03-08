@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirListBinding
 import be.marche.apptravaux.location.LocationData
@@ -14,7 +15,6 @@ import be.marche.apptravaux.location.LocationViewModel
 import be.marche.apptravaux.permission.PermissionUtil
 import com.google.android.gms.common.api.ResolvableApiException
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
 
 private const val REQUEST_CHECK_SETTINGS = 1
 private const val REQUEST_PERMISSION_START_UPDATE_LOCATION = 2
@@ -42,10 +42,13 @@ class ListFragment : Fragment() {
 
         permissionUtil = PermissionUtil(requireContext())
 
-        avaloirModel.getAll().observe(viewLifecycleOwner, Observer {
-            for (avaloir in it) {
-                Timber.w("zeze all " + avaloir.latitude)
-            }
+        val recyclerView = binding.recyclerViewAvaloirs
+        val adapter = context?.let { RecyclerViewAdapter(it) }
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+
+        avaloirModel.getAll().observe(viewLifecycleOwner, Observer { avaloirs ->
+            avaloirs?.let { adapter?.setAvaloirs(avaloirs) }
         })
 
         startLocationUpdate()
