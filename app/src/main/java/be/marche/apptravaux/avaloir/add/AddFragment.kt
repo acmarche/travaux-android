@@ -49,16 +49,23 @@ class AddFragment : Fragment() {
             findNavController().navigate(R.id.action_addFragment_to_homeFragment)
         }
 
+        latitude = 50.2360
+        longitude = 5.3619
+        Timber.w("zeze ma location $latitude $longitude")
+
+        geofenceManager.createGeoFence(latitude!!, longitude!!, 1000.0f, "mageofence")
+
         binding.btnValider.setOnClickListener {
-            if (longitude == null || longitude == null) {
+            if (longitude == null && longitude == null) {
                 Toast.makeText(
                     context,
                     "Coordonnées vident",
                     Toast.LENGTH_LONG
                 ).show()
+                geofenceManager.removeAllGeofences()
             } else {
 
-                geofenceManager.createGeoFence(latitude!!, longitude!!, 1000.0f, "mageofence")
+               // geofenceManager.geofencePendingIntent
                 //add(latitude!!, longitude!!)
 
                 Toast.makeText(
@@ -66,7 +73,7 @@ class AddFragment : Fragment() {
                     "Avaloir ajouté",
                     Toast.LENGTH_LONG
                 ).show()
-              //  findNavController().navigate(R.id.action_addFragment_to_homeFragment)
+                //  findNavController().navigate(R.id.action_addFragment_to_homeFragment)
             }
         }
     }

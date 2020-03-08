@@ -52,7 +52,7 @@ class GeofenceManager(context: Context) {
     }
 
     val geofencePendingIntent: PendingIntent by lazy {
-        val intent = Intent()//Fix
+        val intent = Intent(appContext, GeofenceIntentService::class.java)
         PendingIntent.getService(
             appContext,
             0,
