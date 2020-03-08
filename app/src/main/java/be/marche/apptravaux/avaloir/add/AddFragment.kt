@@ -12,6 +12,7 @@ import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirAddBinding
+import be.marche.apptravaux.geofence.GeofenceManager
 import be.marche.apptravaux.location.LocationViewModel
 import be.marche.apptravaux.permission.PermissionUtil
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -24,6 +25,7 @@ class AddFragment : Fragment() {
     private val locationViewModel: LocationViewModel by sharedViewModel()
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
     lateinit var permissionUtil: PermissionUtil
+    lateinit var geofenceManager: GeofenceManager
     private lateinit var avaloirNew: Avaloir
     private var latitude: Double? = 0.0
     private var longitude: Double? = 0.0
@@ -41,6 +43,8 @@ class AddFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         getLocation()
 
+        geofenceManager = GeofenceManager(requireActivity().applicationContext)
+
         binding.btnCancel.setOnClickListener {
             findNavController().navigate(R.id.action_addFragment_to_homeFragment)
         }
@@ -54,14 +58,15 @@ class AddFragment : Fragment() {
                 ).show()
             } else {
 
-                add(latitude!!, longitude!!)
+                geofenceManager.createGeoFence(latitude!!, longitude!!, 1000.0f, "mageofence")
+                //add(latitude!!, longitude!!)
 
                 Toast.makeText(
                     context,
                     "Avaloir ajouté",
                     Toast.LENGTH_LONG
                 ).show()
-                findNavController().navigate(R.id.action_addFragment_to_homeFragment)
+              //  findNavController().navigate(R.id.action_addFragment_to_homeFragment)
             }
         }
     }
