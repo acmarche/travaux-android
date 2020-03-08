@@ -1,0 +1,101 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "be.marche.apptravaux"
+        minSdkVersion 22
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+        }
+    }
+    viewBinding.enabled = true
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    /**
+     * ViewModel and LiveData
+     */
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version_kt"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version_kt"
+    //pour utiliser les annotations
+    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
+
+    /**
+     * Navigation
+     */
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
+    // Dynamic Feature Module Support, sert a quoi
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$navigation_version"
+    //regarder https://developer.android.com/guide/navigation/navigation-getting-started#ensure_type-safety_by_using_safe_args
+    /**
+     * Koin
+     */
+    // Koin AndroidX Scope features
+    implementation "org.koin:koin-androidx-scope:$koin_version"
+    // Koin AndroidX ViewModel features
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+    // Koin AndroidX Fragment features pas co en 2.0.1
+    //https://github.com/InsertKoinIO/koin/issues/647
+    //  implementation "org.koin:koin-androidx-fragment:$koin_version"
+
+    /**
+     * Room
+     */
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version" 
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
+    //implementation "androidx.room:room-coroutines:2.1.0-alpha04"
+
+    /**
+     * Retrofit
+     */
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$logging_version"
+
+    /**
+     * Outils
+     */
+    implementation "com.squareup.picasso:picasso:$picasso_version"
+    implementation "com.jakewharton.timber:timber:$timber_version"
+
+    /**
+     * Play services
+     */
+    implementation "com.google.android.gms:play-services-location:$service_location"
+    implementation "com.google.android.gms:play-services-maps:$service_location"
+
+    // optional - Test helpers for LiveData
+    //testImplementation "androidx.arch.core:core-testing:$lifecycle_version"
+
+}
