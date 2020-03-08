@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import be.marche.apptravaux.R
-import be.marche.apptravaux.databinding.FragmentHomeBinding
+import be.marche.apptravaux.databinding.FragmentAvaloirHomeBinding
 import be.marche.apptravaux.permission.PermissionUtil
 import timber.log.Timber
 
@@ -18,7 +18,7 @@ class HomeFragment : Fragment() {
     private val RECORD_REQUEST_CODE = 1
     lateinit var permissionUtil: PermissionUtil
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentAvaloirHomeBinding? = null
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -28,7 +28,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentAvaloirHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
