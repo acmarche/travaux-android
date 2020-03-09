@@ -21,7 +21,6 @@ class GeofenceManager(context: Context) {
         requestId: String,
         radiusMeter: Float = 1000.0f
     ) {
-        Timber.w("zeze add geofence " + requestId)
         geofenceList.add(
             Geofence.Builder()
                 .setRequestId(requestId)
@@ -37,7 +36,7 @@ class GeofenceManager(context: Context) {
     }
 
     fun createGeoFence() {
-        Timber.w("zeze create geofence")
+        Timber.w("zeze request geofence")
 
         val task = geofencingClient.addGeofences(geoFencingRequest(), geofencePendingIntent)
         task.addOnSuccessListener {
@@ -59,7 +58,9 @@ class GeofenceManager(context: Context) {
     }
 
     private fun geoFencingRequest(): GeofencingRequest? {
-        Timber.w("zeze list size " + geofenceList.size)
+        if (geofenceList.size < 1)
+            return null
+
         return GeofencingRequest.Builder()
             .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)//si on est a l'interieur on veut declenche
             .addGeofences(geofenceList)

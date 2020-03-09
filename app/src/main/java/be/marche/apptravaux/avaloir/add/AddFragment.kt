@@ -45,8 +45,6 @@ class AddFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         getLocation()
 
-        //geofenceManager = GeofenceManager(requireActivity().applicationContext)
-
         binding.btnCancel.setOnClickListener {
             findNavController().navigate(R.id.action_addFragment_to_homeFragment)
         }
@@ -55,7 +53,6 @@ class AddFragment : Fragment() {
         longitude = 5.3619
         Timber.w("zeze ma location $latitude $longitude")
 
-        //geofenceManager.addGeofenceToList(latitude!!, longitude!!, "mageofence")
         geofenceManager.createGeoFence()
 
         binding.btnValider.setOnClickListener {

@@ -44,11 +44,11 @@ class HomeFragment : Fragment() {
 
         permissionUtil = PermissionUtil(requireContext())
         setupPermissions2()
-        avaloirModel.insertAvaloir(Avaloir(null, 50.2360,5.3619))
+        avaloirModel.insertAvaloir(Avaloir(null, 50.2360, 5.3619))
 
         avaloirModel.getAll().observe(viewLifecycleOwner, Observer { avaloirs ->
             for (avaloir in avaloirs) {
-                Timber.w("zeze add fence " + avaloir.id)
+                Timber.w("zeze populate geofence $avaloir.id ${avaloir.latitude} ${avaloir.longitude} ")
                 geofenceManager.addGeofenceToList(
                     avaloir.latitude, avaloir.longitude,
                     avaloir.id.toString()
@@ -88,7 +88,6 @@ class HomeFragment : Fragment() {
     private fun setupPermissions() {
 
         if (permissionUtil.checkSelfPermissions(Manifest.permission.ACCESS_FINE_LOCATION) == false) {
-            Timber.w("zeze ko")
             permissionUtil.requestPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }

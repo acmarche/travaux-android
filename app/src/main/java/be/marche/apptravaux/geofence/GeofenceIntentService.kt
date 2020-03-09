@@ -23,8 +23,9 @@ class GeofenceIntentService : IntentService("TravauxGeofenceIntentService") {
             return
         }
         for (triggeringGeofence in geofenceEvent.triggeringGeofences) {
+            Timber.w("zeze event found: %s", triggeringGeofence.requestId)
             if (triggeringGeofence.requestId == "mageofence") {
-                Timber.w("zeze event found: %s", geofenceTransition)
+
             }
         }
     }
