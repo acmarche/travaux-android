@@ -34,7 +34,7 @@ val appModule = module {
     single { AvaloirRepository(get(), get()) }
 
     viewModel { LocationViewModel(get()) }
-    viewModel { AvaloirViewModel(get(), get()) }
+    viewModel { AvaloirViewModel(get(), get(), get()) }
 
 }
 

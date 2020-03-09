@@ -10,7 +10,7 @@ import org.koin.core.KoinComponent
 
 class AvaloirRepository(
     private val avaloirDao: AvaloirDao,
-    val travauxService: TravauxService
+    private val travauxService: TravauxService
 ) : KoinComponent {
 
     suspend fun getAllAvaloirsFromApi() = travauxService.getAllAvaloirs()

@@ -2,12 +2,18 @@ package be.marche.apptravaux.avaloir.model
 
 import android.app.Application
 import androidx.lifecycle.*
+import be.marche.apptravaux.api.TravauxService
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.repository.AvaloirRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class AvaloirViewModel(application: Application, val avaloirRepository: AvaloirRepository) :
+class AvaloirViewModel(
+    application: Application,
+    private val avaloirRepository: AvaloirRepository,
+    private val travauxService: TravauxService
+) :
     AndroidViewModel(application) {
 
     private val avaloirs = liveData(Dispatchers.IO) {
@@ -44,6 +50,20 @@ class AvaloirViewModel(application: Application, val avaloirRepository: AvaloirR
     fun insertAvaloirs(avaloirs: List<Avaloir>) {
         viewModelScope.launch {
             avaloirRepository.insertAvaloirs(avaloirs)
+        }
+    }
+
+    fun saveAsync(avaloir: Avaloir) {
+        viewModelScope.launch {
+
+            val response = travauxService.updateAvaloir(avaloir.idReferent, avaloir)
+            Timber.w("zeze response: " + response)
+            if (response.isSuccessful) {
+                response.body()?.let { message ->
+                    Timber.w("zeze update sync " + message)
+                }
+            }
+
         }
     }
 }
