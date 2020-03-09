@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AppTravaux</string>
+    <string name="message_no_connectivity">Mettez internet</string>
+    <string name="message_ok_connectivity">Super tu as internet</string>
 </resources>

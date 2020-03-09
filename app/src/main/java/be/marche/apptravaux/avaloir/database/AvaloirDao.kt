@@ -17,6 +17,6 @@ interface AvaloirDao {
     fun getById(avaloirId: Int): LiveData<Avaloir>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAvaloirs(fiches: List<Avaloir>)
+    suspend fun insertAvaloirs(avaloirs: List<Avaloir>)
 
 }

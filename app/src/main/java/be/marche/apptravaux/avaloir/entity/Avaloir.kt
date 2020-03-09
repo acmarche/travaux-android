@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class Avaloir(
     @PrimaryKey(autoGenerate = true)
     val id: Int?,
+    val idReferent: Int,
     var latitude: Double,
     var longitude: Double,
     val descriptif: String? = null

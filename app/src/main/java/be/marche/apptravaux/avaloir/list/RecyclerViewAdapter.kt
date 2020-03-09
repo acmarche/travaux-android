@@ -20,7 +20,7 @@ class RecyclerViewAdapter internal constructor(
     private var avaloirs = emptyList<Avaloir>() // Cached copy of words
 
     inner class WordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val wordItemView: TextView = itemView.findViewById(R.id.textView)
+        val wordItemView: TextView = itemView.findViewById(R.id.messageView)
         val circleText : TextView = itemView.findViewById(R.id.tc_circle)
         val circle : CardView = itemView.findViewById(R.id.card)
     }

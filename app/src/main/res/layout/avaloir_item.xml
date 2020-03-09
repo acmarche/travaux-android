@@ -32,7 +32,7 @@
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/messageView"
         style="@style/word_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

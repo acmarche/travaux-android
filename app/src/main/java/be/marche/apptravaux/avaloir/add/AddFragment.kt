@@ -91,6 +91,7 @@ class AddFragment : Fragment() {
     private fun add(latitude: Double, longitude: Double) {
         avaloirNew = Avaloir(
             null,
+            22,
             latitude,
             longitude
         )

@@ -51,7 +51,7 @@ class ListFragment : Fragment() {
             avaloirs?.let { adapter?.setAvaloirs(avaloirs) }
         })
 
-        startLocationUpdate()
+      //  startLocationUpdate()
     }
 
     private fun startLocationUpdate() {

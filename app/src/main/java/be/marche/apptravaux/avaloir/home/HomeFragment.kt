@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import be.marche.apptravaux.R
+import be.marche.apptravaux.api.ConnectivityLiveData
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirHomeBinding
@@ -44,11 +45,12 @@ class HomeFragment : Fragment() {
 
         permissionUtil = PermissionUtil(requireContext())
         setupPermissions2()
-        avaloirModel.insertAvaloir(Avaloir(null, 50.2360, 5.3619))
+
+        refreshDataBase()
 
         avaloirModel.getAll().observe(viewLifecycleOwner, Observer { avaloirs ->
             for (avaloir in avaloirs) {
-                Timber.w("zeze populate geofence $avaloir.id ${avaloir.latitude} ${avaloir.longitude} ")
+                //        Timber.w("zeze populate geofence $avaloir.id ${avaloir.latitude} ${avaloir.longitude} ")
                 geofenceManager.addGeofenceToList(
                     avaloir.latitude, avaloir.longitude,
                     avaloir.id.toString()
@@ -61,6 +63,36 @@ class HomeFragment : Fragment() {
         }
         binding.btnAdd.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_addFragment)
+        }
+    }
+
+    private fun syncContent() {
+
+        avaloirModel.getAllAvaloirsFromFlux().observe(viewLifecycleOwner, Observer { avaloirs ->
+            Timber.w("zeze inserts all " + avaloirs.size)
+            avaloirModel.insertAvaloirs(avaloirs)
+        })
+    }
+
+    private fun refreshDataBase() {
+        activity?.application?.let {
+            ConnectivityLiveData(it).observe(viewLifecycleOwner, Observer { connected ->
+                when (connected) {
+                    true -> {
+                        binding.messageView.text = getString(R.string.message_ok_connectivity)
+                        //binding.messageView.visibility = View.INVISIBLE
+                        // btnProduitView.visibility = View.VISIBLE
+                        // btnCategorieView.visibility = View.VISIBLE
+                        syncContent()
+                    }
+                    false -> {
+                        binding.messageView.visibility = View.VISIBLE
+                        // btnProduitView.visibility = View.INVISIBLE
+                        //  btnCategorieView.visibility = View.INVISIBLE
+                        binding.messageView.text = getString(R.string.message_no_connectivity)
+                    }
+                }
+            })
         }
     }
 
