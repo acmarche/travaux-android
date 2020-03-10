@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 android {
     compileSdkVersion 29
@@ -41,6 +42,11 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     /**
+     * Design
+     */
+    implementation "com.google.android.material:material:$material_version"
+
+    /**
      * ViewModel and LiveData
      */
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
@@ -57,7 +63,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
     // Dynamic Feature Module Support, sert a quoi
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$navigation_version"
-    //regarder https://developer.android.com/guide/navigation/navigation-getting-started#ensure_type-safety_by_using_safe_args
+
     /**
      * Koin
      */

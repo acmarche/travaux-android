@@ -35,4 +35,15 @@
         app:layout_constraintBottom_toTopOf="@+id/goBtn"
         app:layout_constraintStart_toStartOf="@+id/goBtn" />
 
+    <Button
+        android:id="@+id/btnCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Camera"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goBtn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

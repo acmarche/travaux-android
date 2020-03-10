@@ -26,7 +26,6 @@ class HomeFragment : Fragment() {
     lateinit var permissionUtil: PermissionUtil
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
     private var _binding: FragmentAvaloirHomeBinding? = null
-
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
     val geofenceManager: GeofenceManager by inject()
