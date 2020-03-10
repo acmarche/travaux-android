@@ -1,5 +1,6 @@
 package be.marche.apptravaux.avaloir.add
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +27,7 @@ class AddFragment : Fragment() {
     private val locationViewModel: LocationViewModel by sharedViewModel()
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
     lateinit var permissionUtil: PermissionUtil
-    val geofenceManager : GeofenceManager by inject()
+    val geofenceManager: GeofenceManager by inject()
 
     private lateinit var avaloirNew: Avaloir
     private var latitude: Double? = 0.0
@@ -110,4 +111,17 @@ class AddFragment : Fragment() {
               Timber.w("zeze location lat " + (avaloirNew.latitude) + " long " + avaloirNew.longitude)
           }
       }*/
+    /*fun del() {
+        materialButtonDeleteWord.setOnClickListener {
+            val dialogBuilder = AlertDialog.Builder(context)
+            val dialogView = layoutInflater.inflate(R.layout.delete_dialog, null)
+            dialogBuilder.setView(dialogView)
+            dialogBuilder.setPositiveButton("Submit") { dialogInterface, i ->
+                activityViewModel.deleteWord(dialogView.etView.text.toString())
+            }
+            val b = dialogBuilder.create()
+            b.show()
+
+        }
+    }*/
 }

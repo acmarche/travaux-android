@@ -25,8 +25,8 @@ class MainActivity : AppCompatActivity() {
         //bug https://issuetracker.google.com/issues/142847973
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = findNavController(R.id.nav_host_fragment)
-        //val navController = navHostFragment.navController
+        //val navController = findNavController(R.id.nav_host_fragment)
+        val navController = navHostFragment.navController
         setupActionBarWithNavController(navController)
 
         /*   ficheViewModel.getFichesByCategory(512).observe(this, Observer { fiches ->

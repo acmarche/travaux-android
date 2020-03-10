@@ -26,6 +26,7 @@ class HomeFragment : Fragment() {
     lateinit var permissionUtil: PermissionUtil
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
     private var _binding: FragmentAvaloirHomeBinding? = null
+
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
     val geofenceManager: GeofenceManager by inject()
@@ -63,10 +64,12 @@ class HomeFragment : Fragment() {
         binding.btnAdd.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_addFragment)
         }
+        binding.btnCamera.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_cameraFragment)
+        }
     }
 
     private fun syncContent() {
-
         avaloirModel.getAllAvaloirsFromFlux().observe(viewLifecycleOwner, Observer { avaloirs ->
             Timber.w("zeze inserts all " + avaloirs.size)
             avaloirModel.insertAvaloirs(avaloirs)
@@ -108,7 +111,7 @@ class HomeFragment : Fragment() {
         grantResults: IntArray
     ) {
         when (requestCode) {
-            permissionUtil.RECORD_REQUEST_CODE -> {
+            RECORD_REQUEST_CODE -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Timber.w("zeze Permission has been denied by user")
                 } else {
@@ -124,9 +127,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupPermissions() {
-
         if (permissionUtil.checkSelfPermissions(Manifest.permission.ACCESS_FINE_LOCATION) == false) {
-            permissionUtil.requestPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            permissionUtil.requestPermissions(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                RECORD_REQUEST_CODE
+            )
         }
     }
 
@@ -137,7 +143,8 @@ class HomeFragment : Fragment() {
             this,
             message,
             "",
-            Manifest.permission.ACCESS_FINE_LOCATION
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            RECORD_REQUEST_CODE
         )
     }
 

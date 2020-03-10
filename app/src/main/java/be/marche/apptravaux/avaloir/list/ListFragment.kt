@@ -83,7 +83,7 @@ class ListFragment : Fragment() {
 
         if (!permissionUtil.checkSelfPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
         ) {
-            permissionUtil.requestPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            permissionUtil.requestPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION, requestCode)
             return false
         }
         return true
