@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">AppTravaux</string>
-    <string name="message_no_connectivity">Mettez internet</string>
+    <string name="message_no_connectivity">Connectez vous à internet</string>
     <string name="message_ok_connectivity">Super tu as internet</string>
     <string name="gallerie">gallerie</string>
     <string name="img_avaloir">img avaloir</string>
+    <string name="contenu_image">contenu image</string>
+    <string name="btn_comment">Ajouter un commentaire</string>
+    <string name="btn_nettoye">C\'est nettoyé</string>
 </resources>
