@@ -23,10 +23,17 @@ interface TravauxService {
         @Body avaloir: Avaloir
     ): Response<Avaloir>
 
+    @POST("clean/{id}/{date}")
+    suspend fun cleanAvaloir(
+        @Path("id") avaloirId: Int,
+        @Path("date") date: String,
+        @Body avaloir: Avaloir
+    ): Response<Avaloir>
+
     @Multipart
-    @POST("api/update/enfant/photo/{id}")
-    fun uploadImage(
-        @Path("id") enfantId: Int,
+    @POST("photo/{id}")
+    fun uploadPhoto(
+        @Path("id") avaloirId: Int,
         @Part file: MultipartBody.Part,
         @Part("image") requestBody: RequestBody
     ): Call<ResponseBody>

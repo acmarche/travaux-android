@@ -2,6 +2,7 @@ package be.marche.apptravaux.avaloir.show
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import java.text.SimpleDateFormat
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import be.marche.apptravaux.databinding.FragmentAvaloirShowBinding
 import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
+import java.util.*
 
 class ShowFragment : Fragment() {
 
@@ -38,20 +40,37 @@ class ShowFragment : Fragment() {
             updateUi(avaloir)
         })
 
-        binding.btnNettoye.setOnClickListener {
+        binding.btnClean.setOnClickListener {
+            Timber.w("zeze date2 " + avaloir)
 
+            updateClean(avaloir)
         }
 
-        binding.btnNettoye.setOnClickListener {
+        binding.btnComment.setOnClickListener {
 
         }
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun updateClean(avaloir: Avaloir) {
+        val timeStamp = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        Timber.w("zeze date " + timeStamp + avaloir)
+        avaloirModel.cleanAsync(avaloir, timeStamp)
+    }
+
     fun updateUi(avaloir: Avaloir) {
 
-        binding.avaloirTextView.text =
-            avaloir.latitude.toString() + "," + avaloir.latitude.toString()
+        binding.avaloirTextView.text = getString(
+            R.string.avaloir_location,
+            avaloir.latitude.toString(),
+            avaloir.latitude.toString()
+        )
+
         if (avaloir.imageUrl != null && avaloir.imageUrl.isNotEmpty()) {
             Picasso.get()
                 .load(avaloir.imageUrl)

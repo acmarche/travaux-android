@@ -23,11 +23,16 @@ class AvaloirViewModel(
         emit(avaloirs)
     }
 
+    fun setAvaloir(avaloir: Avaloir) {
+        val live = MutableLiveData<Avaloir>()
+        live.value = avaloir
+    }
+
     val avaloirsFromFlux: LiveData<List<Avaloir>> = liveData {
         emit(avaloirRepository.getAllAvaloirsFromApi())
     }
 
-    fun getAllAvaloirsFromFlux(): LiveData<List<Avaloir>> {
+    fun getAllAvaloirsFromServer(): LiveData<List<Avaloir>> {
         return avaloirsFromFlux
     }
 
@@ -53,7 +58,6 @@ class AvaloirViewModel(
 
     fun saveAsync(avaloir: Avaloir) {
         viewModelScope.launch {
-
             val response = travauxService.updateAvaloir(avaloir.idReferent, avaloir)
             Timber.w("zeze response: " + response)
             if (response.isSuccessful) {
@@ -61,7 +65,18 @@ class AvaloirViewModel(
                     Timber.w("zeze update sync " + message)
                 }
             }
+        }
+    }
 
+     fun cleanAsync(avaloir: Avaloir, date: String) {
+        viewModelScope.launch {
+            val response = travauxService.cleanAvaloir(avaloir.idReferent, date, avaloir)
+            Timber.w("zeze response: " + response)
+            if (response.isSuccessful) {
+                response.body()?.let { message ->
+                    Timber.w("zeze update sync " + message)
+                }
+            }
         }
     }
 }

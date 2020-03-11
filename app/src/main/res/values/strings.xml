@@ -7,4 +7,5 @@
     <string name="contenu_image">contenu image</string>
     <string name="btn_comment">Ajouter un commentaire</string>
     <string name="btn_nettoye">C\'est nettoyé</string>
+    <string name="avaloir_location">%1$s,%2$s</string>
 </resources>

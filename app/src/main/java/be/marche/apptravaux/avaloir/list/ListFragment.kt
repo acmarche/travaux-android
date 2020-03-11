@@ -51,12 +51,12 @@ class ListFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener {
     }
 
     override fun onAvaloirSelected(avaloir: Avaloir) {
-
-        val live = MutableLiveData<Avaloir>()
-        live.value = avaloir
-        avaloirModel.avaloir = live
-
+        avaloirModel.setAvaloir(avaloir)
         findNavController().navigate(R.id.action_listFragment_to_showFragment)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

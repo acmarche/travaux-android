@@ -1,6 +1,5 @@
 package be.marche.apptravaux.avaloir.list
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import com.squareup.picasso.Picasso
-import timber.log.Timber
-import java.util.*
 
 class AvaloirListAdapter internal constructor(
 
     private val listener: AvaloirListAdapterListener?
-) : RecyclerView.Adapter<AvaloirListAdapter.WordViewHolder>(), View.OnClickListener {
+) : RecyclerView.Adapter<AvaloirListAdapter.AvaloirViewHolder>(), View.OnClickListener {
 
     interface AvaloirListAdapterListener {
         fun onAvaloirSelected(avaloir: Avaloir)
@@ -25,25 +22,30 @@ class AvaloirListAdapter internal constructor(
 
     private var avaloirs = emptyList<Avaloir>() // Cached copy of words
 
-    inner class WordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class AvaloirViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cardViewAvaloir = itemView.findViewById<CardView>(R.id.cardViewAvaloir)!!
         val avaloirLocationView: TextView = itemView.findViewById(R.id.avaloirLocationView)
         val avaloirPhoto = itemView.findViewById<ImageView>(R.id.avaloirPhotoView)
+        val avaloirRue = itemView.findViewById<TextView>(R.id.avaloirRueView)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AvaloirViewHolder {
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.avaloir_list_item, parent, false)
-        return WordViewHolder(itemView)
+        return AvaloirViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AvaloirViewHolder, position: Int) {
         with(holder) {
             val avaloir = avaloirs[position]
             cardViewAvaloir.setOnClickListener(this@AvaloirListAdapter)
             cardViewAvaloir.tag = avaloir
-            holder.avaloirLocationView.text =
-                avaloir.latitude.toString() + "," + avaloir.latitude.toString()
+            avaloirLocationView.text = holder.itemView.getContext().getString(
+                R.string.avaloir_location,
+                avaloir.latitude.toString(),
+                avaloir.longitude.toString()
+            )
+            avaloirRue.text = avaloir.rue
             if (avaloir.imageUrl != null && avaloir.imageUrl.isNotEmpty()) {
                 Picasso.get()
                     .load(avaloir.imageUrl)

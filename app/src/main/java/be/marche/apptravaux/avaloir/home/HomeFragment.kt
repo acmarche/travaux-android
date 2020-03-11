@@ -17,16 +17,15 @@ import be.marche.apptravaux.databinding.FragmentAvaloirHomeBinding
 import be.marche.apptravaux.geofence.GeofenceManager
 import be.marche.apptravaux.permission.PermissionUtil
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class HomeFragment : Fragment() {
 
     private val RECORD_REQUEST_CODE = 1
     lateinit var permissionUtil: PermissionUtil
-    private val avaloirModel: AvaloirViewModel by sharedViewModel()
+    private val avaloirModel: AvaloirViewModel by viewModel()
     private var _binding: FragmentAvaloirHomeBinding? = null
-
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
     val geofenceManager: GeofenceManager by inject()
@@ -46,7 +45,7 @@ class HomeFragment : Fragment() {
         permissionUtil = PermissionUtil(requireContext())
         setupPermissions2()
 
-        refreshDataBase()
+      //refreshDataBase()
 
         avaloirModel.getAll().observe(viewLifecycleOwner, Observer { avaloirs ->
             for (avaloir in avaloirs) {
@@ -64,14 +63,11 @@ class HomeFragment : Fragment() {
         binding.btnAdd.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_addFragment)
         }
-        binding.btnCamera.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_cameraFragment)
-        }
     }
 
     private fun syncContent() {
-        avaloirModel.getAllAvaloirsFromFlux().observe(viewLifecycleOwner, Observer { avaloirs ->
-            Timber.w("zeze inserts all " + avaloirs.size)
+        avaloirModel.getAllAvaloirsFromServer().observe(viewLifecycleOwner, Observer { avaloirs ->
+            Timber.w("zeze sync all size: " + avaloirs.size)
             avaloirModel.insertAvaloirs(avaloirs)
         })
     }

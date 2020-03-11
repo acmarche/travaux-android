@@ -40,7 +40,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btnNettoye"
+        android:id="@+id/btnClean"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btn_nettoye"

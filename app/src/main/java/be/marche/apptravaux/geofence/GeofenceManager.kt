@@ -3,7 +3,6 @@ package be.marche.apptravaux.geofence
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import be.marche.apptravaux.avaloir.entity.Avaloir
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
@@ -36,8 +35,6 @@ class GeofenceManager(context: Context) {
     }
 
     fun createGeoFence() {
-        Timber.w("zeze request geofence")
-
         val task = geofencingClient.addGeofences(geoFencingRequest(), geofencePendingIntent)
         task.addOnSuccessListener {
             Timber.w("zeze pending succes")
@@ -49,6 +46,7 @@ class GeofenceManager(context: Context) {
 
     val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(appContext, GeofenceIntentService::class.java)
+        //PendingIntent.getBroadcast()
         PendingIntent.getService(
             appContext,
             0,

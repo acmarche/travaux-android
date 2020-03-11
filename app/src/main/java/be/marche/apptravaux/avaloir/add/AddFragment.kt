@@ -50,14 +50,10 @@ class AddFragment : Fragment() {
             findNavController().navigate(R.id.action_addFragment_to_homeFragment)
         }
 
-        latitude = 50.2360
-        longitude = 5.3619
-        Timber.w("zeze ma location $latitude $longitude")
-
         geofenceManager.createGeoFence()
 
         binding.btnValider.setOnClickListener {
-            if (longitude == null && longitude == null) {
+            if (this.longitude == null && this.longitude == null) {
                 Toast.makeText(
                     context,
                     "Coordonnées vident",

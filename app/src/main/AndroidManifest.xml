@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <service android:name=".geofence.GeofenceIntentService" />
-
+        <activity android:name=".avaloir.RedirectActivity"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

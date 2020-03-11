@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/navigation"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation"
     app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/homeFragment"
         android:name="be.marche.apptravaux.avaloir.home.HomeFragment"
-        android:label="HomeFragment" >
+        android:label="HomeFragment">
         <action
             android:id="@+id/action_homeFragment_to_listFragment"
             app:destination="@id/listFragment" />
         <action
             android:id="@+id/action_homeFragment_to_addFragment"
             app:destination="@id/addFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_cameraFragment"
-            app:destination="@id/cameraFragment" />
     </fragment>
     <fragment
         android:id="@+id/listFragment"
         android:name="be.marche.apptravaux.avaloir.list.ListFragment"
-        android:label="ListFragment" >
+        android:label="ListFragment">
         <action
             android:id="@+id/action_listFragment_to_showFragment"
             app:destination="@id/showFragment" />
@@ -28,7 +26,7 @@
     <fragment
         android:id="@+id/addFragment"
         android:name="be.marche.apptravaux.avaloir.add.AddFragment"
-        android:label="AddFragment" >
+        android:label="AddFragment">
         <action
             android:id="@+id/action_addFragment_to_listFragment"
             app:destination="@id/listFragment" />
@@ -37,11 +35,17 @@
             app:destination="@id/homeFragment" />
     </fragment>
     <fragment
-        android:id="@+id/cameraFragment"
-        android:name="be.marche.apptravaux.camera.CameraFragment"
-        android:label="CameraFragment" />
-    <fragment
         android:id="@+id/showFragment"
         android:name="be.marche.apptravaux.avaloir.show.ShowFragment"
         android:label="ShowFragment" />
+    <fragment
+        android:id="@+id/photoFragment"
+        android:name="be.marche.apptravaux.avaloir.photo.PhotoFragment"
+        android:label="PhotoFragment" />
+    <activity
+        android:id="@+id/redirectActivity"
+        android:name="be.marche.apptravaux.avaloir.RedirectActivity"
+        android:label="RedirectActivity" />
+
+
 </navigation>
