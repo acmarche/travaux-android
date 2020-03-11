@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
@@ -42,12 +43,11 @@ class ShowFragment : Fragment() {
 
         binding.btnClean.setOnClickListener {
             Timber.w("zeze date2 " + avaloir)
-
             updateClean(avaloir)
         }
 
         binding.btnComment.setOnClickListener {
-
+            findNavController().navigate(R.id.action_showFragment_to_photoFragment)
         }
 
     }
@@ -64,14 +64,13 @@ class ShowFragment : Fragment() {
     }
 
     fun updateUi(avaloir: Avaloir) {
-
         binding.avaloirTextView.text = getString(
             R.string.avaloir_location,
             avaloir.latitude.toString(),
             avaloir.latitude.toString()
         )
-
-        if (avaloir.imageUrl != null && avaloir.imageUrl.isNotEmpty()) {
+        Timber.w("zeze display img: " + avaloir.imageUrl)
+        if (avaloir.imageUrl != null) {
             Picasso.get()
                 .load(avaloir.imageUrl)
                 .placeholder(R.drawable.ic_photo_library)

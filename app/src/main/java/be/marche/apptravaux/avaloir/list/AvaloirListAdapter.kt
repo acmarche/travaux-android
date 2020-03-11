@@ -46,7 +46,7 @@ class AvaloirListAdapter internal constructor(
                 avaloir.longitude.toString()
             )
             avaloirRue.text = avaloir.rue
-            if (avaloir.imageUrl != null && avaloir.imageUrl.isNotEmpty()) {
+            if (avaloir.imageUrl != null) {
                 Picasso.get()
                     .load(avaloir.imageUrl)
                     .placeholder(R.drawable.ic_photo_library)

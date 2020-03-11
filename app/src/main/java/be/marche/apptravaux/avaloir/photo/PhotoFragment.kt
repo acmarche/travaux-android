@@ -14,10 +14,12 @@ import android.view.ViewGroup
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.camera.CameraViewModel
 import be.marche.apptravaux.databinding.FragmentCameraBinding
 import be.marche.apptravaux.permission.PermissionUtil
+import be.marche.apptravaux.utils.FileHelper
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -40,6 +42,7 @@ class PhotoFragment : Fragment(), LifecycleOwner {
     lateinit var permissionUtil: PermissionUtil
     private val cameraViewModel: CameraViewModel by viewModel()
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
+    private lateinit var avaloir: Avaloir
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,12 +57,18 @@ class PhotoFragment : Fragment(), LifecycleOwner {
         super.onActivityCreated(savedInstanceState)
         permissionUtil = PermissionUtil(requireContext())
         bindCameraUseCases()
+
+        avaloirModel.avaloir.observe(viewLifecycleOwner, androidx.lifecycle.Observer { avaloir ->
+            this.avaloir = avaloir
+        })
+
         binding.captureButton.setOnClickListener {
             dispatchTakePictureIntent()
         }
     }
 
     private fun dispatchTakePictureIntent() {
+        Timber.w("zeze intent capture")
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             // Ensure that there's a camera activity to handle the intent
             takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
@@ -67,12 +76,9 @@ class PhotoFragment : Fragment(), LifecycleOwner {
                 val photoFile: File? = try {
                     createImageFile()
                 } catch (ex: IOException) {
-                    // Error occurred while creating the File
-
-                    Timber.w("zeze create img " + ex.message)
+                    Timber.w("zeze create fail img " + ex.message)
                     null
                 }
-                Timber.w("zeze iciii ")
                 // Continue only if the File was successfully created
                 photoFile?.also {
                     val photoURI: Uri = FileProvider.getUriForFile(
@@ -104,13 +110,20 @@ class PhotoFragment : Fragment(), LifecycleOwner {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
+        Timber.w("zeze activity result")
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-
             if (data != null) {
                 val imgFile = File(currentPhotoPath);
                 if (imgFile.exists()) {
                     binding.viewFinder.setImageURI(Uri.fromFile(imgFile))
+                    this.avaloir.imageUrl = currentPhotoPath
+                    avaloirModel.insertAvaloir(avaloir)
+                    Timber.w("zeze img upload")
+                    val fileHelper = FileHelper()
+                    val requestBody = fileHelper.createRequestBody(imgFile)
+                    val part = fileHelper.createPart(imgFile, requestBody)
+
+                    avaloirModel.uploadImage(avaloir, part, requestBody)
                 }
             }
         }

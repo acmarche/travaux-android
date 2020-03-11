@@ -32,9 +32,9 @@ interface TravauxService {
 
     @Multipart
     @POST("photo/{id}")
-    fun uploadPhoto(
+    suspend fun uploadPhoto(
         @Path("id") avaloirId: Int,
         @Part file: MultipartBody.Part,
         @Part("image") requestBody: RequestBody
-    ): Call<ResponseBody>
+    ): Response<ResponseBody>
 }

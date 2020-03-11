@@ -7,7 +7,10 @@ import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.repository.AvaloirRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import timber.log.Timber
+import java.io.File
 
 class AvaloirViewModel(
     application: Application,
@@ -16,7 +19,7 @@ class AvaloirViewModel(
 ) :
     AndroidViewModel(application) {
 
-    lateinit var avaloir: MutableLiveData<Avaloir>
+    lateinit var avaloir: LiveData<Avaloir>
 
     private val avaloirs = liveData(Dispatchers.IO) {
         val avaloirs = avaloirRepository.getAll()
@@ -24,8 +27,7 @@ class AvaloirViewModel(
     }
 
     fun setAvaloir(avaloir: Avaloir) {
-        val live = MutableLiveData<Avaloir>()
-        live.value = avaloir
+        this.avaloir = liveData { emit(avaloir) }
     }
 
     val avaloirsFromFlux: LiveData<List<Avaloir>> = liveData {
@@ -68,7 +70,7 @@ class AvaloirViewModel(
         }
     }
 
-     fun cleanAsync(avaloir: Avaloir, date: String) {
+    fun cleanAsync(avaloir: Avaloir, date: String) {
         viewModelScope.launch {
             val response = travauxService.cleanAvaloir(avaloir.idReferent, date, avaloir)
             Timber.w("zeze response: " + response)
@@ -77,6 +79,12 @@ class AvaloirViewModel(
                     Timber.w("zeze update sync " + message)
                 }
             }
+        }
+    }
+
+    fun uploadImage(avaloir: Avaloir, part: MultipartBody.Part, requestBody: RequestBody) {
+        viewModelScope.launch {
+            travauxService.uploadPhoto(avaloir.idReferent, part, requestBody)
         }
     }
 }

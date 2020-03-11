@@ -15,6 +15,7 @@ import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirListBinding
 import be.marche.apptravaux.permission.PermissionUtil
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import timber.log.Timber
 
 class ListFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener {
 
