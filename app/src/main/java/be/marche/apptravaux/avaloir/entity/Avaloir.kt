@@ -10,5 +10,6 @@ data class Avaloir(
     val idReferent: Int,
     var latitude: Double,
     var longitude: Double,
+    val imageUrl: String? = null,
     val descriptif: String? = null
 )

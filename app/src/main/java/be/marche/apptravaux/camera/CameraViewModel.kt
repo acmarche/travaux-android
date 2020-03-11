@@ -16,8 +16,8 @@ sealed class CameraViewModelState(
         cameraLensDirection: CameraSelector.LensFacing
     ) : CameraViewModelState(
         switchCameraVisible = switchCameraVisible,
-        buttonsEnabled = false,
-        cameraLensDirection = cameraLensDirection
+        buttonsEnabled = false
+       // cameraLensDirection = cameraLensDirection
     )
 
     class Error(

@@ -9,6 +9,12 @@ import timber.log.Timber
 
 class TravauxApp : Application() {
 
+    companion object {
+        val galleryDir by lazy {
+            be.marche.apptravaux.camera.galleryDir()
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
 
@@ -24,6 +30,10 @@ class TravauxApp : Application() {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
+        }
+
+        if (!galleryDir.exists()) {
+            galleryDir.mkdirs()
         }
     }
 }
