@@ -85,8 +85,8 @@ class HomeFragment : Fragment() {
                         //binding.messageView.visibility = View.INVISIBLE
                         // btnProduitView.visibility = View.VISIBLE
                         // btnCategorieView.visibility = View.VISIBLE
-                        //  syncContent()
-                        uploadAvaloir()
+                          syncContent()
+                       // uploadAvaloir()
                     }
                     false -> {
                         binding.messageView.visibility = View.VISIBLE

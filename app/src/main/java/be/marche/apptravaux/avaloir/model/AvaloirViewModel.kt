@@ -16,6 +16,8 @@ class AvaloirViewModel(
 ) :
     AndroidViewModel(application) {
 
+    lateinit var avaloir: MutableLiveData<Avaloir>
+
     private val avaloirs = liveData(Dispatchers.IO) {
         val avaloirs = avaloirRepository.getAll()
         emit(avaloirs)
@@ -33,12 +35,8 @@ class AvaloirViewModel(
         return avaloirs
     }
 
-    fun getAvaloir(): LiveData<Avaloir> {
-        val avaloir = liveData(Dispatchers.IO) {
-            val emps = Avaloir(null, 22, 10.0, 10.0)
-            emit(emps)
-        }
-        return avaloir
+    fun getAvaloirById(avaloirId: Int): LiveData<Avaloir> {
+        return avaloirRepository.getById(avaloirId)
     }
 
     fun insertAvaloir(avaloir: Avaloir) {

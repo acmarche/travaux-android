@@ -20,7 +20,11 @@
     <fragment
         android:id="@+id/listFragment"
         android:name="be.marche.apptravaux.avaloir.list.ListFragment"
-        android:label="ListFragment" />
+        android:label="ListFragment" >
+        <action
+            android:id="@+id/action_listFragment_to_showFragment"
+            app:destination="@id/showFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addFragment"
         android:name="be.marche.apptravaux.avaloir.add.AddFragment"
@@ -36,4 +40,8 @@
         android:id="@+id/cameraFragment"
         android:name="be.marche.apptravaux.camera.CameraFragment"
         android:label="CameraFragment" />
+    <fragment
+        android:id="@+id/showFragment"
+        android:name="be.marche.apptravaux.avaloir.show.ShowFragment"
+        android:label="ShowFragment" />
 </navigation>

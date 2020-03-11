@@ -4,57 +4,32 @@ import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.util.Rational
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.CameraX
-import androidx.camera.core.Preview
-import androidx.camera.core.impl.PreviewConfig
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
+import be.marche.apptravaux.databinding.FragmentCameraBinding
 import be.marche.apptravaux.permission.PermissionUtil
-import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
-import be.marche.apptravaux.databinding.FragmentCameraBinding
-import android.util.Size
-import android.graphics.Matrix
-import android.net.Uri
-import android.provider.MediaStore
-import android.view.TextureView
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import java.io.IOException
-import java.util.concurrent.TimeUnit
-import android.os.Environment
-import androidx.core.content.FileProvider
 import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-// This is an arbitrary number we are using to keep track of the permission
-// request. Where an app has multiple context for requesting permission,
-// this can help differentiate the different contexts.
-private const val REQUEST_CODE_PERMISSIONS = 10
-
-// This is an array of all the permission specified in the manifest.
-private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-
 class CameraFragment : Fragment(), LifecycleOwner {
+
     companion object {
         fun newInstance() = CameraFragment()
     }
 
     lateinit var currentPhotoPath: String
-    private lateinit var viewModelState: CameraViewModelState
     private val REQUEST_PERMISSION_CAMERA = 1
     val REQUEST_IMAGE_CAPTURE = 2
     private var _binding: FragmentCameraBinding? = null

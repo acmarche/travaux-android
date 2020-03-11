@@ -10,7 +10,7 @@ const val DATABASE_NAME = "apptravaux"
 
 @Database(
     entities = [Avaloir::class],
-    version = 3
+    version = 4
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun avaloirDao(): AvaloirDao
