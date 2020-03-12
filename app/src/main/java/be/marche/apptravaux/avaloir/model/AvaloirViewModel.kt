@@ -31,7 +31,7 @@ class AvaloirViewModel(
         this.avaloir = liveData { emit(avaloir) }
     }
 
-    fun getDatesFromServer() : LiveData<List<DateNettoyage>> = liveData {
+    fun getDatesFromServer(): LiveData<List<DateNettoyage>> = liveData {
         emit(avaloirRepository.getAllDatesFromApi())
     }
 
@@ -87,8 +87,11 @@ class AvaloirViewModel(
             val response = travauxService.cleanAvaloir(avaloir.idReferent, date, avaloir)
             if (response.isSuccessful) {
                 response.body()?.let { dataMessage ->
-                    avaloir.imageUrl = dataMessage.avaloir.imageUrl
-                    insertAvaloir(avaloir)
+                    if (dataMessage.error == 1) {
+
+                    } else {
+                        insertDates(listOf(dataMessage.date))
+                    }
                 }
             }
         }
@@ -96,8 +99,8 @@ class AvaloirViewModel(
 
     fun uploadImage(avaloir: Avaloir, part: MultipartBody.Part, requestBody: RequestBody) {
         viewModelScope.launch {
-           val response = travauxService.uploadPhoto(avaloir.idReferent, part, requestBody)
-             if (response.isSuccessful) {
+            val response = travauxService.uploadPhoto(avaloir.idReferent, part, requestBody)
+            if (response.isSuccessful) {
                 response.body()?.let { dataMessage ->
                     avaloir.imageUrl = dataMessage.avaloir.imageUrl
                     insertAvaloir(avaloir)

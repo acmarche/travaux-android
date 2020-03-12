@@ -85,6 +85,7 @@ class ShowFragment : Fragment() {
         if (dates != null) {
             for (date in dates) {
                 builder.append(date.date)
+                builder.append(System.getProperty("line.separator"));
             }
             binding.datesTextView.text = builder.toString()
         }
