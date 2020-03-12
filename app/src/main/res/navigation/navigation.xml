@@ -26,7 +26,7 @@
     <fragment
         android:id="@+id/addFragment"
         android:name="be.marche.apptravaux.avaloir.add.AddFragment"
-        android:label="AddFragment">
+        android:label="Ajouter un avaloir">
         <action
             android:id="@+id/action_addFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
@@ -34,7 +34,7 @@
     <fragment
         android:id="@+id/showFragment"
         android:name="be.marche.apptravaux.avaloir.show.ShowFragment"
-        android:label="ShowFragment" >
+        android:label="Détails avaloir">
         <action
             android:id="@+id/action_showFragment_to_photoFragment"
             app:destination="@id/photoFragment" />

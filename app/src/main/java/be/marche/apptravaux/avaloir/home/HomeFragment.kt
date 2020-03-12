@@ -26,7 +26,6 @@ class HomeFragment : Fragment() {
     lateinit var permissionUtil: PermissionUtil
     private val avaloirModel: AvaloirViewModel by viewModel()
     private var _binding: FragmentAvaloirHomeBinding? = null
-    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
     val geofenceManager: GeofenceManager by inject()
 
@@ -45,7 +44,7 @@ class HomeFragment : Fragment() {
         permissionUtil = PermissionUtil(requireContext())
         setupPermissions2()
 
-      //refreshDataBase()
+      //  refreshDataBase()
 
         avaloirModel.getAll().observe(viewLifecycleOwner, Observer { avaloirs ->
             for (avaloir in avaloirs) {
@@ -67,8 +66,12 @@ class HomeFragment : Fragment() {
 
     private fun syncContent() {
         avaloirModel.getAllAvaloirsFromServer().observe(viewLifecycleOwner, Observer { avaloirs ->
-            Timber.w("zeze sync all size: " + avaloirs.size)
+            Timber.w("zeze sync all avaloirs size: " + avaloirs.size)
             avaloirModel.insertAvaloirs(avaloirs)
+        })
+         avaloirModel.getDatesFromServer().observe(viewLifecycleOwner, Observer { dates ->
+            Timber.w("zeze sync all dates size: " + dates.size)
+            avaloirModel.insertDates(dates)
         })
     }
 
@@ -96,8 +99,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun uploadAvaloir() {
-        val avaloir = Avaloir(null, 3, 50.20, 5.3)
-        avaloirModel.saveAsync(avaloir)
 
     }
 
@@ -115,11 +116,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun setupPermissions() {
@@ -144,4 +140,8 @@ class HomeFragment : Fragment() {
         )
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

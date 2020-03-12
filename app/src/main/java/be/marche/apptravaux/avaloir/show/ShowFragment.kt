@@ -37,19 +37,23 @@ class ShowFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         avaloirModel.avaloir.observe(viewLifecycleOwner, Observer { avaloir ->
-            this.avaloir = avaloir
+
             updateUi(avaloir)
+
+            avaloirModel.getDatesByAvaloirId(avaloir.idReferent)
+                .observe(viewLifecycleOwner, Observer { dates ->
+                    for (date in dates) {
+                        Timber.w("zeze d" + date)
+                    }
+                })
+
+            binding.btnClean.setOnClickListener {
+                updateClean(avaloir)
+            }
+            binding.btnComment.setOnClickListener {
+                findNavController().navigate(R.id.action_showFragment_to_photoFragment)
+            }
         })
-
-        binding.btnClean.setOnClickListener {
-            Timber.w("zeze date2 " + avaloir)
-            updateClean(avaloir)
-        }
-
-        binding.btnComment.setOnClickListener {
-            findNavController().navigate(R.id.action_showFragment_to_photoFragment)
-        }
-
     }
 
     override fun onDestroyView() {
@@ -59,8 +63,7 @@ class ShowFragment : Fragment() {
 
     private fun updateClean(avaloir: Avaloir) {
         val timeStamp = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        Timber.w("zeze date " + timeStamp + avaloir)
-        avaloirModel.cleanAsync(avaloir, timeStamp)
+        avaloirModel.addCleaningDateAsync(avaloir, timeStamp)
     }
 
     fun updateUi(avaloir: Avaloir) {

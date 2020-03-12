@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.*
 import be.marche.apptravaux.api.TravauxService
 import be.marche.apptravaux.avaloir.entity.Avaloir
+import be.marche.apptravaux.avaloir.entity.DateNettoyage
 import be.marche.apptravaux.avaloir.repository.AvaloirRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,12 +31,12 @@ class AvaloirViewModel(
         this.avaloir = liveData { emit(avaloir) }
     }
 
-    val avaloirsFromFlux: LiveData<List<Avaloir>> = liveData {
-        emit(avaloirRepository.getAllAvaloirsFromApi())
+    fun getDatesFromServer() : LiveData<List<DateNettoyage>> = liveData {
+        emit(avaloirRepository.getAllDatesFromApi())
     }
 
-    fun getAllAvaloirsFromServer(): LiveData<List<Avaloir>> {
-        return avaloirsFromFlux
+    fun getAllAvaloirsFromServer(): LiveData<List<Avaloir>> = liveData {
+        emit(avaloirRepository.getAllAvaloirsFromApi())
     }
 
     fun getAll(): LiveData<List<Avaloir>> {
@@ -44,6 +45,11 @@ class AvaloirViewModel(
 
     fun getAvaloirById(avaloirId: Int): LiveData<Avaloir> {
         return avaloirRepository.getById(avaloirId)
+    }
+
+
+    fun getDatesByAvaloirId(avaloirId: Int): LiveData<List<DateNettoyage>> {
+        return avaloirRepository.getDatesByAvaloirId(avaloirId)
     }
 
     fun insertAvaloir(avaloir: Avaloir) {
@@ -58,25 +64,31 @@ class AvaloirViewModel(
         }
     }
 
+    fun insertDates(dates: List<DateNettoyage>) {
+        viewModelScope.launch {
+            avaloirRepository.insertDates(dates)
+        }
+    }
+
     fun saveAsync(avaloir: Avaloir) {
         viewModelScope.launch {
             val response = travauxService.updateAvaloir(avaloir.idReferent, avaloir)
             Timber.w("zeze response: " + response)
             if (response.isSuccessful) {
-                response.body()?.let { message ->
-                    Timber.w("zeze update sync " + message)
+                response.body()?.let { dataMessage ->
+                    Timber.w("zeze update sync " + dataMessage)
                 }
             }
         }
     }
 
-    fun cleanAsync(avaloir: Avaloir, date: String) {
+    fun addCleaningDateAsync(avaloir: Avaloir, date: String) {
         viewModelScope.launch {
             val response = travauxService.cleanAvaloir(avaloir.idReferent, date, avaloir)
-            Timber.w("zeze response: " + response)
             if (response.isSuccessful) {
-                response.body()?.let { message ->
-                    Timber.w("zeze update sync " + message)
+                response.body()?.let { dataMessage ->
+                    avaloir.imageUrl = dataMessage.avaloir.imageUrl
+                    insertAvaloir(avaloir)
                 }
             }
         }
@@ -84,7 +96,14 @@ class AvaloirViewModel(
 
     fun uploadImage(avaloir: Avaloir, part: MultipartBody.Part, requestBody: RequestBody) {
         viewModelScope.launch {
-            travauxService.uploadPhoto(avaloir.idReferent, part, requestBody)
+           val response = travauxService.uploadPhoto(avaloir.idReferent, part, requestBody)
+             if (response.isSuccessful) {
+                response.body()?.let { dataMessage ->
+                    avaloir.imageUrl = dataMessage.avaloir.imageUrl
+                    insertAvaloir(avaloir)
+                }
+            }
         }
     }
+
 }

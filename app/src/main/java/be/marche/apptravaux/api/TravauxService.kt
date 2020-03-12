@@ -1,6 +1,8 @@
 package be.marche.apptravaux.api
 
 import be.marche.apptravaux.avaloir.entity.Avaloir
+import be.marche.apptravaux.avaloir.entity.DataResponse
+import be.marche.apptravaux.avaloir.entity.DateNettoyage
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -21,14 +23,14 @@ interface TravauxService {
     suspend fun updateAvaloir(
         @Path("id") avaloirId: Int,
         @Body avaloir: Avaloir
-    ): Response<Avaloir>
+    ): Response<DataResponse>
 
     @POST("clean/{id}/{date}")
     suspend fun cleanAvaloir(
         @Path("id") avaloirId: Int,
         @Path("date") date: String,
         @Body avaloir: Avaloir
-    ): Response<Avaloir>
+    ): Response<DataResponse>
 
     @Multipart
     @POST("photo/{id}")
@@ -36,5 +38,11 @@ interface TravauxService {
         @Path("id") avaloirId: Int,
         @Part file: MultipartBody.Part,
         @Part("image") requestBody: RequestBody
-    ): Response<ResponseBody>
+    ): Response<DataResponse>
+
+    @GET("dates")
+    suspend fun getAllDates(
+    ): List<DateNettoyage>
+
+
 }

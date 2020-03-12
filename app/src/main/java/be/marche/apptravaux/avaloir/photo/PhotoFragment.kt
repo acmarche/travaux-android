@@ -115,15 +115,16 @@ class PhotoFragment : Fragment(), LifecycleOwner {
             if (data != null) {
                 val imgFile = File(currentPhotoPath);
                 if (imgFile.exists()) {
+
                     binding.viewFinder.setImageURI(Uri.fromFile(imgFile))
                     this.avaloir.imageUrl = currentPhotoPath
                     avaloirModel.insertAvaloir(avaloir)
-                    Timber.w("zeze img upload")
+
                     val fileHelper = FileHelper()
                     val requestBody = fileHelper.createRequestBody(imgFile)
                     val part = fileHelper.createPart(imgFile, requestBody)
-
                     avaloirModel.uploadImage(avaloir, part, requestBody)
+
                 }
             }
         }

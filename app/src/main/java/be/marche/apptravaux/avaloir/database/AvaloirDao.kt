@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import be.marche.apptravaux.avaloir.entity.Avaloir
+import be.marche.apptravaux.avaloir.entity.DateNettoyage
 
 @Dao
 interface AvaloirDao {
@@ -19,4 +20,9 @@ interface AvaloirDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAvaloirs(avaloirs: List<Avaloir>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDates(dates: List<DateNettoyage>)
+
+    @Query("SELECT * FROM datenettoyage WHERE avaloirId = :avaloirId")
+    fun getDatesByAvaloirId(avaloirId: Int): LiveData<List<DateNettoyage>>
 }

@@ -4,9 +4,12 @@ import androidx.lifecycle.LiveData
 import be.marche.apptravaux.api.TravauxService
 import be.marche.apptravaux.avaloir.database.AvaloirDao
 import be.marche.apptravaux.avaloir.entity.Avaloir
+import be.marche.apptravaux.avaloir.entity.DateNettoyage
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
+import timber.log.Timber
 
 class AvaloirRepository(
     private val avaloirDao: AvaloirDao,
@@ -14,6 +17,7 @@ class AvaloirRepository(
 ) : KoinComponent {
 
     suspend fun getAllAvaloirsFromApi() = travauxService.getAllAvaloirs()
+    suspend fun getAllDatesFromApi() = travauxService.getAllDates()
 
     fun getAll(): List<Avaloir> {
         return avaloirDao.getAll()
@@ -25,6 +29,14 @@ class AvaloirRepository(
 
     suspend fun insertAvaloirs(avaloirs: List<Avaloir>) {
         avaloirDao.insertAvaloirs(avaloirs)
+    }
+
+    suspend fun insertDates(dates: List<DateNettoyage>) {
+        avaloirDao.insertDates(dates)
+    }
+
+    fun getDatesByAvaloirId(avaloirId: Int): LiveData<List<DateNettoyage>> {
+        return avaloirDao.getDatesByAvaloirId(avaloirId)
     }
 
 }

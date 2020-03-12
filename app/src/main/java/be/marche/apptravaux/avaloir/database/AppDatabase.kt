@@ -4,14 +4,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import be.marche.apptravaux.avaloir.entity.Avaloir
+import be.marche.apptravaux.avaloir.entity.DateNettoyage
 
 const val DATABASE_NAME = "apptravaux"
 
 @Database(
-    entities = [Avaloir::class],
-    version = 10
+    entities = [Avaloir::class, DateNettoyage::class],
+    version = 14
 )
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun avaloirDao(): AvaloirDao
 
