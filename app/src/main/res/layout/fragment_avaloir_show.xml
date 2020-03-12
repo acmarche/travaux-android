@@ -28,6 +28,15 @@
         app:layout_constraintTop_toBottomOf="@+id/avalorImageView"
         tools:text="Le detail de l'avaloir" />
 
+    <TextView
+        android:id="@+id/datesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/avaloirTextView"
+        app:layout_constraintTop_toBottomOf="@+id/avaloirTextView"
+        tools:text="10 avril 2019" />
+
     <Button
         android:id="@+id/btnComment"
         android:layout_width="wrap_content"

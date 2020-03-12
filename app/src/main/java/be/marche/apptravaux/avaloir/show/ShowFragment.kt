@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
+import be.marche.apptravaux.avaloir.entity.DateNettoyage
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirShowBinding
 import com.squareup.picasso.Picasso
@@ -42,9 +43,7 @@ class ShowFragment : Fragment() {
 
             avaloirModel.getDatesByAvaloirId(avaloir.idReferent)
                 .observe(viewLifecycleOwner, Observer { dates ->
-                    for (date in dates) {
-                        Timber.w("zeze d" + date)
-                    }
+                    updateUiDates(dates)
                 })
 
             binding.btnClean.setOnClickListener {
@@ -66,18 +65,28 @@ class ShowFragment : Fragment() {
         avaloirModel.addCleaningDateAsync(avaloir, timeStamp)
     }
 
-    fun updateUi(avaloir: Avaloir) {
+    private fun updateUi(avaloir: Avaloir) {
         binding.avaloirTextView.text = getString(
             R.string.avaloir_location,
             avaloir.latitude.toString(),
             avaloir.latitude.toString()
         )
-        Timber.w("zeze display img: " + avaloir.imageUrl)
+
         if (avaloir.imageUrl != null) {
             Picasso.get()
                 .load(avaloir.imageUrl)
                 .placeholder(R.drawable.ic_photo_library)
                 .into(binding.avalorImageView)
+        }
+    }
+
+    private fun updateUiDates(dates: List<DateNettoyage>?) {
+        val builder = StringBuilder()
+        if (dates != null) {
+            for (date in dates) {
+                builder.append(date.date)
+            }
+            binding.datesTextView.text = builder.toString()
         }
     }
 }
