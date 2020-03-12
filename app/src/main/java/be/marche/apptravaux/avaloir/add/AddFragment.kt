@@ -1,6 +1,5 @@
 package be.marche.apptravaux.avaloir.add
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +17,6 @@ import be.marche.apptravaux.location.LocationViewModel
 import be.marche.apptravaux.permission.PermissionUtil
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
 
 class AddFragment : Fragment() {
 
@@ -26,7 +24,6 @@ class AddFragment : Fragment() {
     private val binding get() = _binding!!
     private val locationViewModel: LocationViewModel by sharedViewModel()
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
-    lateinit var permissionUtil: PermissionUtil
     val geofenceManager: GeofenceManager by inject()
 
     private lateinit var avaloirNew: Avaloir

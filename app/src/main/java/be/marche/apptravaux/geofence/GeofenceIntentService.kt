@@ -2,6 +2,8 @@ package be.marche.apptravaux.geofence
 
 import android.app.IntentService
 import android.content.Intent
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import be.marche.apptravaux.avaloir.RedirectActivity
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
@@ -14,17 +16,24 @@ class GeofenceIntentService : IntentService("TravauxGeofenceIntentService") {
         if (geofenceEvent.hasError()) {
             return
         }
+
         val geofenceTransition = geofenceEvent.geofenceTransition
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL) {
             return
         }
+
         if (geofenceEvent.triggeringGeofences == null) {
             return
         }
-        for (triggeringGeofence in geofenceEvent.triggeringGeofences) {
-            if (triggeringGeofence.requestId == "mageofence") {
-                goTo(geofenceTransition, triggeringGeofence.requestId)
-            }
+
+        if(geofenceEvent.triggeringGeofences.size > 0){
+            goTos(geofenceEvent.triggeringGeofences)
+        }
+    }
+
+    private fun goTos(triggeringGeofences: List<Geofence>) {
+        for (triggeringGeofence in triggeringGeofences) {
+            Timber.w("zeze geofence service list: " + triggeringGeofence.requestId)
         }
     }
 

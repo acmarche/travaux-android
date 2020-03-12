@@ -59,7 +59,7 @@ class HomeFragment : Fragment() {
         binding.goBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_listFragment)
         }
-        binding.btnAdd.setOnClickListener {
+        binding.btnSearch.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_addFragment)
         }
     }

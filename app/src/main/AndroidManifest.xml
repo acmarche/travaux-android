@@ -3,6 +3,9 @@
     package="be.marche.apptravaux">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- Required if your app targets Android 10 (API level 29) or higher -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -28,7 +31,7 @@
             </intent-filter>
         </activity>
         <service android:name=".geofence.GeofenceIntentService" />
-        <activity android:name=".avaloir.RedirectActivity"/>
+        <activity android:name=".avaloir.RedirectActivity" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

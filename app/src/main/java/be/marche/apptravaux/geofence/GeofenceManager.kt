@@ -37,7 +37,7 @@ class GeofenceManager(context: Context) {
     fun createGeoFence() {
         val task = geofencingClient.addGeofences(geoFencingRequest(), geofencePendingIntent)
         task.addOnSuccessListener {
-            Timber.w("zeze pending succes")
+            Timber.w("zeze createGeoFence succes")
         }
         task.addOnFailureListener {
             Timber.w("zeze pending error: " + it.message)
@@ -56,8 +56,12 @@ class GeofenceManager(context: Context) {
     }
 
     private fun geoFencingRequest(): GeofencingRequest? {
-        if (geofenceList.size < 1)
+
+        Timber.w("zeze geofence list: " + geofenceList.size)
+
+        if (geofenceList.size < 1) {
             return null
+        }
 
         return GeofencingRequest.Builder()
             .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)//si on est a l'interieur on veut declenche

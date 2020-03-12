@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="be.marche.apptravaux.avaloir.home.HomeFragment"
-        android:label="HomeFragment">
+        android:label="Gestion des avaloirs">
         <action
             android:id="@+id/action_homeFragment_to_listFragment"
             app:destination="@id/listFragment" />
@@ -34,7 +34,7 @@
     <fragment
         android:id="@+id/showFragment"
         android:name="be.marche.apptravaux.avaloir.show.ShowFragment"
-        android:label="Détails avaloir">
+        android:label="Détails de l'avaloir">
         <action
             android:id="@+id/action_showFragment_to_photoFragment"
             app:destination="@id/photoFragment" />

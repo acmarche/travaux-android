@@ -10,7 +10,7 @@
         android:id="@+id/messageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Appuyer sur rechercher pour travailler sur un avaloir"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -27,11 +27,11 @@
         app:layout_constraintTop_toBottomOf="@+id/messageView" />
 
     <Button
-        android:id="@+id/btnAdd"
+        android:id="@+id/btnSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Ajouter"
+        android:text="@string/btn_search"
         app:layout_constraintBottom_toTopOf="@+id/goBtn"
         app:layout_constraintStart_toStartOf="@+id/goBtn" />
 
