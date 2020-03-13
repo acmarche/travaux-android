@@ -1,20 +1,24 @@
 package be.marche.apptravaux.avaloir.add
 
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
+import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
+import be.marche.apptravaux.avaloir.entity.SearchResponse
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirAddBinding
 import be.marche.apptravaux.geofence.GeofenceManager
 import be.marche.apptravaux.location.LocationViewModel
 import be.marche.apptravaux.permission.PermissionUtil
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
@@ -25,11 +29,12 @@ class AddFragment : Fragment() {
     private val binding get() = _binding!!
     private val locationViewModel: LocationViewModel by sharedViewModel()
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
-    val geofenceManager: GeofenceManager by inject()
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private lateinit var avaloirNew: Avaloir
-    private var latitude: Double? = 0.0
-    private var longitude: Double? = 0.0
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
+    lateinit var liveSearchResult: MutableLiveData<SearchResponse>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,18 +48,27 @@ class AddFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        getLocation()
+        //map renvoie une valeur
+        //switch map renvoie un live
 
-        avaloirModel.getAll().observe(viewLifecycleOwner, Observer { avaloirs ->
-            for (avaloir in avaloirs) {
-                Timber.w("zeze populate geofence $avaloir.id ${avaloir.latitude} ${avaloir.longitude} ")
-                geofenceManager.addGeofenceToList(
-                    avaloir.latitude, avaloir.longitude,
-                    avaloir.id.toString()
-                )
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location ->
+                avaloirModel.search(location.latitude, location.longitude, "500km")
+                avaloirModel.resultSearch.observe(viewLifecycleOwner, Observer { searchResponse ->
+                    Timber.w("zeze live search " + searchResponse)
+
+                    for (avaloir in searchResponse.avaloirs) {
+
+                    }
+
+                })
             }
 
-        })
+/*        liveSearchResult.observe(viewLifecycleOwner, Observer {
+
+        })*/
 
         binding.btnCancel.setOnClickListener {
             findNavController().navigate(R.id.action_addFragment_to_homeFragment)
@@ -67,11 +81,8 @@ class AddFragment : Fragment() {
                     "Coordonnées vident",
                     Toast.LENGTH_LONG
                 ).show()
-                geofenceManager.removeAllGeofences()
-            } else {
 
-                // geofenceManager.geofencePendingIntent
-                //add(latitude!!, longitude!!)
+            } else {
 
                 Toast.makeText(
                     context,
@@ -88,8 +99,8 @@ class AddFragment : Fragment() {
             .observe(viewLifecycleOwner, Observer { locationData ->
                 binding.latitude.text = locationData.location?.latitude.toString()
                 binding.longitude.text = locationData.location?.longitude.toString()
-                this.latitude = locationData.location?.latitude
-                this.longitude = locationData.location?.longitude
+                this.latitude = locationData.location?.latitude!!
+                this.longitude = locationData.location?.longitude!!
             })
     }
 

@@ -1,8 +1,6 @@
 package be.marche.apptravaux.api
 
-import be.marche.apptravaux.avaloir.entity.Avaloir
-import be.marche.apptravaux.avaloir.entity.DataResponse
-import be.marche.apptravaux.avaloir.entity.DateNettoyage
+import be.marche.apptravaux.avaloir.entity.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -44,5 +42,9 @@ interface TravauxService {
     suspend fun getAllDates(
     ): List<DateNettoyage>
 
+    @POST("search")
+    suspend fun searchAvaloir(
+        @Body params: SearchRequest
+    ): Response<SearchResponse>
 
 }

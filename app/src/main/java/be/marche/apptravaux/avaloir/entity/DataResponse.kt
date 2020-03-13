@@ -6,3 +6,17 @@ data class DataResponse(
     val avaloir: Avaloir,
     val date: DateNettoyage
 )
+
+data class SearchResponse
+    (
+    val error: Int,
+    val message: String,
+    val avaloirs: List<Avaloir>
+)
+
+data class SearchRequest
+    (
+    val latitude: Double,
+    val longitude: Double,
+    val distance: String
+)

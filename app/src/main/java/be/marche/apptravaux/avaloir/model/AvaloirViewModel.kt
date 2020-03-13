@@ -3,8 +3,7 @@ package be.marche.apptravaux.avaloir.model
 import android.app.Application
 import androidx.lifecycle.*
 import be.marche.apptravaux.api.TravauxService
-import be.marche.apptravaux.avaloir.entity.Avaloir
-import be.marche.apptravaux.avaloir.entity.DateNettoyage
+import be.marche.apptravaux.avaloir.entity.*
 import be.marche.apptravaux.avaloir.repository.AvaloirRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,9 +22,10 @@ class AvaloirViewModel(
     lateinit var avaloir: LiveData<Avaloir>
 
     private val avaloirs = liveData(Dispatchers.IO) {
-        val avaloirs = avaloirRepository.getAll()
-        emit(avaloirs)
+        emit(avaloirRepository.getAll())
     }
+
+    var resultSearch = MutableLiveData<SearchResponse>()
 
     fun setAvaloir(avaloir: Avaloir) {
         this.avaloir = liveData { emit(avaloir) }
@@ -46,7 +46,6 @@ class AvaloirViewModel(
     fun getAvaloirById(avaloirId: Int): LiveData<Avaloir> {
         return avaloirRepository.getById(avaloirId)
     }
-
 
     fun getDatesByAvaloirId(avaloirId: Int): LiveData<List<DateNettoyage>> {
         return avaloirRepository.getDatesByAvaloirId(avaloirId)
@@ -104,6 +103,19 @@ class AvaloirViewModel(
                 response.body()?.let { dataMessage ->
                     avaloir.imageUrl = dataMessage.avaloir.imageUrl
                     insertAvaloir(avaloir)
+                }
+            }
+        }
+    }
+
+    fun search(latitude: Double, longitude: Double, distance: String) {
+        viewModelScope.launch {
+            val response =
+                travauxService.searchAvaloir(SearchRequest(latitude, longitude, distance))
+            if (response.isSuccessful) {
+                response.body()?.let { searchResponse ->
+                    Timber.w("zeze search " + searchResponse)
+                    resultSearch.value = searchResponse
                 }
             }
         }
