@@ -52,6 +52,10 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        binding.btnAddAvaloir.setOnClickListener {
+            findNavController().navigate(R.id.action_searchFragment_to_addFragment)
+        }
+
         //map renvoie une valeur
         //switch map renvoie un live
 
@@ -76,6 +80,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
     }
 
     override fun onAvaloirSelected(avaloir: Avaloir) {
-
+        avaloirModel.setAvaloir(avaloir)
+        findNavController().navigate(R.id.action_searchFragment_to_showFragment)
     }
 }
