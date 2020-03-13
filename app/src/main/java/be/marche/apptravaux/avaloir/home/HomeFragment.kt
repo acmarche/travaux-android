@@ -50,7 +50,7 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_homeFragment_to_listFragment)
         }
         binding.btnSearch.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_addFragment)
+            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
         }
     }
 

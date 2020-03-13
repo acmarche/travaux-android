@@ -9,11 +9,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.entity.SearchResponse
+import be.marche.apptravaux.avaloir.list.AvaloirListAdapter
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirAddBinding
+import be.marche.apptravaux.databinding.FragmentAvaloirSearchBinding
 import be.marche.apptravaux.geofence.GeofenceManager
 import be.marche.apptravaux.location.LocationViewModel
 import be.marche.apptravaux.permission.PermissionUtil
@@ -23,13 +26,14 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener {
 
-    private var _binding: FragmentAvaloirAddBinding? = null
+    private var _binding: FragmentAvaloirSearchBinding? = null
     private val binding get() = _binding!!
     private val locationViewModel: LocationViewModel by sharedViewModel()
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var listener: AvaloirListAdapter.AvaloirListAdapterListener? = null
 
     private lateinit var avaloirNew: Avaloir
     private var latitude: Double = 0.0
@@ -41,7 +45,7 @@ class SearchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentAvaloirAddBinding.inflate(inflater, container, false)
+        _binding = FragmentAvaloirSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -51,6 +55,13 @@ class SearchFragment : Fragment() {
         //map renvoie une valeur
         //switch map renvoie un live
 
+        listener = this
+
+        val recyclerView = binding.recyclerViewAvaloirs
+        val adapter = context?.let { AvaloirListAdapter(listener) }
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         fusedLocationClient.lastLocation
@@ -58,83 +69,13 @@ class SearchFragment : Fragment() {
                 avaloirModel.search(location.latitude, location.longitude, "500km")
                 avaloirModel.resultSearch.observe(viewLifecycleOwner, Observer { searchResponse ->
                     Timber.w("zeze live search " + searchResponse)
-
-
-
+                    val avaloirs = searchResponse.avaloirs
+                    avaloirs?.let { adapter?.setAvaloirs(avaloirs) }
                 })
             }
-
-/*        liveSearchResult.observe(viewLifecycleOwner, Observer {
-
-        })*/
-
-        binding.btnCancel.setOnClickListener {
-            findNavController().navigate(R.id.action_addFragment_to_homeFragment)
-        }
-
-        binding.btnValider.setOnClickListener {
-            if (this.longitude == null && this.longitude == null) {
-                Toast.makeText(
-                    context,
-                    "Coordonnées vident",
-                    Toast.LENGTH_LONG
-                ).show()
-
-            } else {
-
-                Toast.makeText(
-                    context,
-                    "Avaloir ajouté",
-                    Toast.LENGTH_LONG
-                ).show()
-                //  findNavController().navigate(R.id.action_addFragment_to_homeFragment)
-            }
-        }
     }
 
-    private fun getLocation() {
-        locationViewModel.getLocationData()
-            .observe(viewLifecycleOwner, Observer { locationData ->
-                binding.latitude.text = locationData.location?.latitude.toString()
-                binding.longitude.text = locationData.location?.longitude.toString()
-                this.latitude = locationData.location?.latitude!!
-                this.longitude = locationData.location?.longitude!!
-            })
+    override fun onAvaloirSelected(avaloir: Avaloir) {
+
     }
-
-    private fun add(latitude: Double, longitude: Double) {
-        avaloirNew = Avaloir(
-            null,
-            22,
-            latitude,
-            longitude
-        )
-        avaloirModel.insertAvaloir(avaloirNew)
-    }
-
-    /*  fun essai() {
-          locationData.location?.let {
-              if (firstLocation) {
-                  firstLocation = false
-                  Timber.w("zeze first lat " + locationData.location.latitude + " long " + (locationData.location.longitude))
-              }
-
-              binding.btnAdd.text =
-                  (locationData.location.longitude + (locationData.location.latitude)).toString()
-              Timber.w("zeze location lat " + (avaloirNew.latitude) + " long " + avaloirNew.longitude)
-          }
-      }*/
-    /*fun del() {
-        materialButtonDeleteWord.setOnClickListener {
-            val dialogBuilder = AlertDialog.Builder(context)
-            val dialogView = layoutInflater.inflate(R.layout.delete_dialog, null)
-            dialogBuilder.setView(dialogView)
-            dialogBuilder.setPositiveButton("Submit") { dialogInterface, i ->
-                activityViewModel.deleteWord(dialogView.etView.text.toString())
-            }
-            val b = dialogBuilder.create()
-            b.show()
-
-        }
-    }*/
 }

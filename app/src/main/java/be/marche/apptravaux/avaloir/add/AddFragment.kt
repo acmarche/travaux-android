@@ -58,9 +58,6 @@ class AddFragment : Fragment() {
                 avaloirModel.search(location.latitude, location.longitude, "500km")
                 avaloirModel.resultSearch.observe(viewLifecycleOwner, Observer { searchResponse ->
                     Timber.w("zeze live search " + searchResponse)
-
-
-
                 })
             }
 

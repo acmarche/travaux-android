@@ -28,7 +28,7 @@ class RedirectActivity : AppCompatActivity() {
             avaloirModel.getAvaloirById(avaloirId.toInt())
             intent = Intent(this, ShowFragment::class.java)
             startActivity(intent)
-            findNavController(R.id.nav_host_fragment).navigate(R.id.action_homeFragment_to_addFragment)
+            //findNavController(R.id.nav_host_fragment).navigate(R.id.action_homeFragment_to_addFragment)
         }
 
     }

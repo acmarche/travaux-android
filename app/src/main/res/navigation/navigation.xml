@@ -12,8 +12,8 @@
             android:id="@+id/action_homeFragment_to_listFragment"
             app:destination="@id/listFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_addFragment"
-            app:destination="@id/addFragment" />
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/listFragment"
@@ -47,6 +47,14 @@
         android:id="@+id/redirectActivity"
         android:name="be.marche.apptravaux.avaloir.RedirectActivity"
         android:label="RedirectActivity" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="be.marche.apptravaux.avaloir.search.SearchFragment"
+        android:label="Rechercher" >
+        <action
+            android:id="@+id/action_searchFragment_to_addFragment"
+            app:destination="@id/addFragment" />
+    </fragment>
 
 
 </navigation>
