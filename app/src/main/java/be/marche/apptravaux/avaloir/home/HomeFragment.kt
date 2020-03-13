@@ -46,16 +46,6 @@ class HomeFragment : Fragment() {
 
       //  refreshDataBase()
 
-        avaloirModel.getAll().observe(viewLifecycleOwner, Observer { avaloirs ->
-            for (avaloir in avaloirs) {
-                //        Timber.w("zeze populate geofence $avaloir.id ${avaloir.latitude} ${avaloir.longitude} ")
-                geofenceManager.addGeofenceToList(
-                    avaloir.latitude, avaloir.longitude,
-                    avaloir.id.toString()
-                )
-            }
-        })
-
         binding.goBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_listFragment)
         }

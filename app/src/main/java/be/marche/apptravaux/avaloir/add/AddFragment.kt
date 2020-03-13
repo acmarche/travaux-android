@@ -17,6 +17,7 @@ import be.marche.apptravaux.location.LocationViewModel
 import be.marche.apptravaux.permission.PermissionUtil
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import timber.log.Timber
 
 class AddFragment : Fragment() {
 
@@ -41,13 +42,23 @@ class AddFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         getLocation()
+
+        avaloirModel.getAll().observe(viewLifecycleOwner, Observer { avaloirs ->
+            for (avaloir in avaloirs) {
+                Timber.w("zeze populate geofence $avaloir.id ${avaloir.latitude} ${avaloir.longitude} ")
+                geofenceManager.addGeofenceToList(
+                    avaloir.latitude, avaloir.longitude,
+                    avaloir.id.toString()
+                )
+            }
+
+        })
 
         binding.btnCancel.setOnClickListener {
             findNavController().navigate(R.id.action_addFragment_to_homeFragment)
         }
-
-        geofenceManager.createGeoFence()
 
         binding.btnValider.setOnClickListener {
             if (this.longitude == null && this.longitude == null) {
@@ -77,8 +88,8 @@ class AddFragment : Fragment() {
             .observe(viewLifecycleOwner, Observer { locationData ->
                 binding.latitude.text = locationData.location?.latitude.toString()
                 binding.longitude.text = locationData.location?.longitude.toString()
-                latitude = locationData.location?.latitude
-                longitude = locationData.location?.longitude
+                this.latitude = locationData.location?.latitude
+                this.longitude = locationData.location?.longitude
             })
     }
 

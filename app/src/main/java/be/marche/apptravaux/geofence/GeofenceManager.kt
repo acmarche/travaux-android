@@ -3,6 +3,7 @@ package be.marche.apptravaux.geofence
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import be.marche.apptravaux.avaloir.RedirectActivity
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
@@ -45,9 +46,10 @@ class GeofenceManager(context: Context) {
     }
 
     val geofencePendingIntent: PendingIntent by lazy {
-        val intent = Intent(appContext, GeofenceIntentService::class.java)
-        //PendingIntent.getBroadcast()
-        PendingIntent.getService(
+        val intent = Intent(appContext, GeofenceBroadcastReceiver::class.java)
+        //val intent = Intent(appContext, RedirectActivity::class.java)
+        //val intent = Intent(appContext, GeofenceIntentService::class.java)
+        PendingIntent.getBroadcast(
             appContext,
             0,
             intent,
@@ -57,9 +59,10 @@ class GeofenceManager(context: Context) {
 
     private fun geoFencingRequest(): GeofencingRequest? {
 
-        Timber.w("zeze geofence list: " + geofenceList.size)
+        Timber.w("zeze geofence list size: " + geofenceList.size)
 
         if (geofenceList.size < 1) {
+            Timber.w("zeze pas ici")
             return null
         }
 

@@ -2,8 +2,6 @@ package be.marche.apptravaux.geofence
 
 import android.app.IntentService
 import android.content.Intent
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import be.marche.apptravaux.avaloir.RedirectActivity
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
