@@ -24,34 +24,26 @@
             app:destination="@id/showFragment" />
     </fragment>
     <fragment
-        android:id="@+id/addFragment"
-        android:name="be.marche.apptravaux.avaloir.add.AddFragment"
-        android:label="Ajouter un avaloir">
-        <action
-            android:id="@+id/action_addFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/showFragment"
         android:name="be.marche.apptravaux.avaloir.show.ShowFragment"
-        android:label="Détails de l'avaloir">
-        <action
-            android:id="@+id/action_showFragment_to_photoFragment"
-            app:destination="@id/photoFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/photoFragment"
-        android:name="be.marche.apptravaux.avaloir.photo.PhotoFragment"
-        android:label="PhotoFragment" />
+        android:label="Détails de l'avaloir"/>
     <fragment
         android:id="@+id/searchFragment"
         android:name="be.marche.apptravaux.avaloir.search.SearchFragment"
         android:label="Rechercher" >
         <action
+            android:id="@+id/action_searchFragment_to_showFragment"
+            app:destination="@id/showFragment" />
+        <action
             android:id="@+id/action_searchFragment_to_addFragment"
             app:destination="@id/addFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addFragment"
+        android:name="be.marche.apptravaux.avaloir.add.AddFragment"
+        android:label="AddFragment" >
         <action
-            android:id="@+id/action_searchFragment_to_showFragment"
+            android:id="@+id/action_addFragment_to_showFragment"
             app:destination="@id/showFragment" />
     </fragment>
 

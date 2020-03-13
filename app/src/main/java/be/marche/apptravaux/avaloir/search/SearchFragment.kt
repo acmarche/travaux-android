@@ -53,6 +53,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         super.onActivityCreated(savedInstanceState)
 
         binding.btnAddAvaloir.setOnClickListener {
+            add()
             findNavController().navigate(R.id.action_searchFragment_to_addFragment)
         }
 
@@ -73,6 +74,8 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
                 avaloirModel.search(location.latitude, location.longitude, "500km")
                 avaloirModel.resultSearch.observe(viewLifecycleOwner, Observer { searchResponse ->
                     Timber.w("zeze live search " + searchResponse)
+                    this.latitude = location.latitude
+                    this.longitude = location.longitude
                     val avaloirs = searchResponse.avaloirs
                     avaloirs?.let { adapter?.setAvaloirs(avaloirs) }
                 })
@@ -83,4 +86,16 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         avaloirModel.setAvaloir(avaloir)
         findNavController().navigate(R.id.action_searchFragment_to_showFragment)
     }
+
+    private fun add() {
+        avaloirNew = Avaloir(
+            null,
+            222,
+            this.latitude,
+            this.longitude
+        )
+        avaloirModel.insertAvaloir(avaloirNew)
+        avaloirModel.setAvaloir(avaloirNew)
+    }
+
 }

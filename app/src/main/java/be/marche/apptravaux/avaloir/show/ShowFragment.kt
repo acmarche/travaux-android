@@ -1,5 +1,6 @@
 package be.marche.apptravaux.avaloir.show
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import java.text.SimpleDateFormat
@@ -49,8 +50,10 @@ class ShowFragment : Fragment() {
             binding.btnClean.setOnClickListener {
                 updateClean(avaloir)
             }
+
             binding.btnComment.setOnClickListener {
-                findNavController().navigate(R.id.action_showFragment_to_photoFragment)
+
+                //findNavController().navigate(R.id.action_showFragment_to_photoFragment)
             }
         })
     }
@@ -71,7 +74,7 @@ class ShowFragment : Fragment() {
             avaloir.latitude.toString(),
             avaloir.latitude.toString()
         )
-
+        //binding.viewFinder.setImageURI(Uri.fromFile(imgFile))
         if (avaloir.imageUrl != null) {
             Picasso.get()
                 .load(avaloir.imageUrl)
