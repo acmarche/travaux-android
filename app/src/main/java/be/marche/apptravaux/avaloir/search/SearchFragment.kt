@@ -1,4 +1,4 @@
-package be.marche.apptravaux.avaloir.add
+package be.marche.apptravaux.avaloir.search
 
 import android.location.Location
 import android.os.Bundle
@@ -23,7 +23,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 
-class AddFragment : Fragment() {
+class SearchFragment : Fragment() {
 
     private var _binding: FragmentAvaloirAddBinding? = null
     private val binding get() = _binding!!
