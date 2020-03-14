@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import be.marche.apptravaux.R
 import be.marche.apptravaux.api.ConnectivityLiveData
-import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirHomeBinding
 import be.marche.apptravaux.geofence.GeofenceManager
@@ -44,7 +43,7 @@ class HomeFragment : Fragment() {
         permissionUtil = PermissionUtil(requireContext())
         setupPermissions2()
 
-      //  refreshDataBase()
+        refreshDataBase()
 
         binding.goBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_listFragment)
@@ -54,42 +53,35 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun syncContent() {
-        avaloirModel.getAllAvaloirsFromServer().observe(viewLifecycleOwner, Observer { avaloirs ->
-            Timber.w("zeze sync all avaloirs size: " + avaloirs.size)
-            avaloirModel.insertAvaloirs(avaloirs)
-        })
-         avaloirModel.getDatesFromServer().observe(viewLifecycleOwner, Observer { dates ->
-            Timber.w("zeze sync all dates size: " + dates.size)
-            avaloirModel.insertDates(dates)
-        })
-    }
-
     private fun refreshDataBase() {
         activity?.application?.let {
             ConnectivityLiveData(it).observe(viewLifecycleOwner, Observer { connected ->
                 when (connected) {
                     true -> {
-                        binding.messageView.text = getString(R.string.message_ok_connectivity)
-                        //binding.messageView.visibility = View.INVISIBLE
-                        // btnProduitView.visibility = View.VISIBLE
-                        // btnCategorieView.visibility = View.VISIBLE
-                          syncContent()
-                       // uploadAvaloir()
+                        binding.errorTextView.text = getString(R.string.message_ok_connectivity)
+                        binding.errorTextView.visibility = View.INVISIBLE
+                        binding.btnSearch.isEnabled = true
+                        //   syncContent()
                     }
                     false -> {
-                        binding.messageView.visibility = View.VISIBLE
-                        // btnProduitView.visibility = View.INVISIBLE
-                        //  btnCategorieView.visibility = View.INVISIBLE
-                        binding.messageView.text = getString(R.string.message_no_connectivity)
+                        binding.errorTextView.visibility = View.VISIBLE
+                        binding.btnSearch.isEnabled = false
+                        binding.errorTextView.text = getString(R.string.message_no_connectivity)
                     }
                 }
             })
         }
     }
 
-    private fun uploadAvaloir() {
-
+    private fun syncContent() {
+        avaloirModel.getAllAvaloirsFromServer().observe(viewLifecycleOwner, Observer { avaloirs ->
+            Timber.w("zeze sync all avaloirs size: " + avaloirs.size)
+            avaloirModel.insertAvaloirs(avaloirs)
+        })
+        avaloirModel.getDatesFromServer().observe(viewLifecycleOwner, Observer { dates ->
+            Timber.w("zeze sync all dates size: " + dates.size)
+            avaloirModel.insertDates(dates)
+        })
     }
 
     override fun onRequestPermissionsResult(

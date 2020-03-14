@@ -11,7 +11,7 @@ class TravauxApp : Application() {
 
     companion object {
         val galleryDir by lazy {
-            be.marche.apptravaux.camera.galleryDir()
+            be.marche.apptravaux.utils.galleryDir()
         }
     }
 

@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.marche.apptravaux.R
@@ -15,14 +15,10 @@ import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.entity.SearchResponse
 import be.marche.apptravaux.avaloir.list.AvaloirListAdapter
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
-import be.marche.apptravaux.databinding.FragmentAvaloirAddBinding
 import be.marche.apptravaux.databinding.FragmentAvaloirSearchBinding
-import be.marche.apptravaux.geofence.GeofenceManager
 import be.marche.apptravaux.location.LocationViewModel
-import be.marche.apptravaux.permission.PermissionUtil
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 

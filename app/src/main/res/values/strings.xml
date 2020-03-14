@@ -11,4 +11,6 @@
     <string name="avaloir_location">%1$s,%2$s</string>
     <string name="btn_search">Rechercher</string>
     <string name="title_search">Sélectionnez un avaloir ou ajoutez un autre</string>
+    <string name="home_message">Appuyer sur rechercher pour travailler sur un avaloir</string>
+    <string name="btn_list">Liste des avaloirs</string>
 </resources>
