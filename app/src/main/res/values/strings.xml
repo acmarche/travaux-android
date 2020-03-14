@@ -7,10 +7,15 @@
     <string name="contenu_image">contenu image</string>
     <string name="btn_comment">Ajouter un commentaire</string>
     <string name="btn_add_avaloir">Ajouter un avaloir</string>
+    <string name="btn_add_photo">Prendre une photo</string>
     <string name="btn_nettoye">C\'est nettoyé</string>
     <string name="avaloir_location">%1$s,%2$s</string>
     <string name="btn_search">Rechercher</string>
     <string name="title_search">Sélectionnez un avaloir ou ajoutez un autre</string>
     <string name="home_message">Appuyer sur rechercher pour travailler sur un avaloir</string>
     <string name="btn_list">Liste des avaloirs</string>
+    <string name="btn_validation_ajout">Valider</string>
+    <string name="btn_cancel">Annuler</string>
+    <string name="description_add_avaloir">Vous allez ajouter un avaloir localisé en %1$s , %2$s</string>
+    <string name="explication_description_photo">Vous devez le prendre en photo, prenez la photo de manière à repérer facilement l\'endroit</string>
 </resources>

@@ -45,6 +45,9 @@
         <action
             android:id="@+id/action_addFragment_to_showFragment"
             app:destination="@id/showFragment" />
+        <action
+            android:id="@+id/action_addFragment_to_listFragment"
+            app:destination="@id/listFragment" />
     </fragment>
 
 
