@@ -69,12 +69,25 @@ class AvaloirViewModel(
         }
     }
 
+    fun insertAsync(avaloir: Avaloir, part: MultipartBody.Part, requestBody: RequestBody) {
+        viewModelScope.launch {
+            val response = travauxService.insertAvaloir(avaloir)
+            val response2 = travauxService.uploadPhoto(avaloir.idReferent, part, requestBody)
+            if (response.isSuccessful) {
+                response.body()?.let { dataMessage ->
+                    insertAvaloir(avaloir)
+                    Timber.w("zeze insert sync " + dataMessage)
+                }
+            }
+        }
+    }
+
     fun saveAsync(avaloir: Avaloir) {
         viewModelScope.launch {
             val response = travauxService.updateAvaloir(avaloir.idReferent, avaloir)
-            Timber.w("zeze response: " + response)
             if (response.isSuccessful) {
                 response.body()?.let { dataMessage ->
+                    insertAvaloir(avaloir)
                     Timber.w("zeze update sync " + dataMessage)
                 }
             }
@@ -91,18 +104,6 @@ class AvaloirViewModel(
                     } else {
                         insertDates(listOf(dataMessage.date))
                     }
-                }
-            }
-        }
-    }
-
-    fun uploadImage(avaloir: Avaloir, part: MultipartBody.Part, requestBody: RequestBody) {
-        viewModelScope.launch {
-            val response = travauxService.uploadPhoto(avaloir.idReferent, part, requestBody)
-            if (response.isSuccessful) {
-                response.body()?.let { dataMessage ->
-                    avaloir.imageUrl = dataMessage.avaloir.imageUrl
-                    insertAvaloir(avaloir)
                 }
             }
         }

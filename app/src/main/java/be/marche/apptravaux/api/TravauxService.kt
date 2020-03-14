@@ -17,6 +17,21 @@ interface TravauxService {
     suspend fun updateAllAvaloirs(
     ): List<Avaloir>
 
+
+ /*   @POST("insert")
+    suspend fun insertAvaloir(
+        @Body avaloir: Avaloir
+    ): Response<DataResponse>*/
+
+    @Multipart
+    @POST("insert")
+    suspend fun insertAvaloir(
+        @Body avaloir: Avaloir,
+        @Path("id") avaloirId: Int,
+        @Part file: MultipartBody.Part,
+        @Part("image") requestBody: RequestBody
+    ): Response<DataResponse>
+
     @POST("update/{id}")
     suspend fun updateAvaloir(
         @Path("id") avaloirId: Int,
@@ -28,14 +43,6 @@ interface TravauxService {
         @Path("id") avaloirId: Int,
         @Path("date") date: String,
         @Body avaloir: Avaloir
-    ): Response<DataResponse>
-
-    @Multipart
-    @POST("photo/{id}")
-    suspend fun uploadPhoto(
-        @Path("id") avaloirId: Int,
-        @Part file: MultipartBody.Part,
-        @Part("image") requestBody: RequestBody
     ): Response<DataResponse>
 
     @GET("dates")
