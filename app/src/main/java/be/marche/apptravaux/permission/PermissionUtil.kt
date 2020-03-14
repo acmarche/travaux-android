@@ -26,7 +26,7 @@ class PermissionUtil(val context: Context) {
         fragment.requestPermissions(arrayOf(permission), code)
     }
 
-    fun requestPermissionWithExplanation(
+    fun requestPermissionsWithExplanation(
         fragment: Fragment,
         message: String,
         title: String = "Permission required",

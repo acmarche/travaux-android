@@ -26,7 +26,6 @@ class HomeFragment : Fragment() {
     private val avaloirModel: AvaloirViewModel by viewModel()
     private var _binding: FragmentAvaloirHomeBinding? = null
     private val binding get() = _binding!!
-    val geofenceManager: GeofenceManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +40,7 @@ class HomeFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         permissionUtil = PermissionUtil(requireContext())
-        setupPermissions2()
+        setupPermissions()
 
         refreshDataBase()
 
@@ -61,7 +60,7 @@ class HomeFragment : Fragment() {
                         binding.errorTextView.text = getString(R.string.message_ok_connectivity)
                         binding.errorTextView.visibility = View.INVISIBLE
                         binding.btnSearch.isEnabled = true
-                        //   syncContent()
+                        //          syncContent()
                     }
                     false -> {
                         binding.errorTextView.visibility = View.VISIBLE
@@ -101,23 +100,13 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupPermissions() {
-        if (permissionUtil.checkSelfPermissions(Manifest.permission.ACCESS_FINE_LOCATION) == false) {
-            permissionUtil.requestPermissions(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                RECORD_REQUEST_CODE
-            )
-        }
-    }
-
-    private fun setupPermissions2() {
         val message =
             "La localisation est requise pour gérer les avaloirs."
-        permissionUtil.requestPermissionWithExplanation(
+        permissionUtil.requestPermissionsWithExplanation(
             this,
             message,
             "",
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_BACKGROUND_LOCATION),
             RECORD_REQUEST_CODE
         )
     }
