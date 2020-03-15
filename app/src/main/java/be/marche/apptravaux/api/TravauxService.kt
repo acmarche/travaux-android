@@ -17,17 +17,10 @@ interface TravauxService {
     suspend fun updateAllAvaloirs(
     ): List<Avaloir>
 
-
- /*   @POST("insert")
-    suspend fun insertAvaloir(
-        @Body avaloir: Avaloir
-    ): Response<DataResponse>*/
-
     @Multipart
     @POST("insert")
     suspend fun insertAvaloir(
-        @Body avaloir: Avaloir,
-        @Path("id") avaloirId: Int,
+        @Part("coordinates") coordinates: Coordinates,
         @Part file: MultipartBody.Part,
         @Part("image") requestBody: RequestBody
     ): Response<DataResponse>

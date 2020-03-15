@@ -20,3 +20,9 @@ data class SearchRequest
     val longitude: Double,
     val distance: String
 )
+
+data class Coordinates
+    (
+    val latitude: Double,
+    val longitude: Double
+)

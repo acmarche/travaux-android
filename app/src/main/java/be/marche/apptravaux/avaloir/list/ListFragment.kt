@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +14,6 @@ import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirListBinding
 import be.marche.apptravaux.permission.PermissionUtil
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
 
 class ListFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener {
 
@@ -52,7 +50,7 @@ class ListFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener {
     }
 
     override fun onAvaloirSelected(avaloir: Avaloir) {
-        avaloirModel.setAvaloir(avaloir)
+        avaloirModel.createLiveAvaloir(avaloir)
         findNavController().navigate(R.id.action_listFragment_to_showFragment)
     }
 

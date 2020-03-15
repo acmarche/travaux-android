@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import timber.log.Timber
-import java.io.File
 
 class AvaloirViewModel(
     application: Application,
@@ -19,7 +18,8 @@ class AvaloirViewModel(
 ) :
     AndroidViewModel(application) {
 
-    lateinit var avaloir: LiveData<Avaloir>
+    lateinit var coordinates: Coordinates
+    var avaloir: MutableLiveData<Avaloir> = MutableLiveData<Avaloir>()
 
     private val avaloirs = liveData(Dispatchers.IO) {
         emit(avaloirRepository.getAll())
@@ -27,8 +27,8 @@ class AvaloirViewModel(
 
     var resultSearch = MutableLiveData<SearchResponse>()
 
-    fun setAvaloir(avaloir: Avaloir) {
-        this.avaloir = liveData { emit(avaloir) }
+    fun createLiveAvaloir(avaloir: Avaloir) {
+        this.avaloir.value = avaloir
     }
 
     fun getDatesFromServer(): LiveData<List<DateNettoyage>> = liveData {
@@ -69,14 +69,14 @@ class AvaloirViewModel(
         }
     }
 
-    fun insertAsync(avaloir: Avaloir, part: MultipartBody.Part, requestBody: RequestBody) {
+    fun insertAsync(coordinates: Coordinates, part: MultipartBody.Part, requestBody: RequestBody) {
         viewModelScope.launch {
-            val response = travauxService.insertAvaloir(avaloir)
-            val response2 = travauxService.uploadPhoto(avaloir.idReferent, part, requestBody)
+            val response = travauxService.insertAvaloir(coordinates, part, requestBody)
             if (response.isSuccessful) {
                 response.body()?.let { dataMessage ->
+                    val avaloir = dataMessage.avaloir
                     insertAvaloir(avaloir)
-                    Timber.w("zeze insert sync " + dataMessage)
+                    createLiveAvaloir(avaloir)
                 }
             }
         }
@@ -88,6 +88,7 @@ class AvaloirViewModel(
             if (response.isSuccessful) {
                 response.body()?.let { dataMessage ->
                     insertAvaloir(avaloir)
+                    createLiveAvaloir(avaloir)
                     Timber.w("zeze update sync " + dataMessage)
                 }
             }
