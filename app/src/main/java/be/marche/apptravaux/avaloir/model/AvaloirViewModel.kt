@@ -9,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import timber.log.Timber
 
 class AvaloirViewModel(
     application: Application,
@@ -27,7 +26,7 @@ class AvaloirViewModel(
 
     var resultSearch = MutableLiveData<SearchResponse>()
 
-    fun createLiveAvaloir(avaloir: Avaloir) {
+    fun changeValueCurrentAvaloir(avaloir: Avaloir) {
         this.avaloir.value = avaloir
     }
 
@@ -76,7 +75,7 @@ class AvaloirViewModel(
                 response.body()?.let { dataMessage ->
                     val avaloir = dataMessage.avaloir
                     insertAvaloir(avaloir)
-                    createLiveAvaloir(avaloir)
+                    changeValueCurrentAvaloir(avaloir)
                 }
             }
         }
@@ -88,8 +87,7 @@ class AvaloirViewModel(
             if (response.isSuccessful) {
                 response.body()?.let { dataMessage ->
                     insertAvaloir(avaloir)
-                    createLiveAvaloir(avaloir)
-                    Timber.w("zeze update sync " + dataMessage)
+                    changeValueCurrentAvaloir(avaloir)
                 }
             }
         }
@@ -116,7 +114,6 @@ class AvaloirViewModel(
                 travauxService.searchAvaloir(SearchRequest(latitude, longitude, distance))
             if (response.isSuccessful) {
                 response.body()?.let { searchResponse ->
-                    Timber.w("zeze search " + searchResponse)
                     resultSearch.value = searchResponse
                 }
             }

@@ -1,6 +1,5 @@
 package be.marche.apptravaux.avaloir.show
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirShowBinding
 import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -37,11 +35,8 @@ class ShowFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        Timber.w("zeze this avaloir " + avaloirModel.avaloir)
-
         avaloirModel.avaloir.observe(viewLifecycleOwner, Observer { avaloir ->
 
-            Timber.w("zeze observe this avaloir " + avaloirModel.avaloir)
             updateUi(avaloir)
 
             avaloirModel.getDatesByAvaloirId(avaloir.idReferent)
@@ -76,10 +71,7 @@ class ShowFragment : Fragment() {
             avaloir.latitude.toString(),
             avaloir.latitude.toString()
         )
-        //binding.viewFinder.setImageURI(Uri.fromFile(imgFile))
-        Timber.w("zeze updateUi this avaloir " + avaloirModel.avaloir)
 
-        Timber.i("zeze image url " + avaloir.imageUrl)
         if (avaloir.imageUrl != null) {
             Picasso.get()
                 .load(avaloir.imageUrl)

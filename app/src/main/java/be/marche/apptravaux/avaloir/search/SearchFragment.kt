@@ -103,7 +103,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
     }
 
     override fun onAvaloirSelected(avaloir: Avaloir) {
-        avaloirModel.createLiveAvaloir(avaloir)
+        avaloirModel.changeValueCurrentAvaloir(avaloir)
         findNavController().navigate(R.id.action_searchFragment_to_showFragment)
     }
 
