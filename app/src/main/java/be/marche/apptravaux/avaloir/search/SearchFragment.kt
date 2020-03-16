@@ -180,20 +180,18 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         task.addOnFailureListener { exception ->
 
             if (exception is ResolvableApiException) {
-                Timber.w("zeze code " + exception.statusCode)
 
-
-                val resolvable = exception as ResolvableApiException
+                val resolvable = exception
 
                 // Location settings are not satisfied, but this can be fixed
                 // by showing the user a dialog.
                 try {
                     // Show the dialog by calling startResolutionForResult(),
                     // and check the result in onActivityResult().
-                /*    exception.startResolutionForResult(
-                        requireActivity(),
-                        REQUEST_CHECK_SETTINGS
-                    )*/
+                    /*    exception.startResolutionForResult(
+                            requireActivity(),
+                            REQUEST_CHECK_SETTINGS
+                        )*/
                     this.startIntentSenderForResult(
                         resolvable.resolution.intentSender,
                         REQUEST_CHECK_SETTINGS,
@@ -209,10 +207,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
 
     private fun openSettings() {
         val intent = Intent()
-        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-        val uri: Uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
-        intent.data = uri
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.action = Settings.ACTION_LOCATION_SOURCE_SETTINGS
         startActivity(intent)
     }
 
@@ -221,14 +216,14 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         Timber.w("zeze result fragment" + resultCode)
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == RESULT_OK) {
-                //  showProgressBar()
-                //   locationHandler.getUserLocation()
+
+          //      updateUi()
+           //     makeSearch()
             } else if (resultCode == RESULT_CANCELED) {
                 showEnableLocationDialog()
             }
         }
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -241,12 +236,12 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
     private fun showEnableLocationDialog() {
         val builder = AlertDialog.Builder(context)
         builder
-            .setTitle("Ajout d'un commentaire")
-            .setMessage("Pas encore implémenté :-P")
+            .setTitle("La localistation est obligatoire")
+            .setMessage("Sans la localisation la recherche d'avaloirs n'est pas possible")
         builder.setPositiveButton(
             "OK"
         ) { dialog, id ->
-
+            openSettings()
         }
         val dialog = builder.create()
         dialog.show()
