@@ -139,6 +139,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
     }
 
     private fun makeSearch() {
+        showProgressBar()
         currentLocation.let { location ->
             location.apply {
                 avaloirModel.search(this!!.latitude, this.longitude, "500km")
@@ -147,6 +148,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
                     Observer { searchResponse ->
                         val avaloirs = searchResponse.avaloirs
                         avaloirs.let { adapter.setAvaloirs(avaloirs) }
+                        hideProgressBar()
                     })
             }
         }
@@ -175,6 +177,10 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         val client: SettingsClient = LocationServices.getSettingsClient(requireActivity())
         val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
 
+        task.addOnSuccessListener {
+            requestingLocationUpdates = true
+            startLocationUpdates()
+        }
         task.addOnFailureListener { exception ->
 
             if (exception is ResolvableApiException) {
@@ -202,8 +208,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Timber.w("zeze result fragment" + resultCode)
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == RESULT_OK) {
                 requestingLocationUpdates = true
@@ -211,14 +216,6 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
                 showEnableLocationDialog()
             }
         }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        Timber.w("zeze permission")
     }
 
     private fun showEnableLocationDialog() {
@@ -233,5 +230,13 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         }
         val dialog = builder.create()
         dialog.show()
+    }
+
+    private fun showProgressBar() {
+        binding.progressBar.setVisibility(View.VISIBLE)
+    }
+
+    private fun hideProgressBar() {
+        binding.progressBar.setVisibility(View.GONE)
     }
 }
