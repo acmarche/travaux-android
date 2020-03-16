@@ -91,6 +91,7 @@ class HomeFragment : Fragment() {
         when (requestCode) {
             RECORD_REQUEST_CODE -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Timber.w("zeze grant " + grantResults + " coce " + requestCode)
                     Timber.w("zeze Permission has been denied by user")
                 } else {
                     Timber.w("zeze Permission has been granted by user")
@@ -106,7 +107,10 @@ class HomeFragment : Fragment() {
             this,
             message,
             "",
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ),
             RECORD_REQUEST_CODE
         )
     }

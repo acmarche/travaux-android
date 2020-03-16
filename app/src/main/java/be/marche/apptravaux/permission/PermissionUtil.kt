@@ -22,7 +22,7 @@ class PermissionUtil(val context: Context) {
     }
 
     fun requestPermissions(fragment: Fragment, permission: String, code: Int) {
-        Timber.w("zeze rquest")
+        Timber.w("zeze request")
         fragment.requestPermissions(arrayOf(permission), code)
     }
 
@@ -35,10 +35,7 @@ class PermissionUtil(val context: Context) {
     ) {
         for (permission in permissions) {
             if (this.checkSelfPermissions(permission) == false) {
-                if (fragment.shouldShowRequestPermissionRationale(
-                        permission
-                    )
-                ) {
+                if (fragment.shouldShowRequestPermissionRationale(permission)) {
                     val builder = AlertDialog.Builder(context)
                     builder.setMessage(message)
                         .setTitle(title)

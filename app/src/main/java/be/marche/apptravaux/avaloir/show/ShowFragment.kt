@@ -1,5 +1,6 @@
 package be.marche.apptravaux.avaloir.show
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -39,25 +40,15 @@ class ShowFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val callback2 = requireActivity().onBackPressedDispatcher.addCallback(this) {
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigate(R.id.action_showFragment_to_homeFragment)
         }
 
-        val callback: OnBackPressedCallback = object : OnBackPressedCallback(
-            true // default to enabled
-        ) {
-            override fun handleOnBackPressed() {
-                findNavController().navigate(R.id.action_showFragment_to_homeFragment)
-            }
-
-        }
         requireActivity().onBackPressedDispatcher.addCallback(
-            this,  // LifecycleOwner
+            this,
             callback
         )
-        //callback.handleOnBackPressed()
     }
-
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -76,8 +67,7 @@ class ShowFragment : Fragment() {
             }
 
             binding.btnComment.setOnClickListener {
-
-                //findNavController().navigate(R.id.action_showFragment_to_photoFragment)
+               createDialogueBox()
             }
         })
     }
@@ -118,7 +108,17 @@ class ShowFragment : Fragment() {
         }
     }
 
-    fun handleOnBackPressed() {
+    private fun createDialogueBox() {
+        val builder = AlertDialog.Builder(context)
+        builder
+            .setTitle("Ajout d'un commentaire")
+            .setMessage("Pas encore implémenté :-P")
+        builder.setPositiveButton(
+            "OK"
+        ) { dialog, id ->
 
+        }
+        val dialog = builder.create()
+        dialog.show()
     }
 }
