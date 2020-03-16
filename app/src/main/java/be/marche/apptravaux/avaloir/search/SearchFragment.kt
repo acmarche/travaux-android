@@ -6,7 +6,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.IntentSender
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
@@ -17,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import be.marche.apptravaux.BuildConfig
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.entity.Coordinates
@@ -42,7 +40,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
 
     lateinit var adapter: AvaloirListAdapter
     lateinit var locationRequest: LocationRequest
-    val requestingLocationUpdates = true
+    var requestingLocationUpdates = false
     private lateinit var locationCallback: LocationCallback
 
     companion object {
@@ -181,19 +179,11 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
 
             if (exception is ResolvableApiException) {
 
-                val resolvable = exception
-
                 // Location settings are not satisfied, but this can be fixed
                 // by showing the user a dialog.
                 try {
-                    // Show the dialog by calling startResolutionForResult(),
-                    // and check the result in onActivityResult().
-                    /*    exception.startResolutionForResult(
-                            requireActivity(),
-                            REQUEST_CHECK_SETTINGS
-                        )*/
                     this.startIntentSenderForResult(
-                        resolvable.resolution.intentSender,
+                        exception.resolution.intentSender,
                         REQUEST_CHECK_SETTINGS,
                         null, 0, 0, 0, null
                     )
@@ -216,9 +206,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         Timber.w("zeze result fragment" + resultCode)
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == RESULT_OK) {
-
-          //      updateUi()
-           //     makeSearch()
+                requestingLocationUpdates = true
             } else if (resultCode == RESULT_CANCELED) {
                 showEnableLocationDialog()
             }
