@@ -34,7 +34,6 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
     private var listener: AvaloirListAdapter.AvaloirListAdapterListener? = null
     var currentLocation: Location? = null
 
-    private lateinit var avaloirNew: Avaloir
     lateinit var adapter: AvaloirListAdapter
     lateinit var locationRequest: LocationRequest
     val requestingLocationUpdates = true
@@ -71,7 +70,6 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
-                    Timber.w("zeze " + location)
                     currentLocation = location
                 }
                 updateUi()
@@ -88,7 +86,6 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
 
     override fun onResume() {
         super.onResume()
-        Timber.w("zeze start")
         if (requestingLocationUpdates) startLocationUpdates()
     }
 
@@ -134,11 +131,10 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
     private fun makeSearch() {
         currentLocation.let { location ->
             location.apply {
-                avaloirModel.search(this!!.latitude, this!!.longitude, "500km")
+                avaloirModel.search(this!!.latitude, this.longitude, "500km")
                 avaloirModel.resultSearch.observe(
                     viewLifecycleOwner,
                     Observer { searchResponse ->
-                        Timber.w("zeze live search " + searchResponse)
                         val avaloirs = searchResponse.avaloirs
                         avaloirs.let { adapter.setAvaloirs(avaloirs) }
                     })

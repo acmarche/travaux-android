@@ -18,4 +18,5 @@
     <string name="btn_cancel">Annuler</string>
     <string name="description_add_avaloir">Vous allez ajouter un avaloir localisé en %1$s , %2$s</string>
     <string name="explication_description_photo">Vous devez le prendre en photo, prenez la photo de manière à repérer facilement l\'endroit</string>
+    <string name="title_dates_nettoyage">Les dates de nettoyage</string>
 </resources>

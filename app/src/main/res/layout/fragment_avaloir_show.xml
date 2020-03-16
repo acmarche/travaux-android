@@ -18,23 +18,37 @@
         app:srcCompat="@drawable/ic_photo_library" />
 
     <TextView
-        android:id="@+id/avaloirTextView"
+        android:id="@+id/coordinatesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/avalorImageView"
-        tools:text="Le detail de l'avaloir" />
+        tools:text="50.235621, 5.23658" />
+
+    <TextView
+        android:id="@+id/titreDatesNettoyageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/title_dates_nettoyage"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/coordinatesTextView" />
 
     <TextView
         android:id="@+id/datesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="@+id/avaloirTextView"
-        app:layout_constraintTop_toBottomOf="@+id/avaloirTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titreDatesNettoyageTextView"
         tools:text="10 avril 2019" />
 
     <Button

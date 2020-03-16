@@ -1,11 +1,15 @@
 package be.marche.apptravaux.avaloir.show
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.entity.DateNettoyage
@@ -15,6 +19,7 @@ import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class ShowFragment : Fragment() {
 
@@ -31,6 +36,28 @@ class ShowFragment : Fragment() {
         _binding = FragmentAvaloirShowBinding.inflate(inflater, container, false)
         return binding.root
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val callback2 = requireActivity().onBackPressedDispatcher.addCallback(this) {
+            findNavController().navigate(R.id.action_showFragment_to_homeFragment)
+        }
+
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(
+            true // default to enabled
+        ) {
+            override fun handleOnBackPressed() {
+                findNavController().navigate(R.id.action_showFragment_to_homeFragment)
+            }
+
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,  // LifecycleOwner
+            callback
+        )
+        //callback.handleOnBackPressed()
+    }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -66,7 +93,7 @@ class ShowFragment : Fragment() {
     }
 
     private fun updateUi(avaloir: Avaloir) {
-        binding.avaloirTextView.text = getString(
+        binding.coordinatesTextView.text = getString(
             R.string.avaloir_location,
             avaloir.latitude.toString(),
             avaloir.latitude.toString()
@@ -89,5 +116,9 @@ class ShowFragment : Fragment() {
             }
             binding.datesTextView.text = builder.toString()
         }
+    }
+
+    fun handleOnBackPressed() {
+
     }
 }
