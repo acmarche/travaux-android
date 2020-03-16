@@ -1,9 +1,15 @@
 package be.marche.apptravaux.avaloir.search
 
+import android.app.Activity.RESULT_CANCELED
+import android.app.Activity.RESULT_OK
+import android.app.AlertDialog
+import android.content.Intent
 import android.content.IntentSender
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import be.marche.apptravaux.BuildConfig
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.entity.Coordinates
@@ -23,10 +30,9 @@ import com.google.android.gms.tasks.Task
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 
-
 class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener {
 
-    private val REQUEST_CHECK_SETTINGS: Int = 1
+    val REQUEST_CHECK_SETTINGS: Int = 111
     private var _binding: FragmentAvaloirSearchBinding? = null
     private val binding get() = _binding!!
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
@@ -38,6 +44,10 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
     lateinit var locationRequest: LocationRequest
     val requestingLocationUpdates = true
     private lateinit var locationCallback: LocationCallback
+
+    companion object {
+        fun newInstance() = SearchFragment()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,6 +75,8 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
             fastestInterval = 25000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
+
+        showEnableLocationSetting()
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
@@ -157,28 +169,86 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         )
     }
 
-    private fun checkSettings() {
+    private fun showEnableLocationSetting() {
         val builder = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest)
+            .setAlwaysShow(true)
 
         val client: SettingsClient = LocationServices.getSettingsClient(requireActivity())
         val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
+
         task.addOnFailureListener { exception ->
+
             if (exception is ResolvableApiException) {
+                Timber.w("zeze code " + exception.statusCode)
+
+
+                val resolvable = exception as ResolvableApiException
+
                 // Location settings are not satisfied, but this can be fixed
                 // by showing the user a dialog.
                 try {
                     // Show the dialog by calling startResolutionForResult(),
                     // and check the result in onActivityResult().
-                    exception.startResolutionForResult(
+                /*    exception.startResolutionForResult(
                         requireActivity(),
                         REQUEST_CHECK_SETTINGS
+                    )*/
+                    this.startIntentSenderForResult(
+                        resolvable.resolution.intentSender,
+                        REQUEST_CHECK_SETTINGS,
+                        null, 0, 0, 0, null
                     )
+
                 } catch (sendEx: IntentSender.SendIntentException) {
-                    // Ignore the error.
+                    Timber.w("Error getting location settings resolution: " + sendEx.message)
                 }
             }
         }
     }
 
+    private fun openSettings() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri: Uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
+        intent.data = uri
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Timber.w("zeze result fragment" + resultCode)
+        if (requestCode == REQUEST_CHECK_SETTINGS) {
+            if (resultCode == RESULT_OK) {
+                //  showProgressBar()
+                //   locationHandler.getUserLocation()
+            } else if (resultCode == RESULT_CANCELED) {
+                showEnableLocationDialog()
+            }
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        Timber.w("zeze permission")
+    }
+
+    private fun showEnableLocationDialog() {
+        val builder = AlertDialog.Builder(context)
+        builder
+            .setTitle("Ajout d'un commentaire")
+            .setMessage("Pas encore implémenté :-P")
+        builder.setPositiveButton(
+            "OK"
+        ) { dialog, id ->
+
+        }
+        val dialog = builder.create()
+        dialog.show()
+    }
 }

@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -21,7 +23,7 @@ import timber.log.Timber
 
 class HomeFragment : Fragment() {
 
-    private val RECORD_REQUEST_CODE = 1
+    private val LOCATION_REQUEST_CODE = 1
     lateinit var permissionUtil: PermissionUtil
     private val avaloirModel: AvaloirViewModel by viewModel()
     private var _binding: FragmentAvaloirHomeBinding? = null
@@ -39,8 +41,43 @@ class HomeFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        permissionUtil = PermissionUtil(requireContext())
-        setupPermissions()
+        if (ContextCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            Timber.w("zeze no granted")
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    requireActivity(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            ) {
+                Timber.w("zeze show wy")
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+            } else {
+                Timber.w("zeze no explanation")
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
+                    LOCATION_REQUEST_CODE
+                )
+Timber.w("zeze callback")
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            Timber.w("zeze granted")
+            // Permission has already been granted
+        }
+
+        // setupPermissions()
 
         refreshDataBase()
 
@@ -89,7 +126,7 @@ class HomeFragment : Fragment() {
         grantResults: IntArray
     ) {
         when (requestCode) {
-            RECORD_REQUEST_CODE -> {
+            LOCATION_REQUEST_CODE -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Timber.w("zeze grant " + grantResults + " coce " + requestCode)
                     Timber.w("zeze Permission has been denied by user")
@@ -106,12 +143,12 @@ class HomeFragment : Fragment() {
         permissionUtil.requestPermissionsWithExplanation(
             this,
             message,
-            "",
+            "Localiser precis",
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ),
-            RECORD_REQUEST_CODE
+            LOCATION_REQUEST_CODE
         )
     }
 
