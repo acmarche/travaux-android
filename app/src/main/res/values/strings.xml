@@ -28,5 +28,5 @@
     <string name="location_title">Votre location:</string>
     <string name="btn_go_stock">Gestion des stocks</string>
     <string name="btn_go_intervention">Gestion des interventions</string>
-    <string name="go_btn_avaloir">Gestions des avaloirs</string>
+    <string name="btn_go_avaloir">Gestions des avaloirs</string>
 </resources>
