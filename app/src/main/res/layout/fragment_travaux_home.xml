@@ -16,6 +16,7 @@
 
     <Button
         android:id="@+id/btnGoStock"
+        android:enabled="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btn_go_stock"
@@ -26,6 +27,7 @@
 
     <Button
         android:id="@+id/btnGoIntervention"
+        android:enabled="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btn_go_intervention"
