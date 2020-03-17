@@ -18,7 +18,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
-import be.marche.apptravaux.avaloir.entity.Coordinates
 import be.marche.apptravaux.avaloir.list.AvaloirListAdapter
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirSearchBinding
@@ -175,7 +174,6 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         task.addOnFailureListener { exception ->
 
             if (exception is ResolvableApiException) {
-                Timber.w("zeze location ko")
                 // Location settings are not satisfied
                 try {
                     this.startIntentSenderForResult(

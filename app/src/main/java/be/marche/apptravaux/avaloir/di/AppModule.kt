@@ -15,7 +15,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import be.marche.apptravaux.BuildConfig
-import be.marche.apptravaux.camera.CameraViewModel
 import be.marche.apptravaux.permission.PermissionUtil
 
 val appModule = module {
@@ -35,7 +34,6 @@ val appModule = module {
     single { PermissionUtil(get()) }
 
     viewModel { LocationViewModel(get()) }
-    viewModel { CameraViewModel() }
     viewModel { AvaloirViewModel(get(), get(), get()) }
 
 }

@@ -2,16 +2,14 @@ package be.marche.apptravaux.avaloir.home
 
 import android.Manifest
 import android.app.AlertDialog
-import android.content.pm.PackageManager
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Bundle
 import android.provider.Settings
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -21,9 +19,7 @@ import be.marche.apptravaux.api.ConnectivityLiveData
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirHomeBinding
 import be.marche.apptravaux.permission.PermissionUtil
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class HomeFragment : Fragment() {
 
@@ -47,10 +43,7 @@ class HomeFragment : Fragment() {
 
         permissionUtil = PermissionUtil(requireContext())
 
-        if (!permissionUtil.checkSelfPermissions(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            setupPermissions()
-        }
-
+        setupPermissions()
         refreshDataBase()
 
         binding.goBtn.setOnClickListener {
@@ -58,6 +51,57 @@ class HomeFragment : Fragment() {
         }
         binding.btnSearch.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            LOCATION_REQUEST_CODE -> {
+                if (grantResults.size > 0) {
+                    if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                        alertDialog()
+                    }
+                }
+            }
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+    private fun alertDialog() {
+        val builder = AlertDialog.Builder(context)
+        builder
+            .setTitle("Localisation nécessaire")
+            .setMessage("L'application ne peux pas fonctionner sans la location. Merci de l'autoriser dans les paramètres")
+        builder.setPositiveButton("OK") { dialog, id -> startIntentSettings() }
+        builder.create().show()
+    }
+
+    private fun startIntentSettings() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri: Uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
+        intent.data = uri
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+    }
+
+    private fun setupPermissions() {
+        if (!permissionUtil.checkSelfPermissions(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            val message =
+                "La localisation est requise pour gérer les avaloirs."
+            permissionUtil.requestPermissionsWithExplanation(
+                this,
+                "Localiser precis",
+                message,
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ),
+                LOCATION_REQUEST_CODE
+            )
         }
     }
 
@@ -88,54 +132,6 @@ class HomeFragment : Fragment() {
         avaloirModel.getDatesFromServer().observe(viewLifecycleOwner, Observer { dates ->
             avaloirModel.insertDates(dates)
         })
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            LOCATION_REQUEST_CODE -> {
-                if (grantResults.size > 0) {
-                    if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                        alertDialog()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun alertDialog() {
-        val builder = AlertDialog.Builder(context)
-        builder
-            .setTitle("Localisation nécessaire")
-            .setMessage("L'application ne peux pas fonctionner sans la location. Merci de l'autoriser dans les paramètres")
-        builder.setPositiveButton("OK") { dialog, id -> startIntentSettings() }
-        builder.create().show()
-    }
-
-    private fun startIntentSettings() {
-        val intent = Intent()
-        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-        val uri: Uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
-        intent.data = uri
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
-    }
-
-    private fun setupPermissions() {
-        val message =
-            "La localisation est requise pour gérer les avaloirs."
-        permissionUtil.requestPermissionsWithExplanation(
-            this,
-            "Localiser precis",
-            message,
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ),
-            LOCATION_REQUEST_CODE
-        )
     }
 
     override fun onDestroyView() {

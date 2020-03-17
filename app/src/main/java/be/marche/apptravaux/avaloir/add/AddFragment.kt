@@ -23,6 +23,14 @@ import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirAddBinding
 import be.marche.apptravaux.permission.PermissionUtil
 import be.marche.apptravaux.utils.FileHelper
+import android.provider.Settings
+import android.app.AlertDialog
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCapture.OnImageSavedCallback
+import androidx.camera.core.ImageCaptureException
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import be.marche.apptravaux.BuildConfig
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
@@ -30,6 +38,7 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.Executors
 
 class AddFragment : Fragment(), LifecycleOwner {
 
@@ -45,6 +54,7 @@ class AddFragment : Fragment(), LifecycleOwner {
     private val binding get() = _binding!!
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
     private lateinit var avaloir: Avaloir
+    lateinit var imageCapture: ImageCapture
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,7 +67,9 @@ class AddFragment : Fragment(), LifecycleOwner {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        bindCameraUseCases()
+
+
+        setupPermissions()
         checkInternet()
 
         binding.btnCancel.setOnClickListener {
@@ -75,6 +87,14 @@ class AddFragment : Fragment(), LifecycleOwner {
         )
     }
 
+    private fun dispatchTakePictureInten2t() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+            }
+        }
+    }
+
     private fun dispatchTakePictureIntent() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             // Ensure that there's a camera activity to handle the intent
@@ -90,11 +110,11 @@ class AddFragment : Fragment(), LifecycleOwner {
                 // Continue only if the File was successfully created
                 photoFile?.also {
                     val photoURI: Uri = FileProvider.getUriForFile(
-                        requireActivity().applicationContext,
+                        requireActivity(),
                         requireActivity().application.packageName + ".fileprovider",
                         it
                     )
-                Timber.w("zeze img uri " + photoURI)
+                    Timber.w("zeze img uri " + photoURI)
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
                 }
@@ -106,11 +126,27 @@ class AddFragment : Fragment(), LifecycleOwner {
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
-        Timber.w("zeze data" + data)
-            if (data != null) {
+       /*     val executor = Executors.newSingleThreadExecutor()
+
+            imageCapture = ImageCapture.Builder()
+               // .setTargetRotation(view.display.rotation)
+                .build()
+
+             val file = ImageCapture.OutputFileOptions.Builder(File(currentPhotoPath)).build()
+
+             imageCapture.takePicture(file, executor, object: ImageCapture.OnImageSavedCallback {
+                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                     Timber.w("zeze ici")
+                 }
+
+                 override fun onError(exception: ImageCaptureException) {
+                     Timber.w("zeze ici")
+                 }
+
+             })*/
+
                 val imgFile = File(currentPhotoPath);
                 if (imgFile.exists()) {
-
                     val fileHelper = FileHelper()
                     val requestBody = fileHelper.createRequestBody(imgFile)
                     val part = fileHelper.createPart(imgFile, requestBody)
@@ -120,9 +156,10 @@ class AddFragment : Fragment(), LifecycleOwner {
                     findNavController().navigate(R.id.action_addFragment_to_showFragment)
                     Timber.w("zeze ok")
                 }
-            }
+
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -134,18 +171,39 @@ class AddFragment : Fragment(), LifecycleOwner {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        Timber.w("zeze request code " + requestCode)
+        Timber.w("zeze result permission")
         when (requestCode) {
             REQUEST_PERMISSION_CAMERA -> {
-                if (grantResults.size != 2 || grantResults[0] != PackageManager.PERMISSION_GRANTED || grantResults[1] != PackageManager.PERMISSION_GRANTED) {
-                    //cameraViewModel.errorPermissionDenied()
-                    return
+                if (grantResults.size > 0) {
+                    if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+
+                        Timber.w("zeze result alert")
+                        alertDialog()
+                    }
+
+                    Timber.w("zeze result ici")
                 }
-                return bindCameraUseCases()
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
+    }
 
+    private fun alertDialog() {
+        val builder = AlertDialog.Builder(context)
+        builder
+            .setTitle("Appareil photo nécessaire")
+            .setMessage("L'application ne peux pas fonctionner sans l'appareil photo. Merci de l'autoriser dans les paramètres")
+        builder.setPositiveButton("OK") { dialog, id -> startIntentSettings() }
+        builder.create().show()
+    }
+
+    private fun startIntentSettings() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri: Uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
+        intent.data = uri
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
     }
 
     @Throws(IOException::class)
@@ -165,17 +223,23 @@ class AddFragment : Fragment(), LifecycleOwner {
         }
     }
 
-    private fun bindCameraUseCases() {
+    private fun setupPermissions() {
         if (!permissionUtil.checkSelfPermissions(Manifest.permission.CAMERA)) {
+            Timber.w("zeze camera ko")
+            val message =
+                "La caméra est requise pour ajouter un avaloir."
             permissionUtil.requestPermissionsWithExplanation(
                 this,
-                "",
                 "La caméra est nécessaire pour photographier les avaloirs",
-                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                message,
+                arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ),
                 REQUEST_PERMISSION_CAMERA
             )
-            return
         }
+        Timber.w("zeze camera ok")
     }
 
     private fun checkInternet() {
