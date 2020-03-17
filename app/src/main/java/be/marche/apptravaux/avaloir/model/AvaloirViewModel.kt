@@ -21,6 +21,7 @@ class AvaloirViewModel(
     var avaloir: MutableLiveData<Avaloir> = MutableLiveData<Avaloir>()
 
     private val avaloirs = liveData(Dispatchers.IO) {
+        //emit(Result.loading())
         emit(avaloirRepository.getAll())
     }
 

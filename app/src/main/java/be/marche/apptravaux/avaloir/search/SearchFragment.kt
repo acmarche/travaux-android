@@ -151,7 +151,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         showProgressBar()
         currentLocation.let { location ->
             location.apply {
-                avaloirModel.search(this!!.latitude, this.longitude, "5m")
+                avaloirModel.search(this!!.latitude, this.longitude, "25m")
                 avaloirModel.resultSearch.observe(
                     viewLifecycleOwner,
                     Observer { searchResponse ->

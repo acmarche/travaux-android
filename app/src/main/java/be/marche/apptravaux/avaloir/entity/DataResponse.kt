@@ -26,3 +26,9 @@ data class Coordinates
     val latitude: Double,
     val longitude: Double
 )
+ class Result() {
+     fun loading() {
+
+     }
+
+ }

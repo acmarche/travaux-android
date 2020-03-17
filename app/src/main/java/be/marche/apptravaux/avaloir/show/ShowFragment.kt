@@ -40,7 +40,8 @@ class ShowFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
-            findNavController().navigate(R.id.action_showFragment_to_searchFragment)
+            findNavController().popBackStack()
+         //   findNavController().navigate(R.id.action_showFragment_to_searchFragment)
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -66,7 +67,7 @@ class ShowFragment : Fragment() {
             }
 
             binding.btnComment.setOnClickListener {
-               createDialogueBox()
+                createDialogueBox()
             }
         })
     }
