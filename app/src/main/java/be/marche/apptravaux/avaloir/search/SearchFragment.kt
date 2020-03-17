@@ -89,14 +89,13 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
 
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
-                handleLastLocation(location)
                 currentLocation = location
             }
     }
 
     override fun onResume() {
         super.onResume()
-        if (requestingLocationUpdates) startLocationUpdates()
+        if (requestingLocationUpdates) locationUpdateReady()
     }
 
     override fun onPause() {
@@ -122,10 +121,6 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         )
     }
 
-    private fun handleLastLocation(location: Location?) {
-
-    }
-
     private fun updateUi() {
         currentLocation.let { location ->
             location.apply {
@@ -134,6 +129,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
                     location?.latitude.toString(),
                     location?.longitude.toString()
                 )
+                binding.btnAddAvaloir.isEnabled = true
             }
         }
     }
@@ -178,15 +174,13 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
 
         task.addOnSuccessListener {
-            requestingLocationUpdates = true
-            startLocationUpdates()
+            locationUpdateReady()
         }
         task.addOnFailureListener { exception ->
 
             if (exception is ResolvableApiException) {
-
-                // Location settings are not satisfied, but this can be fixed
-                // by showing the user a dialog.
+                Timber.w("zeze location ko")
+                // Location settings are not satisfied
                 try {
                     this.startIntentSenderForResult(
                         exception.resolution.intentSender,
@@ -211,7 +205,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == RESULT_OK) {
-                requestingLocationUpdates = true
+                locationUpdateReady()
             } else if (resultCode == RESULT_CANCELED) {
                 showEnableLocationDialog()
             }
@@ -238,5 +232,10 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
 
     private fun hideProgressBar() {
         binding.progressBar.setVisibility(View.GONE)
+    }
+
+    private fun locationUpdateReady()  {
+        requestingLocationUpdates = true
+        startLocationUpdates()
     }
 }

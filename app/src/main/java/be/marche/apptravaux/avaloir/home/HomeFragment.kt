@@ -67,7 +67,7 @@ class HomeFragment : Fragment() {
                     arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
                     LOCATION_REQUEST_CODE
                 )
-Timber.w("zeze callback")
+                Timber.w("zeze callback")
                 // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                 // app-defined int constant. The callback method gets the
                 // result of the request.
@@ -97,7 +97,7 @@ Timber.w("zeze callback")
                         binding.errorTextView.text = getString(R.string.message_ok_connectivity)
                         binding.errorTextView.visibility = View.INVISIBLE
                         binding.btnSearch.isEnabled = true
-                        //          syncContent()
+                        syncContent()
                     }
                     false -> {
                         binding.errorTextView.visibility = View.VISIBLE
@@ -111,11 +111,9 @@ Timber.w("zeze callback")
 
     private fun syncContent() {
         avaloirModel.getAllAvaloirsFromServer().observe(viewLifecycleOwner, Observer { avaloirs ->
-            Timber.w("zeze sync all avaloirs size: " + avaloirs.size)
             avaloirModel.insertAvaloirs(avaloirs)
         })
         avaloirModel.getDatesFromServer().observe(viewLifecycleOwner, Observer { dates ->
-            Timber.w("zeze sync all dates size: " + dates.size)
             avaloirModel.insertDates(dates)
         })
     }

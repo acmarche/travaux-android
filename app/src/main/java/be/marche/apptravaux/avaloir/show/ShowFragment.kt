@@ -41,7 +41,7 @@ class ShowFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
-            findNavController().navigate(R.id.action_showFragment_to_homeFragment)
+            findNavController().navigate(R.id.action_showFragment_to_searchFragment)
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(

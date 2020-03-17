@@ -64,7 +64,7 @@ class AddFragment : Fragment(), LifecycleOwner {
         checkInternet()
 
         binding.btnCancel.setOnClickListener {
-            findNavController().navigate(R.id.action_addFragment_to_listFragment)
+            findNavController().navigate(R.id.add)
         }
 
         binding.btnAddPhoto.setOnClickListener {
