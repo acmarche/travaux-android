@@ -26,4 +26,7 @@
     <string name="explication_description_photo">Vous devez le prendre en photo, prenez la photo de manière à repérer facilement l\'endroit</string>
     <string name="title_dates_nettoyage">Les dates de nettoyage</string>
     <string name="location_title">Votre location:</string>
+    <string name="btn_go_stock">Gestion des stocks</string>
+    <string name="btn_go_intervention">Gestion des interventions</string>
+    <string name="go_btn_avaloir">Gestions des avaloirs</string>
 </resources>

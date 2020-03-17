@@ -8,15 +8,28 @@
     <Button
         android:id="@+id/btnGoAvaloir"
         android:layout_width="wrap_content"
-        android:text="Gestions des avaloirs" />
+        android:text="@string/go_btn_avaloir"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/btnGoStock"
         android:layout_width="wrap_content"
-        android:text="Gestion des stocks" />
+        android:layout_height="wrap_content"
+        android:text="@string/btn_go_stock"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnGoIntervention"
         android:layout_width="wrap_content"
-        android:text="Gestion des interventions" />
+        android:layout_height="wrap_content"
+        android:text="@string/btn_go_intervention"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+         />
 </androidx.constraintlayout.widget.ConstraintLayout>
