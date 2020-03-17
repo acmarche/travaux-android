@@ -16,6 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import be.marche.apptravaux.BuildConfig
 import be.marche.apptravaux.permission.PermissionUtil
+import be.marche.apptravaux.utils.FileHelper
 
 val appModule = module {
 
@@ -32,6 +33,7 @@ val appModule = module {
     single { get<AppDatabase>().avaloirDao() }
     single { AvaloirRepository(get(), get()) }
     single { PermissionUtil(get()) }
+    single { FileHelper() }
 
     viewModel { LocationViewModel(get()) }
     viewModel { AvaloirViewModel(get(), get(), get()) }

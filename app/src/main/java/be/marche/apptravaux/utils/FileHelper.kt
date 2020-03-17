@@ -28,19 +28,20 @@ class FileHelper {
     fun createPart(file: File, requestBody: RequestBody): MultipartBody.Part {
         return MultipartBody.Part.createFormData("image", file.name, requestBody)
     }
-    /**
-     * Files you save in the directories provided by getExternalFilesDir() or getFilesDir() are deleted when the user uninstalls your app.
-     */
-    fun galleryDir() : File {
-        val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-        return File(storageDir, "StrangerCam")
-    }
 
-    fun createPictureFile(): File {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val filename = "strangerpic_${timeStamp}_"
-        Timber.w("zeze filename, jpg" + galleryDir())
-        return File.createTempFile(filename, ".jpg", galleryDir())
+    @Throws(IOException::class)
+     fun createImageFile(file: File): File {
+        val format = SimpleDateFormat(
+            "yyyy-MM-dd HH:mm:ss",
+            Locale.getDefault()
+        )
+        val storageDir: File =
+            file
+        return File.createTempFile(
+            "JPEG_${format}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        )
     }
 
     fun getJpegFilesFromDir(dir: File) : List<File> {

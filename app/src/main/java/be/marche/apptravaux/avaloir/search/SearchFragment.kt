@@ -115,6 +115,17 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         findNavController().navigate(R.id.action_searchFragment_to_showFragment)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CHECK_SETTINGS) {
+            if (resultCode == RESULT_OK) {
+                locationUpdateReady()
+            } else if (resultCode == RESULT_CANCELED) {
+                showEnableLocationDialog()
+            }
+        }
+    }
+
     private fun startLocationUpdates() {
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
@@ -131,7 +142,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
                     location?.latitude.toString(),
                     location?.longitude.toString()
                 )
-                binding.btnAddAvaloir.isEnabled = true
+                binding.btnAddAvaloir.visibility = View.VISIBLE
             }
         }
     }
@@ -193,17 +204,6 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         val intent = Intent()
         intent.action = Settings.ACTION_LOCATION_SOURCE_SETTINGS
         startActivity(intent)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CHECK_SETTINGS) {
-            if (resultCode == RESULT_OK) {
-                locationUpdateReady()
-            } else if (resultCode == RESULT_CANCELED) {
-                showEnableLocationDialog()
-            }
-        }
     }
 
     private fun showEnableLocationDialog() {
