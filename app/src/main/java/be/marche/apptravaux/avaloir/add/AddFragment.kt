@@ -20,13 +20,11 @@ import be.marche.apptravaux.R
 import be.marche.apptravaux.api.ConnectivityLiveData
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
-import be.marche.apptravaux.camera.CameraViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirAddBinding
 import be.marche.apptravaux.permission.PermissionUtil
 import be.marche.apptravaux.utils.FileHelper
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -42,10 +40,9 @@ class AddFragment : Fragment(), LifecycleOwner {
     private val permissionUtil: PermissionUtil by inject()
     lateinit var currentPhotoPath: String
     private val REQUEST_PERMISSION_CAMERA = 1
-    val REQUEST_IMAGE_CAPTURE = 2
+    private val REQUEST_IMAGE_CAPTURE = 2
     private var _binding: FragmentAvaloirAddBinding? = null
     private val binding get() = _binding!!
-    private val cameraViewModel: CameraViewModel by viewModel()
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
     private lateinit var avaloir: Avaloir
 
@@ -64,7 +61,7 @@ class AddFragment : Fragment(), LifecycleOwner {
         checkInternet()
 
         binding.btnCancel.setOnClickListener {
-            findNavController().navigate(R.id.add)
+            findNavController().navigate(R.id.action_addFragment_to_homeFragment)
         }
 
         binding.btnAddPhoto.setOnClickListener {
@@ -89,6 +86,7 @@ class AddFragment : Fragment(), LifecycleOwner {
                     Timber.w("zeze create fail img " + ex.message)
                     null
                 }
+                Timber.w("zeze img file " + photoFile)
                 // Continue only if the File was successfully created
                 photoFile?.also {
                     val photoURI: Uri = FileProvider.getUriForFile(
@@ -96,6 +94,7 @@ class AddFragment : Fragment(), LifecycleOwner {
                         requireActivity().application.packageName + ".fileprovider",
                         it
                     )
+                Timber.w("zeze img uri " + photoURI)
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
                 }
@@ -104,7 +103,10 @@ class AddFragment : Fragment(), LifecycleOwner {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+
+        Timber.w("zeze data" + data)
             if (data != null) {
                 val imgFile = File(currentPhotoPath);
                 if (imgFile.exists()) {
@@ -112,10 +114,11 @@ class AddFragment : Fragment(), LifecycleOwner {
                     val fileHelper = FileHelper()
                     val requestBody = fileHelper.createRequestBody(imgFile)
                     val part = fileHelper.createPart(imgFile, requestBody)
-
+                    Timber.w("zeze ici")
                     avaloirModel.insertAsync(avaloirModel.coordinates, part, requestBody)
-
+                    Timber.w("zeze la")
                     findNavController().navigate(R.id.action_addFragment_to_showFragment)
+                    Timber.w("zeze ok")
                 }
             }
         }
@@ -135,7 +138,7 @@ class AddFragment : Fragment(), LifecycleOwner {
         when (requestCode) {
             REQUEST_PERMISSION_CAMERA -> {
                 if (grantResults.size != 2 || grantResults[0] != PackageManager.PERMISSION_GRANTED || grantResults[1] != PackageManager.PERMISSION_GRANTED) {
-                    cameraViewModel.errorPermissionDenied()
+                    //cameraViewModel.errorPermissionDenied()
                     return
                 }
                 return bindCameraUseCases()

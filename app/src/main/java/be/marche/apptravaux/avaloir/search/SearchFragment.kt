@@ -60,7 +60,10 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         super.onActivityCreated(savedInstanceState)
 
         binding.btnAddAvaloir.setOnClickListener {
-            registerCoordinates()
+            currentLocation.let {
+                avaloirModel.registerCoordinates(it!!.latitude, it.longitude)
+            }
+
             findNavController().navigate(R.id.action_searchFragment_to_addFragment)
         }
 
@@ -156,13 +159,6 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         adapter = requireContext().let { AvaloirListAdapter(listener) }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
-    }
-
-    private fun registerCoordinates() {
-        avaloirModel.coordinates = Coordinates(
-            currentLocation!!.latitude,
-            currentLocation!!.longitude
-        )
     }
 
     private fun showEnableLocationSetting() {

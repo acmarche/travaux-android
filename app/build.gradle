@@ -96,12 +96,6 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$logging_version"
 
     /**
-     * Outils
-     */
-    implementation "com.squareup.picasso:picasso:$picasso_version"
-    implementation "com.jakewharton.timber:timber:$timber_version"
-
-    /**
      * Play services
      */
     implementation "com.google.android.gms:play-services-location:$service_location"
@@ -119,6 +113,11 @@ dependencies {
     // If you want to use the CameraX Lifecycle library
     implementation "androidx.camera:camera-lifecycle:${camerax_version}"
 
+    /**
+     * Outils
+     */
+    implementation "com.squareup.picasso:picasso:$picasso_version"
+    implementation "com.jakewharton.timber:timber:$timber_version"
     /**
      * Glide
      */

@@ -1,12 +1,10 @@
 package be.marche.apptravaux.avaloir.show
 
 import android.app.AlertDialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -18,6 +16,7 @@ import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirShowBinding
 import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -89,6 +88,7 @@ class ShowFragment : Fragment() {
             avaloir.latitude.toString()
         )
 
+        Timber.w("zeze img url " + avaloir.imageUrl)
         if (avaloir.imageUrl != null) {
             Picasso.get()
                 .load(avaloir.imageUrl)

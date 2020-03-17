@@ -30,6 +30,13 @@ class AvaloirViewModel(
         this.avaloir.value = avaloir
     }
 
+     fun registerCoordinates(latitude: Double, longitude: Double) {
+        this.coordinates = Coordinates(
+            latitude,
+            longitude
+        )
+    }
+
     fun getDatesFromServer(): LiveData<List<DateNettoyage>> = liveData {
         emit(avaloirRepository.getAllDatesFromApi())
     }

@@ -22,20 +22,23 @@ class PermissionUtil(val context: Context) {
     }
 
     fun requestPermissions(fragment: Fragment, permission: String, code: Int) {
-        Timber.w("zeze request")
+        Timber.w("zeze request permission " + permission)
         fragment.requestPermissions(arrayOf(permission), code)
     }
 
     fun requestPermissionsWithExplanation(
         fragment: Fragment,
-        message: String,
         title: String = "Permission required",
+        message: String,
         permissions: Array<String>,
         code: Int
-    ) {
+    ) {Timber.w("zeze permission request ")
         for (permission in permissions) {
-            if (this.checkSelfPermissions(permission) == false) {
+            Timber.w("zeze permission ask " + permission)
+            Timber.w("zeze permission ask " + fragment)
                 if (fragment.shouldShowRequestPermissionRationale(permission)) {
+
+            Timber.w("zeze permission builder " )
                     val builder = AlertDialog.Builder(context)
                     builder.setMessage(message)
                         .setTitle(title)
@@ -47,9 +50,10 @@ class PermissionUtil(val context: Context) {
                     val dialog = builder.create()
                     dialog.show()
                 } else {
+            Timber.w("zeze permission not explication necessary ")
                     this.requestPermissions(fragment, permission, code)
                 }
-            }
+
         }
     }
 
