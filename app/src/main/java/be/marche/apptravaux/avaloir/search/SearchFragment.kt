@@ -151,12 +151,14 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         showProgressBar()
         currentLocation.let { location ->
             location.apply {
-                avaloirModel.search(this!!.latitude, this.longitude, "500km")
+                avaloirModel.search(this!!.latitude, this.longitude, "5m")
                 avaloirModel.resultSearch.observe(
                     viewLifecycleOwner,
                     Observer { searchResponse ->
                         val avaloirs = searchResponse.avaloirs
+                        val count = avaloirs.size
                         avaloirs.let { adapter.setAvaloirs(avaloirs) }
+                        binding.resultSearchTextView.text = resources.getQuantityString(R.plurals.count_avaloir_found, count, count)
                         hideProgressBar()
                     })
             }
