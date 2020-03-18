@@ -92,7 +92,6 @@ class AddFragment : Fragment(), LifecycleOwner {
                     }
 
                 } catch (ex: IOException) {
-                    //Timber.w("zeze create fail img " + ex.message)
                     null
                 }
 

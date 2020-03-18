@@ -196,7 +196,6 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
                     )
 
                 } catch (sendEx: IntentSender.SendIntentException) {
-                    Timber.w("Error getting location settings resolution: " + sendEx.message)
                 }
             }
         }

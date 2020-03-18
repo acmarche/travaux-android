@@ -31,7 +31,6 @@ class GeofenceIntentService : IntentService("TravauxGeofenceIntentService") {
 
     private fun goTos(triggeringGeofences: List<Geofence>) {
         for (triggeringGeofence in triggeringGeofences) {
-            Timber.w("zeze geofence service list: " + triggeringGeofence.requestId)
         }
     }
 

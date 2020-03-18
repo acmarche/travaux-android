@@ -10,10 +10,8 @@ import timber.log.Timber
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Timber.w("zeze broadcast ")
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
         if (geofencingEvent.hasError()) {
-            Timber.w("zeze broad error")
             return
         }
 
@@ -38,15 +36,12 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
             // Send notification and log the transition details.
             sendNotification(geofenceTransitionDetails)
-            Timber.w("zeze" + geofenceTransitionDetails)
         } else {
             // Log the error.
-            Timber.w("zeze " + geofenceTransition)
         }
     }
 
     private fun sendNotification(geofenceTransitionDetails: String) {
-        Timber.w("zeze notification")
     }
 
     private fun getGeofenceTransitionDetails(
@@ -54,7 +49,6 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         geofenceTransition: Int,
         triggeringGeofences: List<Geofence>
     ): String {
-        Timber.i("zeze detail " + geofenceTransition + " list " + triggeringGeofences)
         return "cool"
     }
 

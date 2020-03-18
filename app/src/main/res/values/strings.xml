@@ -11,9 +11,8 @@
     <string name="btn_nettoye">C\'est nettoyé</string>
     <string name="avaloir_location">%1$s,%2$s</string>
      <plurals name="count_avaloir_found">
-         <item quantity="zero">aucun avaloir trouvé</item>
-        <item quantity="one">un avaloir trouvé</item>
-        <item quantity="other">%d avaloirs trouvés</item>
+        <item quantity="one">%d avaloir trouvé dans un rayon de 25m</item>
+        <item quantity="other">%d avaloirs trouvés dans un rayon de 25m</item>
     </plurals>
     <string name="count_avaloir_found">%1$s,%2$s</string>
     <string name="btn_search">Rechercher</string>

@@ -56,7 +56,7 @@
     <fragment
         android:id="@+id/travauxHomeFragment"
         android:name="be.marche.apptravaux.home.TravauxHomeFragment"
-        android:label="TravauxHomeFragment" >
+        android:label="Travaux">
         <action
             android:id="@+id/action_travauxHomeFragment_to_homeFragment"
             app:destination="@id/homeFragment" />

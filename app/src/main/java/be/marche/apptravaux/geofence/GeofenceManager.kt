@@ -38,10 +38,8 @@ class GeofenceManager(context: Context) {
     fun createGeoFence() {
         val task = geofencingClient.addGeofences(geoFencingRequest(), geofencePendingIntent)
         task.addOnSuccessListener {
-            Timber.w("zeze createGeoFence succes")
         }
         task.addOnFailureListener {
-            Timber.w("zeze pending error: " + it.message)
         }
     }
 
@@ -59,10 +57,8 @@ class GeofenceManager(context: Context) {
 
     private fun geoFencingRequest(): GeofencingRequest? {
 
-        Timber.w("zeze geofence list size: " + geofenceList.size)
 
         if (geofenceList.size < 1) {
-            Timber.w("zeze pas ici")
             return null
         }
 
