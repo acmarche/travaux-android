@@ -22,14 +22,6 @@ class RedirectActivity : AppCompatActivity() {
                     Toast.makeText(this, "Clicked menu item 1", Toast.LENGTH_SHORT).show()
                     true
                 }
-                R.id.item2 -> {
-                    Toast.makeText(this, "Clicked menu item 2", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                R.id.item3 -> {
-                    Toast.makeText(this, "Clicked menu item 3", Toast.LENGTH_SHORT).show()
-                    true
-                }
                 else -> false
             }
         }
