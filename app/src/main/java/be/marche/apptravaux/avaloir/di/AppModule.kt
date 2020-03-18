@@ -1,11 +1,14 @@
 package be.marche.apptravaux.avaloir.di
 
+import be.marche.apptravaux.BuildConfig
 import be.marche.apptravaux.api.TravauxService
 import be.marche.apptravaux.avaloir.database.AppDatabase
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.avaloir.repository.AvaloirRepository
 import be.marche.apptravaux.geofence.GeofenceManager
 import be.marche.apptravaux.location.LocationViewModel
+import be.marche.apptravaux.permission.PermissionUtil
+import be.marche.apptravaux.utils.FileHelper
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
@@ -14,9 +17,6 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import be.marche.apptravaux.BuildConfig
-import be.marche.apptravaux.permission.PermissionUtil
-import be.marche.apptravaux.utils.FileHelper
 
 val appModule = module {
 

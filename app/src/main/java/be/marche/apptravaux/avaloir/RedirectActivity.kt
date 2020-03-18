@@ -1,35 +1,42 @@
 package be.marche.apptravaux.avaloir
 
-import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import be.marche.apptravaux.R
-import be.marche.apptravaux.avaloir.model.AvaloirViewModel
-import be.marche.apptravaux.avaloir.show.ShowFragment
-import be.marche.apptravaux.databinding.ActivityMainBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
+import be.marche.apptravaux.databinding.RedirectActivityBinding
 
 class RedirectActivity : AppCompatActivity() {
 
-    private val avaloirModel: AvaloirViewModel by viewModel()
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: RedirectActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = RedirectActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val avaloirId = intent.getStringExtra("id")
-        if (avaloirId != null && avaloirId.isNotEmpty()) {
-            avaloirModel.getAvaloirById(avaloirId.toInt())
-            intent = Intent(this, ShowFragment::class.java)
-            startActivity(intent)
-            //findNavController(R.id.nav_host_fragment).navigate(R.id.action_homeFragment_to_addFragment)
+        binding.bottomAppBar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.item1 -> {
+                    Toast.makeText(this, "Clicked menu item 1", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.item2 -> {
+                    Toast.makeText(this, "Clicked menu item 2", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.item3 -> {
+                    Toast.makeText(this, "Clicked menu item 3", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
+            }
         }
-
+        binding.bottomAppBar.setNavigationOnClickListener {
+            Toast.makeText(this, "Clicked navigation item", Toast.LENGTH_SHORT).show()
+        }
     }
+
+
 }

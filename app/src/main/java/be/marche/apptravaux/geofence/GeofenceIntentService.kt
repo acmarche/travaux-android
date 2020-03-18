@@ -5,7 +5,6 @@ import android.content.Intent
 import be.marche.apptravaux.avaloir.RedirectActivity
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
-import timber.log.Timber
 
 class GeofenceIntentService : IntentService("TravauxGeofenceIntentService") {
 

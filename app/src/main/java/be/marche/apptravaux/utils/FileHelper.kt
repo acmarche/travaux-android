@@ -1,10 +1,9 @@
 package be.marche.apptravaux.utils
 
+import android.os.Environment
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import timber.log.Timber
-import android.os.Environment
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat

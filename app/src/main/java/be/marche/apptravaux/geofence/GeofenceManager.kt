@@ -3,11 +3,9 @@ package be.marche.apptravaux.geofence
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import be.marche.apptravaux.avaloir.RedirectActivity
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
-import timber.log.Timber
 
 class GeofenceManager(context: Context) {
     //on recurpe TravauxApp

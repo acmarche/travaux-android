@@ -25,7 +25,6 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
 
 class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener {
 
@@ -57,6 +56,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+    setHasOptionsMenu(true)
 
         binding.btnAddAvaloir.setOnClickListener {
             currentLocation.let {

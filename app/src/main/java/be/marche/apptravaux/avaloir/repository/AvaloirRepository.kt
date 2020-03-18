@@ -5,11 +5,7 @@ import be.marche.apptravaux.api.TravauxService
 import be.marche.apptravaux.avaloir.database.AvaloirDao
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.entity.DateNettoyage
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
-import timber.log.Timber
 
 class AvaloirRepository(
     private val avaloirDao: AvaloirDao,

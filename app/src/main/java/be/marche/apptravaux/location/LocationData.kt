@@ -1,7 +1,6 @@
 package be.marche.apptravaux.location
 
 import android.location.Location
-import java.lang.Exception
 
 data class LocationData(
     val location: Location? = null,

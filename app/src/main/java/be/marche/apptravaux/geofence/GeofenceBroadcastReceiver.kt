@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
-import timber.log.Timber
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
