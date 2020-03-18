@@ -54,9 +54,13 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-    setHasOptionsMenu(true)
 
         binding.btnAddAvaloir.setOnClickListener {
             currentLocation.let {
@@ -158,7 +162,8 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
                         val avaloirs = searchResponse.avaloirs
                         val count = avaloirs.size
                         avaloirs.let { adapter.setAvaloirs(avaloirs) }
-                        binding.resultSearchTextView.text = resources.getQuantityString(R.plurals.count_avaloir_found, count, count)
+                        binding.resultSearchTextView.text =
+                            resources.getQuantityString(R.plurals.count_avaloir_found, count, count)
                         hideProgressBar()
                     })
             }
@@ -229,7 +234,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         binding.progressBar.setVisibility(View.GONE)
     }
 
-    private fun locationUpdateReady()  {
+    private fun locationUpdateReady() {
         requestingLocationUpdates = true
         startLocationUpdates()
     }

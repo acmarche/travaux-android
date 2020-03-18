@@ -36,11 +36,11 @@
                 android:text="@string/location_title" />
 
             <TextView
-                android:id="@+id/locationTextView"
+                android:id="@+id/resultSearchTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                tools:text="50.23569, 5.2365" />
+                tools:text="2 avaloirs trouvés" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -50,11 +50,11 @@
                 android:layout_marginTop="16dp" />
 
             <TextView
-                android:id="@+id/resultSearchTextView"
+                android:id="@+id/locationTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                tools:text="4 avaloirs trouvés" />
+                android:layout_marginTop="8dp"
+                tools:text="50.23569, 5.2365" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewAvaloirs"
@@ -87,13 +87,7 @@
         android:id="@+id/btnAddAvaloir"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:clickable="false"
-        android:focusable="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:layout_anchor="@id/bottomAppBar"
+        app:srcCompat="@drawable/ic_action_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
