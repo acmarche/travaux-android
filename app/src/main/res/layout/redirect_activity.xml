@@ -18,15 +18,7 @@
             android:paddingBottom="100dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:clipToPadding="false">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/fabAlignmentModeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Toggle FAB alignment mode" />
-
-        </LinearLayout>
+            android:clipToPadding="false"/>
 
     </androidx.core.widget.NestedScrollView>
 
@@ -37,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        app:fabAlignmentMode="center"
         app:navigationIcon="@drawable/ic_action_home_blank"
         app:navigationContentDescription="Navigation icon"
         app:hideOnScroll="true" />
