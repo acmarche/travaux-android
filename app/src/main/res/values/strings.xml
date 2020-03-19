@@ -9,8 +9,9 @@
     <string name="btn_add_avaloir">Ajouter un avaloir</string>
     <string name="btn_add_photo">Prendre une photo</string>
     <string name="btn_nettoye">C\'est nettoyé</string>
+    <string name="avaloir_location_title">Votre géolocalisation: %1$s,%2$s</string>
     <string name="avaloir_location">%1$s,%2$s</string>
-     <plurals name="count_avaloir_found">
+    <plurals name="count_avaloir_found">
         <item quantity="one">%d avaloir trouvé dans un rayon de 25m</item>
         <item quantity="other">%d avaloirs trouvés dans un rayon de 25m</item>
     </plurals>
@@ -23,7 +24,6 @@
     <string name="description_add_avaloir">Vous allez ajouter un avaloir localisé en %1$s , %2$s</string>
     <string name="explication_description_photo">Vous devez le prendre en photo, prenez la photo de manière à repérer facilement l\'endroit</string>
     <string name="title_dates_nettoyage">Les dates de nettoyage</string>
-    <string name="location_title">Votre géolocalisation:</string>
     <string name="btn_go_stock">Gestion des stocks</string>
     <string name="btn_go_intervention">Gestion des interventions</string>
     <string name="btn_go_avaloir">Gestions des avaloirs</string>

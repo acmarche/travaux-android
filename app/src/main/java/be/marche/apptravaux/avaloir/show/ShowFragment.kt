@@ -83,7 +83,7 @@ class ShowFragment : Fragment() {
 
     private fun updateUi(avaloir: Avaloir) {
         binding.coordinatesTextView.text = getString(
-            R.string.avaloir_location,
+            R.string.avaloir_location_title,
             avaloir.latitude.toString(),
             avaloir.latitude.toString()
         )
