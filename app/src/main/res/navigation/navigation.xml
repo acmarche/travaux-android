@@ -28,22 +28,22 @@
         android:name="be.marche.apptravaux.avaloir.show.ShowFragment"
         android:label="Détails de l'avaloir">
         <action
-            android:id="@+id/action_showFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
+            android:id="@+id/action_showFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="be.marche.apptravaux.avaloir.search.SearchFragment"
         android:label="Rechercher" >
         <action
-            android:id="@+id/action_searchFragment_to_showFragment"
-            app:destination="@id/showFragment" />
-        <action
             android:id="@+id/action_searchFragment_to_addFragment"
             app:destination="@id/addFragment" />
         <action
             android:id="@+id/action_searchFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_showFragment"
+            app:destination="@id/showFragment" />
     </fragment>
     <fragment
         android:id="@+id/addFragment"

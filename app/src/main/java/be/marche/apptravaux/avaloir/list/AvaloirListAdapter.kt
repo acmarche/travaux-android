@@ -9,6 +9,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
+import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 
 class AvaloirListAdapter internal constructor(
@@ -47,10 +48,14 @@ class AvaloirListAdapter internal constructor(
             )
             avaloirRue.text = avaloir.rue
             if (avaloir.imageUrl != null) {
-                Picasso.get()
-                    .load(avaloir.imageUrl)
-                    .placeholder(R.drawable.ic_photo_library)
-                    .into(avaloirPhoto)
+                if (avaloir.imageUrl!!.matches(Regex("#http#"))) {
+                    Picasso.get()
+                        .load(avaloir.imageUrl)
+                        .placeholder(R.drawable.ic_photo_library)
+                        .fit()
+                        .memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .into(avaloirPhoto)
+                }
             }
         }
     }
