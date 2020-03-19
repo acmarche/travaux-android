@@ -1,7 +1,7 @@
 package be.marche.apptravaux.avaloir.repository
 
 import androidx.lifecycle.LiveData
-import be.marche.apptravaux.api.TravauxService
+import be.marche.apptravaux.avaloir.api.AvaloirService
 import be.marche.apptravaux.avaloir.database.AvaloirDao
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.entity.DateNettoyage
@@ -9,11 +9,11 @@ import org.koin.core.KoinComponent
 
 class AvaloirRepository(
     private val avaloirDao: AvaloirDao,
-    private val travauxService: TravauxService
+    private val avaloirService: AvaloirService
 ) : KoinComponent {
 
-    suspend fun getAllAvaloirsFromApi() = travauxService.getAllAvaloirs()
-    suspend fun getAllDatesFromApi() = travauxService.getAllDates()
+    suspend fun getAllAvaloirsFromApi() = avaloirService.getAllAvaloirs()
+    suspend fun getAllDatesFromApi() = avaloirService.getAllDates()
 
     fun getAll(): List<Avaloir> {
         return avaloirDao.getAll()

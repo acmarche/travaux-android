@@ -18,7 +18,7 @@ class RedirectActivity : AppCompatActivity() {
 
         binding.bottomAppBar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.item1 -> {
+                R.id.bottomAppBar -> {
                     Toast.makeText(this, "Clicked menu item 1", Toast.LENGTH_SHORT).show()
                     true
                 }

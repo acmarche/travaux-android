@@ -113,7 +113,7 @@ class HomeFragment : Fragment() {
                         binding.errorTextView.text = getString(R.string.message_ok_connectivity)
                         binding.errorTextView.visibility = View.INVISIBLE
                         binding.btnSearch.isEnabled = true
-                              syncContent()
+                        syncContent()
                     }
                     false -> {
                         binding.errorTextView.visibility = View.VISIBLE

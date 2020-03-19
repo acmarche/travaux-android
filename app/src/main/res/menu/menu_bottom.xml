@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/item1"
+        android:id="@+id/btnSearch"
         android:icon="@drawable/ic_action_search_blank"
-        android:title="Item 1"
+        android:title="@string/btn_search"
         app:showAsAction="always" />
 
 </menu>

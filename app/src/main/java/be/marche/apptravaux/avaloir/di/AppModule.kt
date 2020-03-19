@@ -1,7 +1,7 @@
 package be.marche.apptravaux.avaloir.di
 
 import be.marche.apptravaux.BuildConfig
-import be.marche.apptravaux.api.TravauxService
+import be.marche.apptravaux.avaloir.api.AvaloirService
 import be.marche.apptravaux.avaloir.database.AppDatabase
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.avaloir.repository.AvaloirRepository
@@ -22,7 +22,7 @@ val appModule = module {
 
     single { createOkHttpClient<OkHttpClient>() }
     single {
-        createWebService<TravauxService>(
+        createWebService<AvaloirService>(
             get(),
             BuildConfig.API_URL
         )

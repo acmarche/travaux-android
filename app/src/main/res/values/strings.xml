@@ -15,7 +15,6 @@
         <item quantity="other">%d avaloirs trouvés dans un rayon de 25m</item>
     </plurals>
     <string name="count_avaloir_found">%1$s,%2$s</string>
-    <string name="btn_search">Rechercher</string>
     <string name="title_search">Sélectionnez un avaloir ou ajoutez un autre</string>
     <string name="home_message">Appuyer sur rechercher pour travailler sur un avaloir</string>
     <string name="btn_list">Liste des avaloirs</string>
@@ -28,4 +27,5 @@
     <string name="btn_go_stock">Gestion des stocks</string>
     <string name="btn_go_intervention">Gestion des interventions</string>
     <string name="btn_go_avaloir">Gestions des avaloirs</string>
+    <string name="btn_search">Rechercher</string>
 </resources>
