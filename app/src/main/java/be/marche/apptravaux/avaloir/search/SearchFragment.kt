@@ -94,36 +94,6 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
             }
     }
 
-    private fun setupButtons() {
-
-        binding.btnAddAvaloir.setOnClickListener {
-            currentLocation.let {
-                avaloirModel.registerCoordinates(it!!.latitude, it.longitude)
-            }
-
-            findNavController().navigate(R.id.action_searchFragment_to_addFragment)
-        }
-
-        binding.bottomAppBar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.btnSearch -> {
-                    makeSearch()
-                    true
-                }
-                R.id.bottomAppBar -> {
-                    Toast.makeText(requireContext(), "Clicked navigation item", Toast.LENGTH_SHORT)
-                        .show()
-                    //findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
-                    true
-                }
-                else -> false
-            }
-        }
-        binding.bottomAppBar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         if (requestingLocationUpdates) locationUpdateReady()
@@ -152,6 +122,36 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
             } else if (resultCode == RESULT_CANCELED) {
                 showEnableLocationDialog()
             }
+        }
+    }
+
+    private fun setupButtons() {
+
+        binding.btnAddAvaloir.setOnClickListener {
+            currentLocation.let {
+                avaloirModel.registerCoordinates(it!!.latitude, it.longitude)
+            }
+
+            findNavController().navigate(R.id.action_searchFragment_to_addFragment)
+        }
+
+        binding.bottomAppBar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.btnSearch -> {
+                    makeSearch()
+                    true
+                }
+                R.id.bottomAppBar -> {
+                    Toast.makeText(requireContext(), "Clicked navigation item", Toast.LENGTH_SHORT)
+                        .show()
+                    //findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
+                    true
+                }
+                else -> false
+            }
+        }
+        binding.bottomAppBar.setNavigationOnClickListener {
+            findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
         }
     }
 
