@@ -1,7 +1,6 @@
 package be.marche.apptravaux.avaloir.database
 
 import androidx.room.TypeConverter
-import timber.log.Timber
 import java.util.*
 
 class Converters {

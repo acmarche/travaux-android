@@ -15,9 +15,9 @@ import be.marche.apptravaux.avaloir.entity.DateNettoyage
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirShowBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -93,6 +93,8 @@ class ShowFragment : Fragment() {
             Picasso.get()
                 .load(avaloir.imageUrl)
                 .placeholder(R.drawable.ic_photo_library)
+                .fit()
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
                 .into(binding.avalorImageView)
         }
     }

@@ -8,13 +8,21 @@
 
 
     <TextView
-        android:id="@+id/AddDescriptionTextView"
+        android:id="@+id/localisationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/description_add_avaloir"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleLocalisation"
+        tools:text="50.2356, 5.23654" />
+
+    <TextView
+        android:id="@+id/titleLocalisation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_localisation"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,7 +32,7 @@
         android:layout_height="2dp"
         android:layout_marginTop="16dp"
         android:background="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toBottomOf="@+id/AddDescriptionTextView" />
+        app:layout_constraintBottom_toBottomOf="@+id/titleLocalisation" />
 
     <TextView
         android:id="@+id/explicationPhotoTtextView"
@@ -38,7 +46,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AddDescriptionTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/dividerView"
+        app:layout_constraintVertical_bias="0.75" />
 
     <Button
         android:id="@+id/btnAddPhoto"

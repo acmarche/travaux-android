@@ -70,8 +70,8 @@ class AddFragment : Fragment(), LifecycleOwner {
             dispatchTakePictureIntent()
         }
 
-        binding.AddDescriptionTextView.text = requireContext().getString(
-            R.string.description_add_avaloir,
+        binding.localisationTextView.text = requireContext().getString(
+            R.string.avaloir_location,
             avaloirModel.coordinates.latitude.toString(),
             avaloirModel.coordinates.longitude.toString()
         )
