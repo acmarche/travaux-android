@@ -2,7 +2,7 @@ package be.marche.apptravaux.avaloir.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
+import java.util.Date
 
 @Entity
 data class DateNettoyage(

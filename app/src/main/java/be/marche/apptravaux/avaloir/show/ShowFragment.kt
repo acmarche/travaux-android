@@ -17,6 +17,7 @@ import be.marche.apptravaux.databinding.FragmentAvaloirShowBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -98,9 +99,10 @@ class ShowFragment : Fragment() {
 
     private fun updateUiDates(dates: List<DateNettoyage>?) {
         val builder = StringBuilder()
+        val format = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
         if (dates != null) {
             for (date in dates) {
-                builder.append(date.date)
+                builder.append(format.format(date.date))
                 builder.append(System.getProperty("line.separator"));
             }
             binding.datesTextView.text = builder.toString()

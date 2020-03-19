@@ -167,7 +167,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         currentLocation.let { location ->
             location.apply {
                 binding.locationTextView.text = requireContext().getString(
-                    R.string.avaloir_location_title,
+                    R.string.avaloir_location_user,
                     location?.latitude.toString(),
                     location?.longitude.toString()
                 )
