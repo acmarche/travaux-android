@@ -18,15 +18,15 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnGoStock"
-        android:enabled="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:text="@string/btn_go_stock"
-        app:layout_constraintTop_toBottomOf="@+id/btnGoAvaloir"
         app:layout_constraintBottom_toTopOf="@+id/btnGoIntervention"
-        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btnGoAvaloir"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnGoIntervention"
