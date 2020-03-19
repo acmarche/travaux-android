@@ -14,6 +14,7 @@ import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.entity.DateNettoyage
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirShowBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.text.SimpleDateFormat
@@ -107,16 +108,15 @@ class ShowFragment : Fragment() {
     }
 
     private fun createDialogueBox() {
-        val builder = AlertDialog.Builder(context)
-        builder
+        val dialog = MaterialAlertDialogBuilder(context)
             .setTitle("Ajout d'un commentaire")
             .setMessage("Pas encore implémenté :-P")
-        builder.setPositiveButton(
-            "OK"
-        ) { dialog, id ->
+            .setPositiveButton(
+                "OK"
+            ) { dialog, id ->
+                null
+            }
 
-        }
-        val dialog = builder.create()
         dialog.show()
     }
 }

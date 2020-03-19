@@ -19,6 +19,7 @@ import be.marche.apptravaux.api.ConnectivityLiveData
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirHomeBinding
 import be.marche.apptravaux.permission.PermissionUtil
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
@@ -72,12 +73,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun alertDialog() {
-        val builder = AlertDialog.Builder(context)
-        builder
+        val dialog = MaterialAlertDialogBuilder(context)
             .setTitle("Localisation nécessaire")
             .setMessage("L'application ne peux pas fonctionner sans la location. Merci de l'autoriser dans les paramètres")
-        builder.setPositiveButton("OK") { dialog, id -> startIntentSettings() }
-        builder.create().show()
+            .setPositiveButton("OK") { dialog, id -> startIntentSettings() }
+        dialog.show()
     }
 
     private fun startIntentSettings() {

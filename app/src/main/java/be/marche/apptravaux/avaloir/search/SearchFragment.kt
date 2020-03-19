@@ -25,6 +25,7 @@ import be.marche.apptravaux.databinding.FragmentAvaloirSearchBinding
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener {
@@ -63,32 +64,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        binding.btnAddAvaloir.setOnClickListener {
-            currentLocation.let {
-                avaloirModel.registerCoordinates(it!!.latitude, it.longitude)
-            }
-
-            findNavController().navigate(R.id.action_searchFragment_to_addFragment)
-        }
-
-        binding.bottomAppBar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.btnSearch -> {
-                    makeSearch()
-                    true
-                }
-                R.id.bottomAppBar -> {
-                    Toast.makeText(requireContext(), "Clicked navigation item", Toast.LENGTH_SHORT).show()
-                    //findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
-                    true
-                }
-                else -> false
-            }
-        }
-        binding.bottomAppBar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
-        }
-
+        setupButtons()
         initRecycler()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -116,6 +92,36 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
             .addOnSuccessListener { location: Location? ->
                 currentLocation = location
             }
+    }
+
+    private fun setupButtons() {
+
+        binding.btnAddAvaloir.setOnClickListener {
+            currentLocation.let {
+                avaloirModel.registerCoordinates(it!!.latitude, it.longitude)
+            }
+
+            findNavController().navigate(R.id.action_searchFragment_to_addFragment)
+        }
+
+        binding.bottomAppBar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.btnSearch -> {
+                    makeSearch()
+                    true
+                }
+                R.id.bottomAppBar -> {
+                    Toast.makeText(requireContext(), "Clicked navigation item", Toast.LENGTH_SHORT)
+                        .show()
+                    //findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
+                    true
+                }
+                else -> false
+            }
+        }
+        binding.bottomAppBar.setNavigationOnClickListener {
+            findNavController().navigate(R.id.action_searchFragment_to_homeFragment)
+        }
     }
 
     override fun onResume() {
@@ -232,16 +238,12 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
     }
 
     private fun showEnableLocationDialog() {
-        val builder = AlertDialog.Builder(context)
-        builder
+        val dialog = MaterialAlertDialogBuilder(context)
             .setTitle("La localistation est obligatoire")
             .setMessage("Sans la localisation la recherche d'avaloirs n'est pas possible")
-        builder.setPositiveButton(
-            "OK"
-        ) { dialog, id ->
-            openSettings()
-        }
-        val dialog = builder.create()
+            .setPositiveButton("OK") { dialog, id ->
+                openSettings()
+            }
         dialog.show()
     }
 
