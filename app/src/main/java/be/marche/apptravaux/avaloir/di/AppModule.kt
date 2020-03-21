@@ -1,6 +1,7 @@
 package be.marche.apptravaux.avaloir.di
 
 import be.marche.apptravaux.BuildConfig
+import be.marche.apptravaux.avaloir.api.AvaloirInterceptor
 import be.marche.apptravaux.avaloir.api.AvaloirService
 import be.marche.apptravaux.avaloir.database.AppDatabase
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
@@ -9,6 +10,7 @@ import be.marche.apptravaux.geofence.GeofenceManager
 import be.marche.apptravaux.location.LocationViewModel
 import be.marche.apptravaux.permission.PermissionUtil
 import be.marche.apptravaux.utils.FileHelper
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
@@ -34,6 +36,7 @@ val appModule = module {
     single { AvaloirRepository(get(), get()) }
     single { PermissionUtil(get()) }
     single { FileHelper() }
+    single { AvaloirInterceptor(get()) }
 
     viewModel { LocationViewModel(get()) }
     viewModel { AvaloirViewModel(get(), get(), get()) }
@@ -48,9 +51,11 @@ inline fun <reified T> createOkHttpClient(): OkHttpClient {
             level =
                 if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
         })
+        .addInterceptor(AvaloirInterceptor())
         //  .addInterceptor(BasicAuthInterceptor("**", "**"))
         .build()
 }
+
 
 inline fun <reified T> createWebService(okHttpClient: OkHttpClient, url: String): T {
     val retrofit = Retrofit.Builder()
