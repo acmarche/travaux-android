@@ -56,7 +56,6 @@ inline fun <reified T> createOkHttpClient(): OkHttpClient {
         .build()
 }
 
-
 inline fun <reified T> createWebService(okHttpClient: OkHttpClient, url: String): T {
     val retrofit = Retrofit.Builder()
         .baseUrl(url)

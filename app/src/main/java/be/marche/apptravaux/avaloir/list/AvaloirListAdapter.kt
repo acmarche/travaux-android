@@ -11,6 +11,7 @@ import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
+import timber.log.Timber
 
 class AvaloirListAdapter internal constructor(
 
@@ -48,14 +49,12 @@ class AvaloirListAdapter internal constructor(
             )
             avaloirRue.text = avaloir.rue
             if (avaloir.imageUrl != null) {
-                if (avaloir.imageUrl!!.matches(Regex("#http#"))) {
-                    Picasso.get()
-                        .load(avaloir.imageUrl)
-                        .placeholder(R.drawable.ic_photo_library)
-                        .fit()
-                        .memoryPolicy(MemoryPolicy.NO_CACHE)
-                        .into(avaloirPhoto)
-                }
+                Picasso.get()
+                    .load(avaloir.imageUrl)
+                    .placeholder(R.drawable.ic_photo_library)
+                    .fit()
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .into(avaloirPhoto)
             }
         }
     }

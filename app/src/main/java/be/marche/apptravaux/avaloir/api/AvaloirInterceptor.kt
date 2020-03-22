@@ -22,6 +22,8 @@ class AvaloirInterceptor() : Interceptor {
         if (response.code() == 500) {
             Timber.w("zeze error 500" + response)
 
+            request.newBuilder()
+            return chain.proceed(request)
 
             //Toast.makeText(this.context, "Coucou", Toast.LENGTH_LONG).show()
 

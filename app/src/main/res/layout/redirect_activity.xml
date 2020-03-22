@@ -72,7 +72,7 @@
         android:layout_gravity="bottom"
         app:fabAlignmentMode="center"
         app:hideOnScroll="true"
-        app:menu="@menu/menu_bottom"
+        app:menu="@menu/menu_search_bottom"
         app:navigationContentDescription="Navigation icon"
         app:navigationIcon="@drawable/ic_action_home_blank" />
 

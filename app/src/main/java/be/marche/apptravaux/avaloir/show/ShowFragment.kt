@@ -1,6 +1,5 @@
 package be.marche.apptravaux.avaloir.show
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +17,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,6 +40,8 @@ class ShowFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+
         val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigate(R.id.action_showFragment_to_homeFragment)
         }
@@ -55,21 +57,34 @@ class ShowFragment : Fragment() {
 
         avaloirModel.avaloir.observe(viewLifecycleOwner, Observer { avaloir ->
 
+            setupButtons(avaloir)
             updateUi(avaloir)
 
             avaloirModel.getDatesByAvaloirId(avaloir.idReferent)
                 .observe(viewLifecycleOwner, Observer { dates ->
                     updateUiDates(dates)
                 })
-
-            binding.btnClean.setOnClickListener {
-                updateClean(avaloir)
-            }
-
-            binding.btnComment.setOnClickListener {
-                createDialogueBox()
-            }
         })
+    }
+
+    private fun setupButtons(avaloir: Avaloir) {
+        binding.btnAddClean.setOnClickListener {
+            updateClean(avaloir)
+        }
+
+        binding.bottomAppBar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.btnComment -> {
+                    createDialogueBox()
+                    true
+                }
+                else -> false
+            }
+        }
+        binding.bottomAppBar.setNavigationOnClickListener {
+            findNavController().navigate(R.id.action_showFragment_to_homeFragment)
+        }
+
     }
 
     override fun onDestroyView() {
@@ -90,6 +105,7 @@ class ShowFragment : Fragment() {
         )
 
         if (avaloir.imageUrl != null) {
+            Timber.w("zeze load image " + avaloir.imageUrl)
             Picasso.get()
                 .load(avaloir.imageUrl)
                 .placeholder(R.drawable.ic_photo_library)
@@ -118,7 +134,7 @@ class ShowFragment : Fragment() {
             .setPositiveButton(
                 "OK"
             ) { dialog, id ->
-                null
+
             }
 
         dialog.show()

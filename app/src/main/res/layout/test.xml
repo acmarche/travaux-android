@@ -12,7 +12,7 @@
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottomAppBar"
-            app:menu="@menu/menu_bottom"
+            app:menu="@menu/menu_search_bottom"
             style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
