@@ -91,7 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:menu="@menu/menu_show_bottom"
-        app:navigationIcon="@drawable/ic_action_home_blank"  />
+        app:navigationIcon="@drawable/ic_action_home_blank" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

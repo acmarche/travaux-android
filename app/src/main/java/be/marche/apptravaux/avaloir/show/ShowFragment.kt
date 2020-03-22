@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -98,6 +99,11 @@ class ShowFragment : Fragment() {
     }
 
     private fun updateUi(avaloir: Avaloir) {
+        (activity as AppCompatActivity).supportActionBar?.title = getString(
+            R.string.avaloit_title_show,
+            avaloir.idReferent.toString()
+        )
+
         binding.coordinatesTextView.text = getString(
             R.string.avaloir_location_title,
             avaloir.latitude.toString(),
@@ -105,7 +111,6 @@ class ShowFragment : Fragment() {
         )
 
         if (avaloir.imageUrl != null) {
-            Timber.w("zeze load image " + avaloir.imageUrl)
             Picasso.get()
                 .load(avaloir.imageUrl)
                 .placeholder(R.drawable.ic_photo_library)
