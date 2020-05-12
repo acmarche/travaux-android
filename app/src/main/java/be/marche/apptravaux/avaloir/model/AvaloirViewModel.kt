@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
+//https://github.com/LukasLechnerDev/Kotlin-Coroutine-Use-Cases-on-Android/tree/master/app/src/main/java/com/lukaslechner/coroutineusecasesonandroid/usecases/coroutines/usecase1
 class AvaloirViewModel(
     application: Application,
     private val avaloirRepository: AvaloirRepository,
@@ -20,10 +21,15 @@ class AvaloirViewModel(
     lateinit var coordinates: Coordinates
     var avaloir: MutableLiveData<Avaloir> = MutableLiveData<Avaloir>()
 
-    private val avaloirs = liveData(Dispatchers.IO) {
-        //emit(Result.loading())
-        emit(avaloirRepository.getAll())
-    }
+    fun getAll(): LiveData<List<Avaloir>> =
+        liveData(Dispatchers.IO) {
+            emit(avaloirRepository.getAll())
+        }
+
+    fun getDatesByAvaloirId(avaloirId: Int): LiveData<List<DateNettoyage>> =
+        liveData(Dispatchers.IO) {
+            emit(avaloirRepository.getDatesByAvaloirId(avaloirId))
+        }
 
     var resultSearch = MutableLiveData<SearchResponse>()
 
@@ -46,16 +52,9 @@ class AvaloirViewModel(
         emit(avaloirRepository.getAllAvaloirsFromApi())
     }
 
-    fun getAll(): LiveData<List<Avaloir>> {
-        return avaloirs
-    }
 
-    fun getAvaloirById(avaloirId: Int): LiveData<Avaloir> {
-        return avaloirRepository.getById(avaloirId)
-    }
-
-    fun getDatesByAvaloirId(avaloirId: Int): LiveData<List<DateNettoyage>> {
-        return avaloirRepository.getDatesByAvaloirId(avaloirId)
+    fun getAvaloirById(avaloirId: Int): LiveData<Avaloir> = liveData {
+        emit(avaloirRepository.getById(avaloirId))
     }
 
     fun insertAvaloir(avaloir: Avaloir) {
@@ -107,6 +106,21 @@ class AvaloirViewModel(
     fun addCleaningDateAsync(avaloir: Avaloir, date: String) {
         viewModelScope.launch {
             val response = avaloirService.cleanAvaloir(avaloir.idReferent, date, avaloir)
+            if (response.isSuccessful) {
+                response.body()?.let { dataMessage ->
+                    if (dataMessage.error == 1) {
+
+                    } else {
+                        insertDates(listOf(dataMessage.date))
+                    }
+                }
+            }
+        }
+    }
+
+    fun addCommentAsync(avaloir: Avaloir, comment: String) {
+        viewModelScope.launch {
+            val response = avaloirService.cleanAvaloir(avaloir.idReferent, comment, avaloir)
             if (response.isSuccessful) {
                 response.body()?.let { dataMessage ->
                     if (dataMessage.error == 1) {

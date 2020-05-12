@@ -1,6 +1,5 @@
 package be.marche.apptravaux.avaloir.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -14,15 +13,15 @@ interface AvaloirDao {
     @Query("SELECT * FROM avaloir")
     fun getAll(): List<Avaloir>
 
+    @Query("SELECT * FROM datenettoyage WHERE avaloirId = :avaloirId")
+    fun getDatesByAvaloirId(avaloirId: Int): List<DateNettoyage>
+
     @Query("SELECT * FROM avaloir WHERE id = :avaloirId")
-    fun getById(avaloirId: Int): LiveData<Avaloir>
+    fun getById(avaloirId: Int): Avaloir
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAvaloirs(avaloirs: List<Avaloir>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDates(dates: List<DateNettoyage>)
-
-    @Query("SELECT * FROM datenettoyage WHERE avaloirId = :avaloirId")
-    fun getDatesByAvaloirId(avaloirId: Int): LiveData<List<DateNettoyage>>
 }

@@ -36,6 +36,13 @@ interface AvaloirService {
         @Body avaloir: Avaloir
     ): Response<DataResponse>
 
+    @POST("commentaire/{id}/{comment}")
+    suspend fun commentAvaloir(
+        @Path("id") avaloirId: Int,
+        @Path("comment") comment: String,
+        @Body avaloir: Avaloir
+    ): Response<DataResponse>
+
     @GET("dates")
     suspend fun getAllDates(
     ): List<DateNettoyage>
