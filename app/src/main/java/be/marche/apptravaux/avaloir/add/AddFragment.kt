@@ -5,6 +5,9 @@ import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -13,7 +16,9 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.FileProvider
+import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -27,6 +32,7 @@ import be.marche.apptravaux.permission.PermissionUtil
 import be.marche.apptravaux.utils.FileHelper
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 
@@ -100,6 +106,7 @@ class AddFragment : Fragment(), LifecycleOwner {
                         requireActivity().application.packageName + ".fileprovider",
                         it
                     )
+                    //specifying a path and file name where you'd like to save the picture
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
                 }
@@ -110,8 +117,13 @@ class AddFragment : Fragment(), LifecycleOwner {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            val imgFile = File(currentPhotoPath);
+            var imgFile = File(currentPhotoPath)
+
             if (imgFile.exists()) {
+
+                fileHelper.orientationImage(currentPhotoPath)
+                imgFile = File(currentPhotoPath)
+
                 val fileHelper = FileHelper()
                 val requestBody = fileHelper.createRequestBody(imgFile)
                 val part = fileHelper.createPart(imgFile, requestBody)
@@ -120,6 +132,7 @@ class AddFragment : Fragment(), LifecycleOwner {
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
