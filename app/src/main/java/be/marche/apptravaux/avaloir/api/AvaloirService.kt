@@ -37,15 +37,19 @@ interface AvaloirService {
     ): Response<DataResponse>
 
     @POST("commentaire/{id}/{content}")
-    suspend fun commententaireAvaloir(
+    suspend fun addCommentaireAvaloir(
         @Path("id") avaloirId: Int,
         @Path("content") comment: CharSequence,
         @Body avaloir: Avaloir
-    ): Response<DataResponse>
+    ): Response<DataResponseCommentaire>
 
     @GET("dates")
     suspend fun getAllDates(
     ): List<DateNettoyage>
+
+    @GET("commentaires")
+    suspend fun getAllCommentaires(
+    ): List<Commentaire>
 
     @POST("search")
     suspend fun searchAvaloir(

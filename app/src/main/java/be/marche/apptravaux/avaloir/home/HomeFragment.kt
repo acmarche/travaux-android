@@ -131,6 +131,10 @@ class HomeFragment : Fragment() {
         avaloirModel.getDatesFromServer().observe(viewLifecycleOwner, Observer { dates ->
             avaloirModel.insertDates(dates)
         })
+        avaloirModel.getCommentairesFromServer()
+            .observe(viewLifecycleOwner, Observer { commentaires ->
+                avaloirModel.insertCommentaires(commentaires)
+            })
     }
 
     override fun onDestroyView() {

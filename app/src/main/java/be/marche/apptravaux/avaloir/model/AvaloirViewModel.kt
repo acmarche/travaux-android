@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import timber.log.Timber
 
 //https://github.com/LukasLechnerDev/Kotlin-Coroutine-Use-Cases-on-Android/tree/master/app/src/main/java/com/lukaslechner/coroutineusecasesonandroid/usecases/coroutines/usecase1
 class AvaloirViewModel(
@@ -58,6 +57,10 @@ class AvaloirViewModel(
         emit(avaloirRepository.getAllDatesFromApi())
     }
 
+    fun getCommentairesFromServer(): LiveData<List<Commentaire>> = liveData {
+        emit(avaloirRepository.getAllCommentairesFromApi())
+    }
+
     fun getAllAvaloirsFromServer(): LiveData<List<Avaloir>> = liveData {
         emit(avaloirRepository.getAllAvaloirsFromApi())
     }
@@ -82,6 +85,12 @@ class AvaloirViewModel(
     fun insertDates(dates: List<DateNettoyage>) {
         viewModelScope.launch {
             avaloirRepository.insertDates(dates)
+        }
+    }
+
+    fun insertCommentaires(commentaires: List<Commentaire>) {
+        viewModelScope.launch {
+            avaloirRepository.insertCommentaires(commentaires)
         }
     }
 
@@ -131,14 +140,13 @@ class AvaloirViewModel(
     fun addCommentAsync(avaloir: Avaloir, content: CharSequence) {
         viewModelScope.launch {
             val response =
-                avaloirService.commententaireAvaloir(avaloir.idReferent, content, avaloir)
+                avaloirService.addCommentaireAvaloir(avaloir.idReferent, content, avaloir)
             if (response.isSuccessful) {
                 response.body()?.let { dataMessage ->
                     if (dataMessage.error == 1) {
-                        Timber.w("zeze " + dataMessage)
+
                     } else {
-                        insertAvaloir(avaloir)
-                        changeValueCurrentAvaloir(avaloir)
+                        insertCommentaires(listOf(dataMessage.commentaire))
                     }
                 }
             }

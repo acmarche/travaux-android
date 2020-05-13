@@ -59,21 +59,22 @@ class ShowFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         avaloirModel.avaloir.observe(viewLifecycleOwner, Observer { avaloir ->
-
             setupButtons(avaloir)
             updateUi(avaloir)
             this.avaloir = avaloir
-
-            avaloirModel.getDatesByAvaloirId(avaloir.idReferent)
-                .observe(viewLifecycleOwner, Observer { dates ->
-                    updateUiDates(dates)
-                })
-
-            avaloirModel.getCommentairesByAvaloirId(avaloir.idReferent)
-                .observe(viewLifecycleOwner, Observer { commentaires ->
-                    updateUiCommentaires(commentaires)
-                })
         })
+
+        avaloirModel.getDatesByAvaloirId(this.avaloir.idReferent)
+            .observe(viewLifecycleOwner, Observer { dates ->
+                Timber.w("zeze update date")
+                updateUiDates(dates)
+            })
+
+        avaloirModel.getCommentairesByAvaloirId(this.avaloir.idReferent)
+            .observe(viewLifecycleOwner, Observer { commentaires ->
+                Timber.w("zeze update comment")
+                updateUiCommentaires(commentaires)
+            })
     }
 
     private fun setupButtons(avaloir: Avaloir) {
@@ -142,9 +143,12 @@ class ShowFragment : Fragment() {
 
     private fun updateUiCommentaires(commentaires: List<Commentaire>?) {
         val builder = StringBuilder()
+        val format = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
         if (commentaires != null) {
             commentaires.forEach { commentaire ->
-                builder.append(commentaire)
+                builder.append(commentaire.content)
+                builder.append(" ajouté le ")
+                builder.append(format.format(commentaire.createdAt))
                 builder.append(System.getProperty("line.separator"));
             }
             binding.commentairesTextView.text = builder.toString()

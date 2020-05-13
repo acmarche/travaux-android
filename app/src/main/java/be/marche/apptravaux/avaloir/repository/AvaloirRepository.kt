@@ -34,6 +34,7 @@ class AvaloirRepository(
 
     suspend fun getAllAvaloirsFromApi() = avaloirService.getAllAvaloirs()
     suspend fun getAllDatesFromApi() = avaloirService.getAllDates()
+    suspend fun getAllCommentairesFromApi() = avaloirService.getAllCommentaires()
 
     suspend fun insertAvaloirs(avaloirs: List<Avaloir>) {
         avaloirDao.insertAvaloirs(avaloirs)
@@ -41,6 +42,10 @@ class AvaloirRepository(
 
     suspend fun insertDates(dates: List<DateNettoyage>) {
         avaloirDao.insertDates(dates)
+    }
+
+    suspend fun insertCommentaires(commentaires: List<Commentaire>) {
+        avaloirDao.insertCommentaires(commentaires)
     }
 
 

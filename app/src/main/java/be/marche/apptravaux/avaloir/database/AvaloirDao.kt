@@ -32,4 +32,7 @@ interface AvaloirDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDates(dates: List<DateNettoyage>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCommentaires(commentaires: List<Commentaire>)
 }

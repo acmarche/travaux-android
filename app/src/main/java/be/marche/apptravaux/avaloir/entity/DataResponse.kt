@@ -7,6 +7,13 @@ data class DataResponse(
     val date: DateNettoyage
 )
 
+data class DataResponseCommentaire(
+    val error: Int,
+    val message: String,
+    val avaloir: Avaloir,
+    val commentaire: Commentaire
+)
+
 data class SearchResponse
     (
     val error: Int,
