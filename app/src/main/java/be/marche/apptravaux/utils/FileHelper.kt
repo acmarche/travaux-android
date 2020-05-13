@@ -2,8 +2,10 @@ package be.marche.apptravaux.utils
 
 import android.os.Environment
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -20,8 +22,8 @@ fun galleryDir() : File {
 class FileHelper {
 
     fun createRequestBody(file: File): RequestBody {
-        val MEDIA_TYPE_IMAGE: MediaType = MediaType.parse("image/*")!!
-        return RequestBody.create(MEDIA_TYPE_IMAGE, file)
+        val MEDIA_TYPE_IMAGE: MediaType = "image/*".toMediaTypeOrNull()!!
+        return file.asRequestBody(MEDIA_TYPE_IMAGE)
     }
 
     fun createPart(file: File, requestBody: RequestBody): MultipartBody.Part {

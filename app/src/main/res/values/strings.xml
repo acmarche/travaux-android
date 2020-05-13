@@ -25,9 +25,11 @@
     <string name="title_localisation">Localisation</string>
     <string name="explication_description_photo">Vous devez le prendre en photo, prenez la photo de manière à repérer facilement l\'endroit</string>
     <string name="title_dates_nettoyage">Les dates de nettoyage</string>
+    <string name="title_commentaires">Les commentaires</string>
     <string name="btn_go_stock">Gestion des stocks</string>
     <string name="btn_go_intervention">Gestion des interventions</string>
     <string name="btn_go_avaloir">Gestions des avaloirs</string>
     <string name="btn_search">Rechercher</string>
     <string name="avaloit_title_show">Détail de l\'avaloir %1$s</string>
+    <string name="label_commentaire">Votre commentaire</string>
 </resources>

@@ -3,7 +3,9 @@ package be.marche.apptravaux.avaloir.repository
 import be.marche.apptravaux.avaloir.api.AvaloirService
 import be.marche.apptravaux.avaloir.database.AvaloirDao
 import be.marche.apptravaux.avaloir.entity.Avaloir
+import be.marche.apptravaux.avaloir.entity.Commentaire
 import be.marche.apptravaux.avaloir.entity.DateNettoyage
+import kotlinx.coroutines.flow.Flow
 
 class AvaloirRepository(
     private val avaloirDao: AvaloirDao,
@@ -14,8 +16,16 @@ class AvaloirRepository(
         return avaloirDao.getAll()
     }
 
+    fun getFlow(): Flow<List<Avaloir>> {
+        return avaloirDao.getFlow()
+    }
+
     fun getDatesByAvaloirId(avaloirId: Int): List<DateNettoyage> {
         return avaloirDao.getDatesByAvaloirId(avaloirId)
+    }
+
+    fun getCommentairesByAvaloirId(avaloirId: Int): List<Commentaire> {
+        return avaloirDao.getCommentairesByAvaloirId(avaloirId)
     }
 
     fun getById(avaloirId: Int): Avaloir {

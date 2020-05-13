@@ -19,10 +19,11 @@ class AvaloirInterceptor() : Interceptor {
 
         val request = chain.request()
         val response = chain.proceed(request)
-        if (response.code() == 500) {
+        if (response.code == 500) {
             Timber.w("zeze error 500" + response)
 
             request.newBuilder()
+            response.close()
             return chain.proceed(request)
 
             //Toast.makeText(this.context, "Coucou", Toast.LENGTH_LONG).show()
@@ -30,6 +31,7 @@ class AvaloirInterceptor() : Interceptor {
 
             // handleForbiddenResponse()
         }
+        Timber.w("zeze error x" + response)
 
         return response
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
+import be.marche.apptravaux.avaloir.entity.Commentaire
 import be.marche.apptravaux.avaloir.entity.DateNettoyage
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirShowBinding
@@ -60,10 +62,16 @@ class ShowFragment : Fragment() {
 
             setupButtons(avaloir)
             updateUi(avaloir)
+            this.avaloir = avaloir
 
             avaloirModel.getDatesByAvaloirId(avaloir.idReferent)
                 .observe(viewLifecycleOwner, Observer { dates ->
                     updateUiDates(dates)
+                })
+
+            avaloirModel.getCommentairesByAvaloirId(avaloir.idReferent)
+                .observe(viewLifecycleOwner, Observer { commentaires ->
+                    updateUiCommentaires(commentaires)
                 })
         })
     }
@@ -124,7 +132,7 @@ class ShowFragment : Fragment() {
         val builder = StringBuilder()
         val format = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
         if (dates != null) {
-            for (date in dates) {
+            dates.forEach { date ->
                 builder.append(format.format(date.date))
                 builder.append(System.getProperty("line.separator"));
             }
@@ -132,16 +140,32 @@ class ShowFragment : Fragment() {
         }
     }
 
-    private fun createDialogueBox() {
-        val dialog = MaterialAlertDialogBuilder(context)
-            .setTitle("Ajout d'un commentaire")
-            .setMessage("Pas encore implémenté :-P")
-            .setPositiveButton(
-                "OK"
-            ) { dialog, id ->
-
+    private fun updateUiCommentaires(commentaires: List<Commentaire>?) {
+        val builder = StringBuilder()
+        if (commentaires != null) {
+            commentaires.forEach { commentaire ->
+                builder.append(commentaire)
+                builder.append(System.getProperty("line.separator"));
             }
+            binding.commentairesTextView.text = builder.toString()
+        }
+    }
 
+    private fun createDialogueBox() {
+        val customView = layoutInflater.inflate(R.layout.add_comment, null)
+        val dialog = MaterialAlertDialogBuilder(context)
+            .setTitle("Ajouter un commentaire")
+            .setView(customView)
+            .setPositiveButton("OK") { dialog, id ->
+                val commentaire = customView.findViewById<TextView>(R.id.inputComment).text
+                sendCommentaire(commentaire)
+            }
+            .setNegativeButton("Annuler") { dialog, id -> dialog.cancel() }
         dialog.show()
+    }
+
+    private fun sendCommentaire(commentaire: CharSequence?) {
+        if (commentaire != null && commentaire.length > 0)
+            avaloirModel.addCommentAsync(avaloir, commentaire)
     }
 }

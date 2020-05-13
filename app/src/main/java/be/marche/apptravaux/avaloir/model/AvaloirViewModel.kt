@@ -6,9 +6,11 @@ import be.marche.apptravaux.avaloir.api.AvaloirService
 import be.marche.apptravaux.avaloir.entity.*
 import be.marche.apptravaux.avaloir.repository.AvaloirRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import timber.log.Timber
 
 //https://github.com/LukasLechnerDev/Kotlin-Coroutine-Use-Cases-on-Android/tree/master/app/src/main/java/com/lukaslechner/coroutineusecasesonandroid/usecases/coroutines/usecase1
 class AvaloirViewModel(
@@ -26,9 +28,17 @@ class AvaloirViewModel(
             emit(avaloirRepository.getAll())
         }
 
+    fun getFlow(): Flow<List<Avaloir>> =
+        avaloirRepository.getFlow()
+
     fun getDatesByAvaloirId(avaloirId: Int): LiveData<List<DateNettoyage>> =
         liveData(Dispatchers.IO) {
             emit(avaloirRepository.getDatesByAvaloirId(avaloirId))
+        }
+
+    fun getCommentairesByAvaloirId(avaloirId: Int): LiveData<List<Commentaire>> =
+        liveData(Dispatchers.IO) {
+            emit(avaloirRepository.getCommentairesByAvaloirId(avaloirId))
         }
 
     var resultSearch = MutableLiveData<SearchResponse>()
@@ -118,15 +128,17 @@ class AvaloirViewModel(
         }
     }
 
-    fun addCommentAsync(avaloir: Avaloir, comment: String) {
+    fun addCommentAsync(avaloir: Avaloir, content: CharSequence) {
         viewModelScope.launch {
-            val response = avaloirService.cleanAvaloir(avaloir.idReferent, comment, avaloir)
+            val response =
+                avaloirService.commententaireAvaloir(avaloir.idReferent, content, avaloir)
             if (response.isSuccessful) {
                 response.body()?.let { dataMessage ->
                     if (dataMessage.error == 1) {
-
+                        Timber.w("zeze " + dataMessage)
                     } else {
-                        insertDates(listOf(dataMessage.date))
+                        insertAvaloir(avaloir)
+                        changeValueCurrentAvaloir(avaloir)
                     }
                 }
             }

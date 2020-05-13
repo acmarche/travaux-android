@@ -36,10 +36,10 @@ interface AvaloirService {
         @Body avaloir: Avaloir
     ): Response<DataResponse>
 
-    @POST("commentaire/{id}/{comment}")
-    suspend fun commentAvaloir(
+    @POST("commentaire/{id}/{content}")
+    suspend fun commententaireAvaloir(
         @Path("id") avaloirId: Int,
-        @Path("comment") comment: String,
+        @Path("content") comment: CharSequence,
         @Body avaloir: Avaloir
     ): Response<DataResponse>
 
