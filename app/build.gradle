@@ -118,6 +118,7 @@ dependencies {
     implementation 'androidx.camera:camera-extensions:1.0.0-alpha10'
     // If you want to use the CameraX Lifecycle library
     implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    implementation "androidx.exifinterface:exifinterface:${exifinterface_version}"
 
     /**
      * Outils

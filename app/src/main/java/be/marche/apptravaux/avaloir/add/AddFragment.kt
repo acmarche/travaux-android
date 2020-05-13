@@ -21,7 +21,6 @@ import androidx.navigation.fragment.findNavController
 import be.marche.apptravaux.BuildConfig
 import be.marche.apptravaux.R
 import be.marche.apptravaux.api.ConnectivityLiveData
-import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirAddBinding
 import be.marche.apptravaux.permission.PermissionUtil
@@ -45,7 +44,6 @@ class AddFragment : Fragment(), LifecycleOwner {
     private var _binding: FragmentAvaloirAddBinding? = null
     private val binding get() = _binding!!
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
-    private lateinit var avaloir: Avaloir
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -187,7 +185,6 @@ class AddFragment : Fragment(), LifecycleOwner {
                         binding.errorTextView.text = getString(R.string.message_ok_connectivity)
                         binding.errorTextView.visibility = View.INVISIBLE
                         binding.btnAddPhoto.isEnabled = true
-                        //          syncContent()
                     }
                     false -> {
                         binding.errorTextView.visibility = View.VISIBLE
