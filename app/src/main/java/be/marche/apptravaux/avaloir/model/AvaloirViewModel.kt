@@ -20,6 +20,7 @@ class AvaloirViewModel(
     AndroidViewModel(application) {
 
     lateinit var coordinates: Coordinates
+    var avaloirId: Int = 0
     var avaloir: MutableLiveData<Avaloir> = MutableLiveData<Avaloir>()
 
     fun getAll(): LiveData<List<Avaloir>> =
@@ -44,6 +45,7 @@ class AvaloirViewModel(
 
     fun changeValueCurrentAvaloir(avaloir: Avaloir) {
         this.avaloir.value = avaloir
+        avaloirId = avaloir.idReferent
     }
 
     fun registerCoordinates(latitude: Double, longitude: Double) {
@@ -131,6 +133,7 @@ class AvaloirViewModel(
 
                     } else {
                         insertDates(listOf(dataMessage.date))
+                        changeValueCurrentAvaloir(avaloir)
                     }
                 }
             }
@@ -147,6 +150,7 @@ class AvaloirViewModel(
 
                     } else {
                         insertCommentaires(listOf(dataMessage.commentaire))
+                        changeValueCurrentAvaloir(avaloir)
                     }
                 }
             }

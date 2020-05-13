@@ -11,7 +11,6 @@ import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
-import timber.log.Timber
 
 class AvaloirListAdapter internal constructor(
 

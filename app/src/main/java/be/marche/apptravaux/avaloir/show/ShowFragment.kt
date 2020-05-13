@@ -20,7 +20,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -62,19 +61,18 @@ class ShowFragment : Fragment() {
             setupButtons(avaloir)
             updateUi(avaloir)
             this.avaloir = avaloir
+
+            avaloirModel.getDatesByAvaloirId(avaloir.idReferent)
+                .observe(viewLifecycleOwner, Observer { dates ->
+                    updateUiDates(dates)
+                })
+
+            avaloirModel.getCommentairesByAvaloirId(avaloir.idReferent)
+                .observe(viewLifecycleOwner, Observer { commentaires ->
+                    updateUiCommentaires(commentaires)
+                })
         })
 
-        avaloirModel.getDatesByAvaloirId(this.avaloir.idReferent)
-            .observe(viewLifecycleOwner, Observer { dates ->
-                Timber.w("zeze update date")
-                updateUiDates(dates)
-            })
-
-        avaloirModel.getCommentairesByAvaloirId(this.avaloir.idReferent)
-            .observe(viewLifecycleOwner, Observer { commentaires ->
-                Timber.w("zeze update comment")
-                updateUiCommentaires(commentaires)
-            })
     }
 
     private fun setupButtons(avaloir: Avaloir) {
