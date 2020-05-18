@@ -31,5 +31,7 @@
     <string name="btn_go_avaloir">Gestions des avaloirs</string>
     <string name="btn_search">Rechercher</string>
     <string name="avaloit_title_show">Détail de l\'avaloir %1$s</string>
+    <string name="loading">Chargement en cours...</string>
     <string name="label_commentaire">Votre commentaire</string>
+    <string name="content_description">contentDescription</string>
 </resources>

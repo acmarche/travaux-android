@@ -18,8 +18,8 @@ android {
         applicationId "be.marche.apptravaux"
         minSdkVersion 22
         targetSdkVersion 29
-        versionCode 3
-        versionName "0.4"
+        versionCode 4
+        versionName "0.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -37,6 +37,9 @@ android {
         }
     }
     viewBinding.enabled = true
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {

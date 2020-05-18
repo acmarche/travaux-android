@@ -9,8 +9,8 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
-import com.squareup.picasso.MemoryPolicy
-import com.squareup.picasso.Picasso
+import coil.api.load
+import timber.log.Timber
 
 class AvaloirListAdapter internal constructor(
 
@@ -25,9 +25,10 @@ class AvaloirListAdapter internal constructor(
 
     inner class AvaloirViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cardViewAvaloir = itemView.findViewById<CardView>(R.id.cardViewAvaloir)!!
-        val avaloirLocationView: TextView = itemView.findViewById(R.id.avaloirLocationView)
+
+        //    val avaloirLocationView: TextView = itemView.findViewById(R.id.avaloirLocationView)
         val avaloirPhoto = itemView.findViewById<ImageView>(R.id.avaloirPhotoView)
-        val avaloirRue = itemView.findViewById<TextView>(R.id.avaloirRueView)
+        //   val avaloirRue = itemView.findViewById<TextView>(R.id.avaloirRueView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AvaloirViewHolder {
@@ -41,19 +42,17 @@ class AvaloirListAdapter internal constructor(
             val avaloir = avaloirs[position]
             cardViewAvaloir.setOnClickListener(this@AvaloirListAdapter)
             cardViewAvaloir.tag = avaloir
-            avaloirLocationView.text = holder.itemView.getContext().getString(
-                R.string.avaloir_location,
-                avaloir.latitude.toString(),
-                avaloir.longitude.toString()
-            )
-            avaloirRue.text = avaloir.rue
+            /*    avaloirLocationView.text = holder.itemView.getContext().getString(
+                    R.string.avaloir_location,
+                    avaloir.latitude.toString(),
+                    avaloir.longitude.toString()
+                )*/
+            //    avaloirRue.text = avaloir.rue
             if (avaloir.imageUrl != null) {
-                Picasso.get()
-                    .load(avaloir.imageUrl)
-                    .placeholder(R.drawable.ic_photo_library)
-                    .fit()
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .into(avaloirPhoto)
+                avaloirPhoto.load(avaloir.imageUrl) {
+                    crossfade(true)
+                    placeholder(R.drawable.ic_photo_library)
+                }
             }
         }
     }

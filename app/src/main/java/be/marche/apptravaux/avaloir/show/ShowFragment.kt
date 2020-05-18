@@ -16,9 +16,8 @@ import be.marche.apptravaux.avaloir.entity.Commentaire
 import be.marche.apptravaux.avaloir.entity.DateNettoyage
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirShowBinding
+import coil.api.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.squareup.picasso.MemoryPolicy
-import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -56,6 +55,8 @@ class ShowFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        initUi()
 
         avaloirModel.avaloir.observe(viewLifecycleOwner, Observer { avaloir ->
             setupButtons(avaloir)
@@ -105,6 +106,19 @@ class ShowFragment : Fragment() {
         avaloirModel.addCleaningDateAsync(avaloir, timeStamp)
     }
 
+    private fun initUi() {
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.loading)
+
+        binding.coordinatesTextView.text = getString(R.string.loading)
+
+        if (avaloir.imageUrl != null) {
+            binding.avalorImageView.load(avaloir.imageUrl) {
+                crossfade(true)
+                placeholder(R.drawable.ic_photo_library)
+            }
+        }
+    }
+
     private fun updateUi(avaloir: Avaloir) {
         (activity as AppCompatActivity).supportActionBar?.title = getString(
             R.string.avaloit_title_show,
@@ -118,12 +132,10 @@ class ShowFragment : Fragment() {
         )
 
         if (avaloir.imageUrl != null) {
-            Picasso.get()
-                .load(avaloir.imageUrl)
-                .placeholder(R.drawable.ic_photo_library)
-                .fit()
-                .memoryPolicy(MemoryPolicy.NO_CACHE)
-                .into(binding.avalorImageView)
+            binding.avalorImageView.load(avaloir.imageUrl) {
+                crossfade(true)
+                placeholder(R.drawable.ic_photo_library)
+            }
         }
     }
 

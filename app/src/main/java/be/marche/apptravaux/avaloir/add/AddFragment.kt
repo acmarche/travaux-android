@@ -121,7 +121,6 @@ class AddFragment : Fragment(), LifecycleOwner {
 
             if (imgFile.exists()) {
 
-                fileHelper.orientationImage(currentPhotoPath)
                 imgFile = File(currentPhotoPath)
 
                 val fileHelper = FileHelper()
@@ -132,7 +131,6 @@ class AddFragment : Fragment(), LifecycleOwner {
             }
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
