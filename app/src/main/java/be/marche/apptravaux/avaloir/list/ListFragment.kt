@@ -51,7 +51,8 @@ class ListFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener {
 
     override fun onAvaloirSelected(avaloir: Avaloir) {
         avaloirModel.changeValueCurrentAvaloir(avaloir)
-        findNavController().navigate(R.id.action_listFragment_to_showFragment)
+        //findNavController().navigate(R.id.action_listFragment_to_showFragment)
+        findNavController().navigate(R.id.action_listFragment_to_mapFragment)
     }
 
     override fun onDestroyView() {

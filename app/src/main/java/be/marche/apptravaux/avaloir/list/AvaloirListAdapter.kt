@@ -25,9 +25,10 @@ class AvaloirListAdapter internal constructor(
 
     inner class AvaloirViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cardViewAvaloir = itemView.findViewById<CardView>(R.id.cardViewAvaloir)!!
+
         //    val avaloirLocationView: TextView = itemView.findViewById(R.id.avaloirLocationView)
         val avaloirPhoto = itemView.findViewById<ImageView>(R.id.avaloirPhotoView)
-        //   val avaloirRue = itemView.findViewById<TextView>(R.id.avaloirRueView)
+        val avaloirRueView = itemView.findViewById<TextView>(R.id.avaloirRueView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AvaloirViewHolder {
@@ -46,7 +47,7 @@ class AvaloirListAdapter internal constructor(
                     avaloir.latitude.toString(),
                     avaloir.longitude.toString()
                 )*/
-            //    avaloirRue.text = avaloir.rue
+            avaloirRueView.text = "${avaloir.rue} - ${avaloir.localite}"
             if (avaloir.imageUrl != null) {
                 Timber.w(avaloir.imageUrl)
                 avaloirPhoto.load(avaloir.imageUrl) {

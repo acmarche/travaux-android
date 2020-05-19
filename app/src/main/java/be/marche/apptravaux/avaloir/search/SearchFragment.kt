@@ -27,6 +27,7 @@ import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import timber.log.Timber
 
 class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener {
 
@@ -186,6 +187,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
                     Observer { searchResponse ->
                         val avaloirs = searchResponse.avaloirs
                         val count = avaloirs.size
+                        Timber.w("search avaloir" + avaloirs)
                         avaloirs.let { adapter.setAvaloirs(avaloirs) }
                         binding.resultSearchTextView.text =
                             resources.getQuantityString(R.plurals.count_avaloir_found, count, count)
