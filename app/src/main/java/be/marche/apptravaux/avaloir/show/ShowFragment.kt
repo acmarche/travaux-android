@@ -111,11 +111,8 @@ class ShowFragment : Fragment() {
 
         binding.coordinatesTextView.text = getString(R.string.loading)
 
-        if (avaloir.imageUrl != null) {
-            binding.avalorImageView.load(avaloir.imageUrl) {
-                crossfade(true)
-                placeholder(R.drawable.ic_photo_library)
-            }
+        binding.avalorImageView.load(R.drawable.ic_photo_library) {
+
         }
     }
 

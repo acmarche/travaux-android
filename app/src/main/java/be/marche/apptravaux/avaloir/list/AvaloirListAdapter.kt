@@ -25,7 +25,6 @@ class AvaloirListAdapter internal constructor(
 
     inner class AvaloirViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cardViewAvaloir = itemView.findViewById<CardView>(R.id.cardViewAvaloir)!!
-
         //    val avaloirLocationView: TextView = itemView.findViewById(R.id.avaloirLocationView)
         val avaloirPhoto = itemView.findViewById<ImageView>(R.id.avaloirPhotoView)
         //   val avaloirRue = itemView.findViewById<TextView>(R.id.avaloirRueView)
@@ -49,8 +48,8 @@ class AvaloirListAdapter internal constructor(
                 )*/
             //    avaloirRue.text = avaloir.rue
             if (avaloir.imageUrl != null) {
+                Timber.w(avaloir.imageUrl)
                 avaloirPhoto.load(avaloir.imageUrl) {
-                    crossfade(true)
                     placeholder(R.drawable.ic_photo_library)
                 }
             }
