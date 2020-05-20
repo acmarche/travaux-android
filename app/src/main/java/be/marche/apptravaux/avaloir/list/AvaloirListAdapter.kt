@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import coil.api.load
-import timber.log.Timber
 
 class AvaloirListAdapter internal constructor(
 
@@ -24,10 +23,8 @@ class AvaloirListAdapter internal constructor(
     private var avaloirs = emptyList<Avaloir>() // Cached copy of words
 
     inner class AvaloirViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val cardViewAvaloir = itemView.findViewById<CardView>(R.id.cardViewAvaloir)!!
-
-        //    val avaloirLocationView: TextView = itemView.findViewById(R.id.avaloirLocationView)
-        val avaloirPhoto = itemView.findViewById<ImageView>(R.id.avaloirPhotoView)
+        val avaloirCardView = itemView.findViewById<CardView>(R.id.avaloirCardView)!!
+        val avaloirPhotoView = itemView.findViewById<ImageView>(R.id.avaloirPhotoView)
         val avaloirRueView = itemView.findViewById<TextView>(R.id.avaloirRueView)
     }
 
@@ -40,17 +37,11 @@ class AvaloirListAdapter internal constructor(
     override fun onBindViewHolder(holder: AvaloirViewHolder, position: Int) {
         with(holder) {
             val avaloir = avaloirs[position]
-            cardViewAvaloir.setOnClickListener(this@AvaloirListAdapter)
-            cardViewAvaloir.tag = avaloir
-            /*    avaloirLocationView.text = holder.itemView.getContext().getString(
-                    R.string.avaloir_location,
-                    avaloir.latitude.toString(),
-                    avaloir.longitude.toString()
-                )*/
-            avaloirRueView.text = "${avaloir.rue} - ${avaloir.localite}"
+            avaloirCardView.setOnClickListener(this@AvaloirListAdapter)
+            avaloirCardView.tag = avaloir
+            avaloirRueView.text = "${avaloir.rue}  ${avaloir.localite}"
             if (avaloir.imageUrl != null) {
-                Timber.w(avaloir.imageUrl)
-                avaloirPhoto.load(avaloir.imageUrl) {
+                avaloirPhotoView.load(avaloir.imageUrl) {
                     placeholder(R.drawable.ic_photo_library)
                 }
             }
@@ -66,7 +57,7 @@ class AvaloirListAdapter internal constructor(
 
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.cardViewAvaloir -> listener?.onAvaloirSelected(view.tag as Avaloir)
+            R.id.avaloirCardView -> listener?.onAvaloirSelected(view.tag as Avaloir)
         }
     }
 }

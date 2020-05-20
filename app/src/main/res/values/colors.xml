@@ -11,6 +11,7 @@ https://medium.com/over-engineering/setting-up-a-material-components-theme-for-a
     <color name="colorSecondaryVariant">#102027</color>
     <color name="colorOnSecondary">#62727b</color>
     <color name="secondaryTextColor">#ffffff</color>
+    <color name="white">#FFFFFF</color>
 </resources>
 
 <!--

@@ -57,7 +57,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListen
         map.setOnMarkerDragListener(this)
 
         avaloirModel.avaloir.observe(viewLifecycleOwner, Observer { avaloir ->
-            Timber.w("zeze avaloir " + avaloir)
             val lntLng =
                 LatLng(avaloir.latitude, avaloir.longitude)
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(lntLng, 15f))
@@ -73,15 +72,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListen
     }
 
     override fun onMarkerDragEnd(marker: Marker?) {
-        TODO("Not yet implemented")
+       Timber.w("zeze drag end")
     }
 
     override fun onMarkerDragStart(marker: Marker?) {
-        TODO("Not yet implemented")
+        Timber.w("zeze drag start")
     }
 
     override fun onMarkerDrag(marker: Marker?) {
-        TODO("Not yet implemented")
+        Timber.w("zeze drag enc")
     }
 
 }
