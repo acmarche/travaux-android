@@ -16,7 +16,6 @@ import be.marche.apptravaux.avaloir.entity.Commentaire
 import be.marche.apptravaux.avaloir.entity.DateNettoyage
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirShowBinding
-import coil.api.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.text.SimpleDateFormat
@@ -109,15 +108,15 @@ class ShowFragment : Fragment() {
     private fun initUi() {
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.loading)
 
-        binding.coordinatesTextView.text = getString(R.string.loading)
+      //  binding.coordinatesTextView.text = getString(R.string.loading)
 
-        binding.avalorImageView.load(R.drawable.ic_photo_library) {
+     //   binding.avalorImageView.load(R.drawable.ic_photo_library) {
 
-        }
+     //   }
     }
 
     private fun updateUi(avaloir: Avaloir) {
-        (activity as AppCompatActivity).supportActionBar?.title = getString(
+     /*   (activity as AppCompatActivity).supportActionBar?.title = getString(
             R.string.avaloit_title_show,
             avaloir.idReferent.toString()
         )
@@ -133,7 +132,7 @@ class ShowFragment : Fragment() {
                 crossfade(true)
                 placeholder(R.drawable.ic_photo_library)
             }
-        }
+        }*/
     }
 
     private fun updateUiDates(dates: List<DateNettoyage>?) {
@@ -144,7 +143,7 @@ class ShowFragment : Fragment() {
                 builder.append(format.format(date.date))
                 builder.append(System.getProperty("line.separator"));
             }
-            binding.datesTextView.text = builder.toString()
+    //        binding.datesTextView.text = builder.toString()
         }
     }
 
@@ -158,12 +157,12 @@ class ShowFragment : Fragment() {
                 builder.append(format.format(commentaire.createdAt))
                 builder.append(System.getProperty("line.separator"));
             }
-            binding.commentairesTextView.text = builder.toString()
+   //         binding.commentairesTextView.text = builder.toString()
         }
     }
 
     private fun createDialogueBox() {
-        val customView = layoutInflater.inflate(R.layout.add_comment, null)
+     /*   val customView = layoutInflater.inflate(R.layout.add_comment, null)
         val dialog = MaterialAlertDialogBuilder(context)
             .setTitle("Ajouter un commentaire")
             .setView(customView)
@@ -172,11 +171,11 @@ class ShowFragment : Fragment() {
                 sendCommentaire(commentaire)
             }
             .setNegativeButton("Annuler") { dialog, id -> dialog.cancel() }
-        dialog.show()
+        dialog.show()*/
     }
 
     private fun sendCommentaire(commentaire: CharSequence?) {
-        if (commentaire != null && commentaire.length > 0)
-            avaloirModel.addCommentAsync(avaloir, commentaire)
+       // if (commentaire != null && commentaire.length > 0)
+         //   avaloirModel.addCommentAsync(avaloir, commentaire)
     }
 }
