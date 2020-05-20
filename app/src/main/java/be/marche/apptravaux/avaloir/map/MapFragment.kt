@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentMapBinding
@@ -13,7 +13,6 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.android.synthetic.main.fragment_map.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 
@@ -47,40 +46,47 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListen
         mapFragment.getMapAsync(this)
 
         getParentFragmentManager().beginTransaction()
-            .replace(R.id.content, mapFragment)
+            .replace(R.id.mapView, mapFragment)
             .commit()
+    }
+
+    protected fun setupBtn() {
+        binding.btnValidLocation.setOnClickListener {
+            findNavController().navigate(R.id.action_mapFragment_to_addFragment)
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        loadingProgressBar.hide()
+        //   loadingProgressBar.hide()
         map.setOnMarkerDragListener(this)
 
-        avaloirModel.avaloir.observe(viewLifecycleOwner, Observer { avaloir ->
-            val lntLng =
-                LatLng(avaloir.latitude, avaloir.longitude)
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(lntLng, 15f))
-            val options = MarkerOptions()
-                .position(LatLng(avaloir.latitude, avaloir.longitude))
-                .title(avaloir.rue)
-                .snippet(avaloir.localite)
-                .draggable(true)
+        val lntLng =
+            LatLng(avaloirModel.coordinates.latitude, avaloirModel.coordinates.longitude)
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(lntLng, 15f))
+        val options = MarkerOptions()
+            .position(LatLng(avaloirModel.coordinates.latitude, avaloirModel.coordinates.longitude))
+            // .title(avaloir.rue)
+            //  .snippet(avaloir.localite)
+            .draggable(true)
 
-            map.addMarker(options)
-        })
-
+        marker = map.addMarker(options)
     }
 
-    override fun onMarkerDragEnd(marker: Marker?) {
-       Timber.w("zeze drag end")
+    override fun onMarkerDragEnd(marker: Marker) {
+        Timber.w("zeze drag end")
+        avaloirModel.registerCoordinates(marker.position.latitude, marker.position.longitude)
+        val lntLng =
+            LatLng(marker.position.latitude, marker.position.longitude)
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(lntLng, 15f))
     }
 
     override fun onMarkerDragStart(marker: Marker?) {
-        Timber.w("zeze drag start")
+
     }
 
     override fun onMarkerDrag(marker: Marker?) {
-        Timber.w("zeze drag enc")
+
     }
 
 }

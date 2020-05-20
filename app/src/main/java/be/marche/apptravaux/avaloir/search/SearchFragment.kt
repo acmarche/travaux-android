@@ -2,7 +2,6 @@ package be.marche.apptravaux.avaloir.search
 
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.IntentSender
 import android.location.Location
@@ -27,10 +26,11 @@ import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
 
 class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener {
 
+    private val UPDATE_INTERVAL = 10 * 1000 /* 10 secs */.toLong()
+    private val FASTEST_INTERVAL: Long = 25000 /* 25 sec */
     val REQUEST_CHECK_SETTINGS: Int = 111
     private var _binding: FragmentAvaloirSearchBinding? = null
     private val binding get() = _binding!!
@@ -71,8 +71,8 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         locationRequest = LocationRequest.create().apply {
-            interval = 10000
-            fastestInterval = 25000
+            interval = UPDATE_INTERVAL
+            fastestInterval = FASTEST_INTERVAL
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
@@ -133,7 +133,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
                 avaloirModel.registerCoordinates(it!!.latitude, it.longitude)
             }
 
-            findNavController().navigate(R.id.action_searchFragment_to_addFragment)
+            findNavController().navigate(R.id.action_searchFragment_to_mapFragment)
         }
 
         binding.bottomAppBar.setOnMenuItemClickListener { item ->
@@ -187,7 +187,6 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
                     Observer { searchResponse ->
                         val avaloirs = searchResponse.avaloirs
                         val count = avaloirs.size
-                        Timber.w("search avaloir" + avaloirs)
                         avaloirs.let { adapter.setAvaloirs(avaloirs) }
                         binding.resultSearchTextView.text =
                             resources.getQuantityString(R.plurals.count_avaloir_found, count, count)
