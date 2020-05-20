@@ -31,18 +31,10 @@
     <string name="btn_go_avaloir">Gestions des avaloirs</string>
     <string name="btn_search">Rechercher</string>
     <string name="avaloit_title_show">Détail de l\'avaloir %1$s</string>
-    <string name="loading">Chargement en cours...</string>
+    <string name="loading">Chargement en cours…</string>
     <string name="label_commentaire">Votre commentaire</string>
     <string name="content_description">contentDescription</string>
     <string name="avaloir_titre_list">Rue des Jolis bois - Aye</string>
-    <string name="title_activity_basic">BasicActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_situer_avaloir">Situer l\'avaloir</string>
+    <string name="description_situer_avaloir">Déplacer le curseur pour corriger \n l\'emplacement de l\'avaloir</string>
 </resources>

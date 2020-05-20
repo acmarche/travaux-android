@@ -36,13 +36,12 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
     private val binding get() = _binding!!
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var listener: AvaloirListAdapter.AvaloirListAdapterListener? = null
-    var currentLocation: Location? = null
-
-    lateinit var adapter: AvaloirListAdapter
     lateinit var locationRequest: LocationRequest
-    var requestingLocationUpdates = false
     private lateinit var locationCallback: LocationCallback
+    var currentLocation: Location? = null
+    private var listener: AvaloirListAdapter.AvaloirListAdapterListener? = null
+    lateinit var adapter: AvaloirListAdapter
+    var requestingLocationUpdates = false
 
     companion object {
         fun newInstance() = SearchFragment()
