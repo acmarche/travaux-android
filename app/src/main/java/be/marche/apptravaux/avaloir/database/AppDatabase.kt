@@ -13,7 +13,7 @@ const val DATABASE_NAME = "apptravaux"
 
 @Database(
     entities = [Avaloir::class, DateNettoyage::class, Commentaire::class],
-    version = 22
+    version = 23
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
