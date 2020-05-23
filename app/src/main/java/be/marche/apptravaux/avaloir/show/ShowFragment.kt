@@ -16,6 +16,7 @@ import be.marche.apptravaux.avaloir.entity.Commentaire
 import be.marche.apptravaux.avaloir.entity.DateNettoyage
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirShowBinding
+import coil.api.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.text.SimpleDateFormat
@@ -76,7 +77,7 @@ class ShowFragment : Fragment() {
     }
 
     private fun setupButtons(avaloir: Avaloir) {
-        binding.btnAddClean.setOnClickListener {
+   /*     binding.btnAddClean.setOnClickListener {
             updateClean(avaloir)
         }
 
@@ -91,7 +92,7 @@ class ShowFragment : Fragment() {
         }
         binding.bottomAppBar.setNavigationOnClickListener {
             findNavController().navigate(R.id.action_showFragment_to_homeFragment)
-        }
+        }*/
 
     }
 
@@ -108,15 +109,15 @@ class ShowFragment : Fragment() {
     private fun initUi() {
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.loading)
 
-      //  binding.coordinatesTextView.text = getString(R.string.loading)
+        binding.coordinatesTextView.text = getString(R.string.loading)
 
-     //   binding.avalorImageView.load(R.drawable.ic_photo_library) {
+        binding.avalorImageView.load(R.drawable.ic_photo_library) {
 
-     //   }
+        }
     }
 
     private fun updateUi(avaloir: Avaloir) {
-     /*   (activity as AppCompatActivity).supportActionBar?.title = getString(
+        (activity as AppCompatActivity).supportActionBar?.title = getString(
             R.string.avaloit_title_show,
             avaloir.idReferent.toString()
         )
@@ -132,7 +133,7 @@ class ShowFragment : Fragment() {
                 crossfade(true)
                 placeholder(R.drawable.ic_photo_library)
             }
-        }*/
+        }
     }
 
     private fun updateUiDates(dates: List<DateNettoyage>?) {

@@ -3,7 +3,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="270dp"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
@@ -26,8 +26,8 @@
 
             <ImageView
                 android:id="@+id/avaloirPhotoView"
-                android:layout_width="120dp"
-                android:layout_height="0dp"
+                android:layout_width="150dp"
+                android:layout_height="250dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
@@ -36,14 +36,14 @@
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent"
-                card_view:srcCompat="@drawable/drain_petit" />
+                card_view:srcCompat="@drawable/aval2" />
 
             <TextView
                 android:id="@+id/avaloirRueView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="24dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textStyle="bold"
                 card_view:layout_constraintStart_toEndOf="@+id/avaloirPhotoView"

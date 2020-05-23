@@ -133,6 +133,7 @@ dependencies {
      */
     implementation "com.jakewharton.timber:timber:$timber_version"
     implementation "io.coil-kt:coil:$coil_version"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0' //pour show view avaloir
 
     // optional - Test helpers for LiveData
     //testImplementation "androidx.arch.core:core-testing:$lifecycle_version"

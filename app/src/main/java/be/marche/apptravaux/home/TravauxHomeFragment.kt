@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import be.marche.apptravaux.R
+import be.marche.apptravaux.ScrollingActivity2
 import be.marche.apptravaux.avaloir.RedirectActivity
 import be.marche.apptravaux.databinding.FragmentTravauxHomeBinding
 
@@ -27,7 +28,10 @@ class TravauxHomeFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         binding.btnGoAvaloir.setOnClickListener {
-            findNavController().navigate(R.id.action_travauxHomeFragment_to_homeFragment)
+            val intent = Intent(context, ScrollingActivity2::class.java)
+          //  startActivity(intent)
+          //  findNavController().navigate(R.id.action_travauxHomeFragment_to_homeFragment)
+           findNavController().navigate(R.id.action_travauxHomeFragment_to_scrollingFragment)
         }
         binding.btnGoStock.setOnClickListener {
             val intent = Intent(context, RedirectActivity::class.java)

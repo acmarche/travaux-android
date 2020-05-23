@@ -40,7 +40,15 @@ class AvaloirListAdapter internal constructor(
             val avaloir = avaloirs[position]
             avaloirCardView.setOnClickListener(this@AvaloirListAdapter)
             avaloirCardView.tag = avaloir
-            avaloirRueView.text = "${avaloir.rue}  ${avaloir.numero}"
+
+            val builder = StringBuilder()
+            builder.append(avaloir.rue)
+            if (avaloir.numero != null) {
+                builder.append(' ')
+                builder.append(avaloir.numero)
+            }
+            avaloirRueView.text = builder.toString()
+
             avaloirLocaliteView.text = avaloir.localite
             if (avaloir.imageUrl != null) {
                 avaloirPhotoView.load(avaloir.imageUrl) {

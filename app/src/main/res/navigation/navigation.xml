@@ -63,6 +63,9 @@
         <action
             android:id="@+id/action_travauxHomeFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_travauxHomeFragment_to_scrollingFragment"
+            app:destination="@id/scrollingFragment" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
@@ -72,6 +75,10 @@
             android:id="@+id/action_mapFragment_to_addFragment"
             app:destination="@id/addFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/scrollingFragment"
+        android:name="be.marche.apptravaux.ScrollingFragment"
+        android:label="ScrollingFragment" />
 
 
 </navigation>

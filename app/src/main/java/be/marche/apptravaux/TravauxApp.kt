@@ -15,12 +15,8 @@ class TravauxApp : Application() {
         }
     }
 
-
-
     override fun onCreate() {
         super.onCreate()
-
-        val instance = this
 
         startKoin{
             // use AndroidLogger as Koin Logger - default Level.INFO
