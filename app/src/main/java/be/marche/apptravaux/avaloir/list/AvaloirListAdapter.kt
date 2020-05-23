@@ -26,6 +26,7 @@ class AvaloirListAdapter internal constructor(
         val avaloirCardView = itemView.findViewById<CardView>(R.id.avaloirCardView)!!
         val avaloirPhotoView = itemView.findViewById<ImageView>(R.id.avaloirPhotoView)
         val avaloirRueView = itemView.findViewById<TextView>(R.id.avaloirRueView)
+        val avaloirLocaliteView = itemView.findViewById<TextView>(R.id.avaloirLocaliteView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AvaloirViewHolder {
@@ -39,7 +40,8 @@ class AvaloirListAdapter internal constructor(
             val avaloir = avaloirs[position]
             avaloirCardView.setOnClickListener(this@AvaloirListAdapter)
             avaloirCardView.tag = avaloir
-            avaloirRueView.text = "${avaloir.rue}  ${avaloir.localite}"
+            avaloirRueView.text = "${avaloir.rue}  ${avaloir.numero}"
+            avaloirLocaliteView.text = avaloir.localite
             if (avaloir.imageUrl != null) {
                 avaloirPhotoView.load(avaloir.imageUrl) {
                     placeholder(R.drawable.ic_photo_library)
