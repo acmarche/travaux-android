@@ -1,85 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    >
 
-    <LinearLayout
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
+        style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/rueTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-            tools:text="Rue des Jolis Bois \n Aye" />
-
-        <View
-            android:id="@+id/dividerView"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/colorPrimaryDark"
-            app:layout_constraintBottom_toBottomOf="@+id/titreDatesNettoyageTextView" />
-
-        <ImageView
-            android:id="@+id/avalorImageView"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:contentDescription="@string/content_description" />
-
-        <TextView
-            android:id="@+id/datesTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            tools:text="10 avril 2019" />
-
-        <TextView
-            android:id="@+id/titreCommentairesTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
-            android:text="@string/title_commentaires"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
-
-        <TextView
-            android:id="@+id/commentairesTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/commentDividerView"
-            tools:text="Il est cassé il faut le remplacer" />
-
-        <TextView
-            android:id="@+id/coordinatesTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            tools:text="50.235621, 5.23658" />
-
-        <View
-            android:id="@+id/commentDividerView"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/colorPrimaryDark"
-            app:layout_constraintBottom_toBottomOf="@+id/titreCommentairesTextView" />
-
-        <TextView
-            android:id="@+id/titreDatesNettoyageTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
-            android:text="@string/title_dates_nettoyage"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
-
-    </LinearLayout>
+        android:layout_gravity="bottom"
+        app:menu="@menu/menu_show_bottom"
+        app:navigationIcon="@drawable/ic_action_home_blank" />
 
 
-</ScrollView>
+    <include layout="@layout/content_scrolling" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnAddClean"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/bottomAppBar"
+        app:layout_anchorGravity="bottom|end"
+        app:srcCompat="@drawable/ic_action_clean" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

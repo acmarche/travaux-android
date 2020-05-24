@@ -15,6 +15,7 @@ import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.avaloir.entity.Commentaire
 import be.marche.apptravaux.avaloir.entity.DateNettoyage
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
+import be.marche.apptravaux.databinding.ContentScrollingBinding
 import be.marche.apptravaux.databinding.FragmentAvaloirShowBinding
 import coil.api.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -22,11 +23,12 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class ShowFragment : Fragment() {
 
     private var _binding: FragmentAvaloirShowBinding? = null
+    private var _binding2: ContentScrollingBinding? = null
     private val binding get() = _binding!!
+    private val binding2 get() = _binding2!!
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
     private lateinit var avaloir: Avaloir
 
@@ -77,7 +79,7 @@ class ShowFragment : Fragment() {
     }
 
     private fun setupButtons(avaloir: Avaloir) {
-   /*     binding.btnAddClean.setOnClickListener {
+        binding.btnAddClean.setOnClickListener {
             updateClean(avaloir)
         }
 
@@ -92,7 +94,7 @@ class ShowFragment : Fragment() {
         }
         binding.bottomAppBar.setNavigationOnClickListener {
             findNavController().navigate(R.id.action_showFragment_to_homeFragment)
-        }*/
+        }
 
     }
 
@@ -109,9 +111,9 @@ class ShowFragment : Fragment() {
     private fun initUi() {
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.loading)
 
-        binding.coordinatesTextView.text = getString(R.string.loading)
+        binding2.coordinatesTextView.text = getString(R.string.loading)
 
-        binding.avalorImageView.load(R.drawable.ic_photo_library) {
+        binding2.avaloirImageView.load(R.drawable.ic_photo_library) {
 
         }
     }
@@ -122,14 +124,14 @@ class ShowFragment : Fragment() {
             avaloir.idReferent.toString()
         )
 
-        binding.coordinatesTextView.text = getString(
+        binding2.coordinatesTextView.text = getString(
             R.string.avaloir_location_title,
             avaloir.latitude.toString(),
             avaloir.latitude.toString()
         )
 
         if (avaloir.imageUrl != null) {
-            binding.avalorImageView.load(avaloir.imageUrl) {
+            binding2.avaloirImageView.load(avaloir.imageUrl) {
                 crossfade(true)
                 placeholder(R.drawable.ic_photo_library)
             }
@@ -144,7 +146,7 @@ class ShowFragment : Fragment() {
                 builder.append(format.format(date.date))
                 builder.append(System.getProperty("line.separator"));
             }
-    //        binding.datesTextView.text = builder.toString()
+            binding2.datesTextView.text = builder.toString()
         }
     }
 
@@ -158,12 +160,12 @@ class ShowFragment : Fragment() {
                 builder.append(format.format(commentaire.createdAt))
                 builder.append(System.getProperty("line.separator"));
             }
-   //         binding.commentairesTextView.text = builder.toString()
+            binding2.commentairesTextView.text = builder.toString()
         }
     }
 
     private fun createDialogueBox() {
-     /*   val customView = layoutInflater.inflate(R.layout.add_comment, null)
+        val customView = layoutInflater.inflate(R.layout.add_comment, null)
         val dialog = MaterialAlertDialogBuilder(context)
             .setTitle("Ajouter un commentaire")
             .setView(customView)
@@ -172,11 +174,11 @@ class ShowFragment : Fragment() {
                 sendCommentaire(commentaire)
             }
             .setNegativeButton("Annuler") { dialog, id -> dialog.cancel() }
-        dialog.show()*/
+        dialog.show()
     }
 
     private fun sendCommentaire(commentaire: CharSequence?) {
-       // if (commentaire != null && commentaire.length > 0)
-         //   avaloirModel.addCommentAsync(avaloir, commentaire)
+        if (commentaire != null && commentaire.length > 0)
+            avaloirModel.addCommentAsync(avaloir, commentaire)
     }
 }

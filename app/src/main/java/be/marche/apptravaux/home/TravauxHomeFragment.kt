@@ -29,9 +29,9 @@ class TravauxHomeFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         binding.btnGoAvaloir.setOnClickListener {
             val intent = Intent(context, ScrollingActivity2::class.java)
-          //  startActivity(intent)
-          //  findNavController().navigate(R.id.action_travauxHomeFragment_to_homeFragment)
-           findNavController().navigate(R.id.action_travauxHomeFragment_to_scrollingFragment)
+            //  startActivity(intent)
+            findNavController().navigate(R.id.action_travauxHomeFragment_to_homeFragment)
+            //  findNavController().navigate(R.id.action_travauxHomeFragment_to_scrollingFragment)
         }
         binding.btnGoStock.setOnClickListener {
             val intent = Intent(context, RedirectActivity::class.java)
