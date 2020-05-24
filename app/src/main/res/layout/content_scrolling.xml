@@ -22,7 +22,7 @@
 
         <ImageView
             android:id="@+id/avaloirImageView"
-            android:layout_width="170dp"
+            android:layout_width="263dp"
             android:layout_height="350dp"
             android:contentDescription="@string/content_description"
             android:src="@drawable/aval2"
