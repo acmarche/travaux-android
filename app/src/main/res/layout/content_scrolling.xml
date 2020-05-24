@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/fragment_scrolling">
+    tools:showIn="@layout/fragment_avaloir_show">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -40,6 +40,13 @@
             app:layout_constraintTop_toBottomOf="@+id/avaloirImageView"
             tools:text="50.235621, 5.23658" />
 
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/coordinatesTextView" />
+
         <TextView
             android:id="@+id/titreDatesNettoyageTextView"
             android:layout_width="wrap_content"
@@ -49,7 +56,7 @@
             android:text="@string/title_dates_nettoyage"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/coordinatesTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/mapView" />
 
         <View
             android:id="@+id/dividerView"

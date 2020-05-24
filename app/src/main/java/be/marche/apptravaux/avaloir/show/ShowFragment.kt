@@ -18,19 +18,25 @@ import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.ContentScrollingBinding
 import be.marche.apptravaux.databinding.FragmentAvaloirShowBinding
 import coil.api.load
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ShowFragment : Fragment() {
+class ShowFragment : Fragment(), OnMapReadyCallback {
 
     private var _binding: FragmentAvaloirShowBinding? = null
     private val binding get() = _binding!!
     private val avaloirModel: AvaloirViewModel by sharedViewModel()
     private lateinit var avaloir: Avaloir
     private lateinit var contentScroll: ContentScrollingBinding
+    lateinit var map: GoogleMap
+    lateinit var marker: Marker
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,6 +71,7 @@ class ShowFragment : Fragment() {
 
             setupButtons(avaloir)
             updateUi(avaloir)
+            centerMap(avaloir)
             this.avaloir = avaloir
 
             avaloirModel.getDatesByAvaloirId(avaloir.idReferent)
@@ -78,6 +85,35 @@ class ShowFragment : Fragment() {
                 })
         })
 
+        val mapOptions = GoogleMapOptions()
+            .mapType(GoogleMap.MAP_TYPE_NORMAL)
+            .zoomControlsEnabled(true)
+            .zoomGesturesEnabled(true)
+
+        val mapFragment = SupportMapFragment.newInstance(mapOptions)
+
+        mapFragment.getMapAsync(this)
+
+        getParentFragmentManager().beginTransaction()
+            .replace(R.id.mapView, mapFragment)
+            .commit()
+    }
+
+    private fun centerMap(avaloir: Avaloir) {
+        if (::map.isInitialized) {
+            map.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(
+                        avaloir.latitude,
+                        avaloir.longitude
+                    ), 16f
+                )
+            )
+            val options = MarkerOptions()
+                .position(LatLng(avaloir.latitude, avaloir.longitude))
+                .draggable(true)
+            marker = map.addMarker(options)
+        }
     }
 
     private fun setupButtons(avaloir: Avaloir) {
@@ -184,5 +220,11 @@ class ShowFragment : Fragment() {
     private fun sendCommentaire(commentaire: CharSequence?) {
         if (commentaire != null && commentaire.length > 0)
             avaloirModel.addCommentAsync(avaloir, commentaire)
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        map = googleMap
+        //   loadingProgressBar.hide()
+
     }
 }
