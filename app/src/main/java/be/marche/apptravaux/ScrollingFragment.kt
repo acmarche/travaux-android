@@ -28,9 +28,9 @@ class ScrollingFragment : Fragment() {
 
       //  (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
+     /*   fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
-        }
+        }*/
     }
 }
