@@ -71,7 +71,7 @@ class ShowFragment : Fragment(), OnMapReadyCallback {
 
             setupButtons(avaloir)
             updateUi(avaloir)
-            centerMap(avaloir)
+
             this.avaloir = avaloir
 
             avaloirModel.getDatesByAvaloirId(avaloir.idReferent)
@@ -224,6 +224,7 @@ class ShowFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        centerMap(avaloir)
         //   loadingProgressBar.hide()
 
     }

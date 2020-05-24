@@ -15,7 +15,6 @@
         app:menu="@menu/menu_show_bottom"
         app:navigationIcon="@drawable/ic_action_home_blank" />
 
-
     <include
         android:id="@+id/contentScroll"
         layout="@layout/content_scrolling" />
