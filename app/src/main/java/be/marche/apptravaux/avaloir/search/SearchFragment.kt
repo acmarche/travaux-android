@@ -238,7 +238,7 @@ class SearchFragment : Fragment(), AvaloirListAdapter.AvaloirListAdapterListener
     }
 
     private fun showEnableLocationDialog() {
-        val dialog = MaterialAlertDialogBuilder(context)
+        val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("La localistation est obligatoire")
             .setMessage("Sans la localisation la recherche d'avaloirs n'est pas possible")
             .setPositiveButton("OK") { dialog, id ->

@@ -1,6 +1,7 @@
 package be.marche.apptravaux.avaloir.home
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -72,7 +73,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun alertDialog() {
-        val dialog = MaterialAlertDialogBuilder(context)
+        val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Localisation nécessaire")
             .setMessage("L'application ne peux pas fonctionner sans la location. Merci de l'autoriser dans les paramètres")
             .setPositiveButton("OK") { dialog, id -> startIntentSettings() }
