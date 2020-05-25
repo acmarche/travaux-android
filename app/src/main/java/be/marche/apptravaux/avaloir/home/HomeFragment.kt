@@ -17,6 +17,7 @@ import be.marche.apptravaux.R
 import be.marche.apptravaux.api.ConnectivityLiveData
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirHomeBinding
+import be.marche.apptravaux.databinding.TopTestBinding
 import be.marche.apptravaux.permission.PermissionUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -26,7 +27,8 @@ class HomeFragment : Fragment() {
     private val LOCATION_REQUEST_CODE = 1
     lateinit var permissionUtil: PermissionUtil
     private val avaloirModel: AvaloirViewModel by viewModel()
-    private var _binding: FragmentAvaloirHomeBinding? = null
+    //private var _binding: FragmentAvaloirHomeBinding? = null
+    private var _binding: TopTestBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -34,7 +36,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentAvaloirHomeBinding.inflate(inflater, container, false)
+        _binding = TopTestBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -46,12 +48,12 @@ class HomeFragment : Fragment() {
         setupPermissions()
         refreshDataBase()
 
-        binding.goBtn.setOnClickListener {
+    /*    binding.goBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_listFragment)
         }
         binding.btnSearch.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
-        }
+        }*/
     }
 
     override fun onRequestPermissionsResult(
@@ -105,7 +107,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun refreshDataBase() {
-        activity?.application?.let {
+     /*   activity?.application?.let {
             ConnectivityLiveData(it).observe(viewLifecycleOwner, Observer { connected ->
                 when (connected) {
                     true -> {
@@ -121,7 +123,7 @@ class HomeFragment : Fragment() {
                     }
                 }
             })
-        }
+        }*/
     }
 
     private fun syncContent() {
