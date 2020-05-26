@@ -3,12 +3,10 @@ package be.marche.apptravaux.avaloir.list
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
+import be.marche.apptravaux.databinding.AvaloirListItemBinding
 import coil.api.load
 
 class AvaloirListAdapter internal constructor(
@@ -23,10 +21,7 @@ class AvaloirListAdapter internal constructor(
     private var avaloirs = emptyList<Avaloir>() // Cached copy of words
 
     inner class AvaloirViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val avaloirCardView = itemView.findViewById<CardView>(R.id.avaloirCardView)!!
-        val avaloirPhotoView = itemView.findViewById<ImageView>(R.id.avaloirPhotoView)
-        val avaloirRueView = itemView.findViewById<TextView>(R.id.avaloirRueView)
-        val avaloirLocaliteView = itemView.findViewById<TextView>(R.id.avaloirLocaliteView)
+        val binding = AvaloirListItemBinding.bind(itemView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AvaloirViewHolder {
@@ -38,8 +33,8 @@ class AvaloirListAdapter internal constructor(
     override fun onBindViewHolder(holder: AvaloirViewHolder, position: Int) {
         with(holder) {
             val avaloir = avaloirs[position]
-            avaloirCardView.setOnClickListener(this@AvaloirListAdapter)
-            avaloirCardView.tag = avaloir
+            binding.avaloirCardView.setOnClickListener(this@AvaloirListAdapter)
+            binding.avaloirCardView.tag = avaloir
 
             val builder = StringBuilder()
             builder.append(avaloir.rue)
@@ -47,11 +42,11 @@ class AvaloirListAdapter internal constructor(
                 builder.append(' ')
                 builder.append(avaloir.numero)
             }
-            avaloirRueView.text = builder.toString()
+            binding.avaloirRueView.text = builder.toString()
 
-            avaloirLocaliteView.text = avaloir.localite
+            binding.avaloirLocaliteView.text = avaloir.localite
             if (avaloir.imageUrl != null) {
-                avaloirPhotoView.load(avaloir.imageUrl) {
+                binding.avaloirPhotoView.load(avaloir.imageUrl) {
                     placeholder(R.drawable.ic_photo_library)
                 }
             }
