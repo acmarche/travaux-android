@@ -118,7 +118,6 @@ class ShowFragment : Fragment(), OnMapReadyCallback {
 
     private fun setupButtons(avaloir: Avaloir) {
         binding.btnAddClean.setOnClickListener {
-            Timber.w("zeze add cleaning")
             updateClean(avaloir)
         }
 
@@ -204,7 +203,6 @@ class ShowFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun createDialogueBox() {
-        Timber.w("zeze create box")
         val customView = layoutInflater.inflate(R.layout.add_comment, null)
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Ajouter un commentaire")
