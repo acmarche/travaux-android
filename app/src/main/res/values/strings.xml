@@ -23,7 +23,7 @@
     <string name="btn_validation_ajout">Valider</string>
     <string name="btn_cancel">Annuler</string>
     <string name="title_localisation">Localisation</string>
-    <string name="explication_description_photo">Vous devez le prendre en photo, prenez la photo de manière à repérer facilement l\'endroit</string>
+    <string name="explication_description_photo">Prenez la photo de manière \n à repérer facilement l\'endroit</string>
     <string name="title_dates_nettoyage">Les dates de nettoyage</string>
     <string name="title_commentaires">Les commentaires</string>
     <string name="btn_go_stock">Gestion des stocks</string>

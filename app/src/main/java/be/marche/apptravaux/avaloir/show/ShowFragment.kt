@@ -71,6 +71,7 @@ class ShowFragment : Fragment(), OnMapReadyCallback {
 
             setupButtons(avaloir)
             updateUi(avaloir)
+            centerMap(avaloir)
 
             this.avaloir = avaloir
 
@@ -222,7 +223,8 @@ class ShowFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        centerMap(avaloir)
+        if (::avaloir.isInitialized)
+            centerMap(avaloir)
         //   loadingProgressBar.hide()
 
     }

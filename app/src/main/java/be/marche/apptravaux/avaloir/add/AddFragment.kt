@@ -69,11 +69,11 @@ class AddFragment : Fragment(), LifecycleOwner {
             dispatchTakePictureIntent()
         }
 
-        binding.localisationTextView.text = requireContext().getString(
+      /*  binding.localisationTextView.text = requireContext().getString(
             R.string.avaloir_location,
             avaloirModel.coordinates.latitude.toString(),
             avaloirModel.coordinates.longitude.toString()
-        )
+        )*/
     }
 
     private fun dispatchTakePictureIntent() {
