@@ -96,7 +96,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListen
         )
     }
 
-    private fun moveMap(latitude: Double, longitude: Double, zoom: Float = 15f) {
+    private fun moveMap(latitude: Double, longitude: Double, zoom: Float = 18f) {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), zoom))
     }
 

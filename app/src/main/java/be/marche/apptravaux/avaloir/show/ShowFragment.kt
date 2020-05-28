@@ -107,7 +107,7 @@ class ShowFragment : Fragment(), OnMapReadyCallback {
                     LatLng(
                         avaloir.latitude,
                         avaloir.longitude
-                    ), 16f
+                    ), 18f
                 )
             )
             val options = MarkerOptions()
