@@ -12,6 +12,7 @@ https://medium.com/over-engineering/setting-up-a-material-components-theme-for-a
     <color name="colorOnSecondary">#62727b</color>
     <color name="secondaryTextColor">#ffffff</color>
     <color name="white">#FFFFFF</color>
+    <color name="cardview_initial_background">#71C3DE</color>
 </resources>
 
 <!--

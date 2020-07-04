@@ -9,6 +9,11 @@ import be.marche.apptravaux.avaloir.repository.AvaloirRepository
 import be.marche.apptravaux.geofence.GeofenceManager
 import be.marche.apptravaux.location.LocationViewModel
 import be.marche.apptravaux.permission.PermissionUtil
+import be.marche.apptravaux.stock.SyncViewModel
+import be.marche.apptravaux.stock.categorie.CategorieRepository
+import be.marche.apptravaux.stock.categorie.CategorieViewModel
+import be.marche.apptravaux.stock.produit.ProduitRepository
+import be.marche.apptravaux.stock.produit.ProduitViewModel
 import be.marche.apptravaux.utils.FileHelper
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -33,6 +38,7 @@ val appModule = module {
     single { AppDatabase.buildDatabase(androidApplication()) }
     single { GeofenceManager(androidApplication()) }
     single { get<AppDatabase>().avaloirDao() }
+    single { get<AppDatabase>().stockDao() }
     single { AvaloirRepository(get(), get()) }
     single { PermissionUtil(get()) }
     single { FileHelper() }
@@ -41,6 +47,15 @@ val appModule = module {
     viewModel { LocationViewModel(get()) }
     viewModel { AvaloirViewModel(get(), get(), get()) }
 
+    /**
+     * Stock
+     */
+    single { ProduitRepository(get()) }
+    single { CategorieRepository(get()) }
+
+    viewModel { ProduitViewModel(get(), get()) }
+    viewModel { CategorieViewModel(get(), get()) }
+    viewModel { SyncViewModel(get(), get(), get()) }
 }
 
 inline fun <reified T> createOkHttpClient(): OkHttpClient {
