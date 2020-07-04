@@ -29,10 +29,10 @@ class TravauxHomeFragment : Fragment() {
         binding.btnGoAvaloir.setOnClickListener {
             val intent = Intent(context, RedirectActivity::class.java)
             //  startActivity(intent)
-            findNavController().navigate(R.id.action_travauxHomeFragment_to_homeFragment)
+            findNavController().navigate(R.id.action_travauxHomeFragment_to_avaloirHomeFragment)
         }
         binding.btnGoStock.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_stockHomeFragment)
+            findNavController().navigate(R.id.action_travauxHomeFragment_to_stockHomeFragment)
         }
     }
 }

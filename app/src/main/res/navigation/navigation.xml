@@ -5,8 +5,8 @@
     app:startDestination="@id/travauxHomeFragment">
 
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="be.marche.apptravaux.avaloir.home.HomeFragment"
+        android:id="@+id/avaloirHomeFragment"
+        android:name="be.marche.apptravaux.avaloir.home.AvaloirHomeFragment"
         android:label="Gestion des avaloirs">
         <action
             android:id="@+id/action_homeFragment_to_listFragment"
@@ -14,9 +14,6 @@
         <action
             android:id="@+id/action_homeFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_stockHomeFragment"
-            app:destination="@id/stockHomeFragment" />
     </fragment>
     <fragment
         android:id="@+id/listFragment"
@@ -32,7 +29,7 @@
         android:label="Détails de l'avaloir">
         <action
             android:id="@+id/action_showFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/avaloirHomeFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -40,7 +37,7 @@
         android:label="Rechercher" >
         <action
             android:id="@+id/action_searchFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/avaloirHomeFragment" />
         <action
             android:id="@+id/action_searchFragment_to_showFragment"
             app:destination="@id/showFragment" />
@@ -57,15 +54,18 @@
             app:destination="@id/showFragment" />
         <action
             android:id="@+id/action_addFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/avaloirHomeFragment" />
     </fragment>
     <fragment
         android:id="@+id/travauxHomeFragment"
         android:name="be.marche.apptravaux.home.TravauxHomeFragment"
         android:label="Travaux">
         <action
-            android:id="@+id/action_travauxHomeFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            android:id="@+id/action_travauxHomeFragment_to_stockHomeFragment"
+            app:destination="@id/stockHomeFragment" />
+        <action
+            android:id="@+id/action_travauxHomeFragment_to_avaloirHomeFragment"
+            app:destination="@id/avaloirHomeFragment" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
@@ -78,7 +78,7 @@
     <fragment
         android:id="@+id/categorieListFragment"
         android:name="be.marche.apptravaux.stock.categorie.CategorieListFragment"
-        android:label="CategorieListFragment" >
+        android:label="Catégories">
         <action
             android:id="@+id/action_categorieListFragment_to_produitListFragment"
             app:destination="@id/produitListFragment" />
@@ -86,11 +86,11 @@
     <fragment
         android:id="@+id/produitListFragment"
         android:name="be.marche.apptravaux.stock.produit.ProduitListFragment"
-        android:label="ProduitListFragment" />
+        android:label="Liste des produits" />
     <fragment
         android:id="@+id/stockHomeFragment"
         android:name="be.marche.apptravaux.stock.home.StockHomeFragment"
-        android:label="StockHomeFragment" >
+        android:label="Gestion des stocks">
         <action
             android:id="@+id/action_stockHomeFragment_to_categorieListFragment"
             app:destination="@id/categorieListFragment" />

@@ -10,12 +10,12 @@ import be.marche.apptravaux.geofence.GeofenceManager
 import be.marche.apptravaux.location.LocationViewModel
 import be.marche.apptravaux.permission.PermissionUtil
 import be.marche.apptravaux.stock.SyncViewModel
+import be.marche.apptravaux.stock.api.StockService
 import be.marche.apptravaux.stock.categorie.CategorieRepository
 import be.marche.apptravaux.stock.categorie.CategorieViewModel
 import be.marche.apptravaux.stock.produit.ProduitRepository
 import be.marche.apptravaux.stock.produit.ProduitViewModel
 import be.marche.apptravaux.utils.FileHelper
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
@@ -50,11 +50,17 @@ val appModule = module {
     /**
      * Stock
      */
+    single {
+        createWebService<StockService>(
+            get(),
+            BuildConfig.API_URL
+        )
+    }
     single { ProduitRepository(get()) }
     single { CategorieRepository(get()) }
 
     viewModel { ProduitViewModel(get(), get()) }
-    viewModel { CategorieViewModel(get(), get()) }
+    viewModel { CategorieViewModel(get()) }
     viewModel { SyncViewModel(get(), get(), get()) }
 }
 

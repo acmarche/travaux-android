@@ -2,29 +2,26 @@ package be.marche.apptravaux.stock.categorie
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import be.marche.apptravaux.stock.api.StockService
+import androidx.lifecycle.liveData
 import be.marche.apptravaux.stock.entity.Categorie
+import kotlinx.coroutines.Dispatchers
 
 class CategorieViewModel(
-    val stockService: StockService,
     val categorieRepository: CategorieRepository
 ) : ViewModel(
 ) {
 
     init {
-        loadCategories()
+        getCategories()
     }
 
-    private lateinit var categories: LiveData<List<Categorie>>
     var categorie: Categorie? = null
 
-    private fun loadCategories() {
-        categories = categorieRepository.getAllCategories()
+    fun getCategories(): LiveData<List<Categorie>> = liveData(Dispatchers.IO) {
+        emit(categorieRepository.getAllCategories())
     }
 
-    fun getCategories(): LiveData<List<Categorie>> = categories
-
-    fun getCagorieById(categorieId: Int): LiveData<Categorie> {
-        return categorieRepository.getCagorieById(categorieId)
+    fun getCagorieById(categorieId: Int): LiveData<Categorie> = liveData {
+        emit(categorieRepository.getCagorieById(categorieId))
     }
 }

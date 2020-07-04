@@ -16,16 +16,15 @@ class ProduitViewModel(
 ) : ViewModel() {
 
     var produits = liveData(Dispatchers.IO) {
-        val emps = produitRepository.getAllProduits()
-        emit(emps)
+        emit(produitRepository.getAllProduits())
     }
 
-    fun getProduitById(produitId: Int): LiveData<Produit> {
-        return produitRepository.getProduitById(produitId)
+    fun getProduitById(produitId: Int): LiveData<Produit> = liveData {
+        emit(produitRepository.getProduitById(produitId))
     }
 
-    fun getProduitsByCategorie(categorie: Categorie): LiveData<List<Produit>> {
-        return produitRepository.getProduitsByCategorie(categorie)
+    fun getProduitsByCategorie(categorie: Categorie): LiveData<List<Produit>> = liveData {
+        emit(produitRepository.getProduitsByCategorie(categorie))
     }
 
     fun changeQuantite(produit: Produit, quantite: Int) {

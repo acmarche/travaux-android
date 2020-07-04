@@ -21,7 +21,7 @@ import be.marche.apptravaux.permission.PermissionUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeFragment : Fragment() {
+class AvaloirHomeFragment : Fragment() {
 
     private val LOCATION_REQUEST_CODE = 1
     lateinit var permissionUtil: PermissionUtil
