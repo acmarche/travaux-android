@@ -29,7 +29,6 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
 
     private var listener: ProduitListAdapter.ProduitListAdapterListener? = null
     private lateinit var produitListAdapter: ProduitListAdapter
-    private lateinit var produits: MutableList<Produit>
 
     companion object {
         fun newInstance() = ProduitListFragment()
@@ -47,10 +46,6 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (!::produits.isInitialized) {
-            produits = mutableListOf<Produit>()
-        }
-
         listener = this
         produitListAdapter = ProduitListAdapter(listener)
 
@@ -64,19 +59,19 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
             activity?.title = categorie!!.nom
             produitViewModel.getProduitsByCategorie(categorie!!)
                 .observe(viewLifecycleOwner, Observer { produits ->
-                    UpdateUi(produits)
+                    notifyAdapter(produits)
                 })
         } else {
             produitViewModel.produits.observe(
                 viewLifecycleOwner,
-                Observer<List<Produit>> { UpdateUi(it) })
+                Observer<List<Produit>> { produits ->
+                    produits?.let { notifyAdapter(it) }
+                })
         }
     }
 
-    private fun UpdateUi(newproduits: List<Produit>) {
-        produits.clear()
-        produits.addAll(newproduits)
-        produitListAdapter.setProduits(produits)
+    private fun notifyAdapter(newproduits: List<Produit>) {
+        produitListAdapter.setProduits(newproduits)
     }
 
     override fun onProduitSelected(produit: Produit) {
@@ -84,12 +79,10 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
     }
 
     override fun onBtnLessSelected(produit: Produit) {
-        Timber.w("zeze moins")
         checkInternet(produit, 1)
     }
 
     override fun onBtnPlusSelected(produit: Produit) {
-        Timber.w("zeze plus")
         checkInternet(produit, 2)
     }
 

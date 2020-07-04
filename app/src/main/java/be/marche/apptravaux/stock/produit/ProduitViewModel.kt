@@ -9,30 +9,33 @@ import be.marche.apptravaux.stock.entity.Categorie
 import be.marche.apptravaux.stock.entity.Produit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class ProduitViewModel(
     val stockService: StockService,
     val produitRepository: ProduitRepository
 ) : ViewModel() {
 
-    var produits = liveData(Dispatchers.IO) {
-        emit(produitRepository.getAllProduits())
-    }
+    var produits = produitRepository.getAllProduitsLive()
 
-    fun getProduitById(produitId: Int): LiveData<Produit> = liveData (Dispatchers.IO){
+    fun getProduitById(produitId: Int): LiveData<Produit> = liveData(Dispatchers.IO) {
         emit(produitRepository.getProduitById(produitId))
     }
 
-    fun getProduitsByCategorie(categorie: Categorie): LiveData<List<Produit>> = liveData(Dispatchers.IO) {
-        emit(produitRepository.getProduitsByCategorie(categorie))
+    fun getProduitsByCategorie(categorie: Categorie): LiveData<List<Produit>> =
+        liveData(Dispatchers.IO) {
+            emit(produitRepository.getProduitsByCategorie(categorie))
+        }
+
+    fun insertProdui(produit: Produit) {
+        viewModelScope.launch {
+            produitRepository.insertProduits(listOf(produit))
+        }
     }
 
     fun changeQuantite(produit: Produit, quantite: Int) {
         viewModelScope.launch {
             produit.quantite = quantite
             produitRepository.updateProduit(produit)
-     //       produits.value = produitRepository.getAllProduits()
         }
     }
 
@@ -43,9 +46,7 @@ class ProduitViewModel(
 
             if (response.isSuccessful) {
                 response.body()?.let {
-                    Timber.w("zeze ici " + produit)
                     changeQuantite(produit, quantite)
-
                 }
             }
         }

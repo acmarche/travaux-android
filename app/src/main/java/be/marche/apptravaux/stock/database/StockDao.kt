@@ -1,5 +1,6 @@
 package be.marche.apptravaux.stock.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import be.marche.apptravaux.stock.entity.Categorie
 import be.marche.apptravaux.stock.entity.Produit
@@ -24,6 +25,9 @@ interface StockDao {
      */
     @Query("SELECT * FROM produit ORDER BY nom ASC")
     fun getAllProduits(): List<Produit>
+
+    @Query("SELECT * FROM produit ORDER BY nom ASC")
+    fun getAllProduitsLive(): LiveData<List<Produit>>
 
     @Query("SELECT * FROM produit WHERE id = :produitId")
     fun getProduitById(produitId: Int): Produit
