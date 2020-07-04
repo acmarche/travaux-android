@@ -20,7 +20,6 @@
         android:id="@+id/btnGoStock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
         android:text="@string/btn_go_stock"
         app:layout_constraintBottom_toTopOf="@+id/btnGoIntervention"
         app:layout_constraintLeft_toLeftOf="parent"

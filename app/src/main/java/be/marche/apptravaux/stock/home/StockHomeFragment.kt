@@ -15,7 +15,7 @@ import be.marche.apptravaux.stock.categorie.CategorieViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeFragment : Fragment() {
+class StockHomeFragment : Fragment() {
 
     val syncViewModel: SyncViewModel by viewModel()
     val categorieViewModel: CategorieViewModel by sharedViewModel()
@@ -23,7 +23,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     companion object {
-        fun newInstance() = HomeFragment()
+        fun newInstance() = StockHomeFragment()
     }
 
     override fun onCreateView(
@@ -42,30 +42,31 @@ class HomeFragment : Fragment() {
         categorieViewModel.categorie = null
 
         binding.btnCategorieView.setOnClickListener {
-           // findNavController().navigate(R.id.action_homeFragment_to_categorieListFragment)
+            findNavController().navigate(R.id.action_stockHomeFragment_to_categorieListFragment)
         }
         binding.btnProduitView.setOnClickListener {
-         //   findNavController().navigate(R.id.action_homeFragment_to_produitListFragment)
+            findNavController().navigate(R.id.action_stockHomeFragment_to_produitListFragment)
         }
-
     }
 
     private fun refreshDataBase() {
-        ConnectivityLiveData(activity?.application).observe(requireActivity(), Observer { connected ->
-            when (connected) {
-                true -> {
-                    binding.messageView.visibility = View.INVISIBLE
-                    binding.btnProduitView.visibility = View.VISIBLE
-                    binding.btnCategorieView.visibility = View.VISIBLE
-                    syncViewModel.refreshData()
+        ConnectivityLiveData(activity?.application).observe(
+            requireActivity(),
+            Observer { connected ->
+                when (connected) {
+                    true -> {
+                        binding.messageView.visibility = View.INVISIBLE
+                        binding.btnProduitView.visibility = View.VISIBLE
+                        binding.btnCategorieView.visibility = View.VISIBLE
+                        syncViewModel.refreshData()
+                    }
+                    false -> {
+                        binding.messageView.visibility = View.VISIBLE
+                        binding.btnProduitView.visibility = View.INVISIBLE
+                        binding.btnCategorieView.visibility = View.INVISIBLE
+                        binding.messageView.text = getString(R.string.message_no_connectivity)
+                    }
                 }
-                false -> {
-                    binding.messageView.visibility = View.VISIBLE
-                    binding.btnProduitView.visibility = View.INVISIBLE
-                    binding.btnCategorieView.visibility = View.INVISIBLE
-                    binding.messageView.text = getString(R.string.message_no_connectivity)
-                }
-            }
-        })
+            })
     }
 }

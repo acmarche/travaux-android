@@ -32,8 +32,7 @@ class TravauxHomeFragment : Fragment() {
             findNavController().navigate(R.id.action_travauxHomeFragment_to_homeFragment)
         }
         binding.btnGoStock.setOnClickListener {
-            val intent = Intent(context, RedirectActivity::class.java)
-            startActivity(intent)
+            findNavController().navigate(R.id.action_homeFragment_to_stockHomeFragment)
         }
     }
 }

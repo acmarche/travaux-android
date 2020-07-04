@@ -75,7 +75,7 @@ class CategorieListFragment : Fragment(), CategorieListAdapter.CategorieListAdap
 
     override fun onCategorieSelected(categorie: Categorie) {
         categorieViewModel.categorie = categorie
-    //    findNavController().navigate(R.id.action_categorieListFragment_to_produitListFragment)
+        findNavController().navigate(R.id.action_categorieListFragment_to_produitListFragment)
     }
 
 }
