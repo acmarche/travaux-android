@@ -7,8 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import be.marche.apptravaux.R
 import be.marche.apptravaux.stock.entity.Produit
 
-class ProduitListAdapter(
-    private val produits: List<Produit>,
+class ProduitListAdapter internal constructor(
     private val listener: ProduitListAdapterListener?
 ) : RecyclerView.Adapter<ProduitViewHolder>(), View.OnClickListener {
 
@@ -18,6 +17,8 @@ class ProduitListAdapter(
         fun onBtnLessSelected(produit: Produit)
         fun onBtnPlusSelected(produit: Produit)
     }
+
+    private var produits = emptyList<Produit>() // Cached copy of words
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProduitViewHolder {
         val viewItem = LayoutInflater.from(parent.context)
@@ -42,23 +43,26 @@ class ProduitListAdapter(
             produitNomView.text = produit.nom
             produitQuantiteView.text = produit.quantite.toString()
 
-         /*   if (produit.image!!.isNotEmpty()) {
-                Picasso.get()
-                    .load(produit.image)
-                    .placeholder(R.drawable.ic_image_black_24dp)
-                    .into(produitPhotoView)
-            }*/
+            /*   if (produit.image!!.isNotEmpty()) {
+                   Picasso.get()
+                       .load(produit.image)
+                       .placeholder(R.drawable.ic_image_black_24dp)
+                       .into(produitPhotoView)
+               }*/
         }
+    }
+
+    internal fun setProduits(produits: List<Produit>) {
+        this.produits = produits
+        notifyDataSetChanged()
     }
 
     override fun onClick(view: View) {
 
         when (view.id) {
             R.id.cardViewProduit -> listener?.onProduitSelected(view.tag as Produit)
-            R.id.btnLess ->listener?.onBtnLessSelected(view.tag as Produit)
-            R.id.btnPlus ->listener?.onBtnPlusSelected(view.tag as Produit)
+            R.id.btnLess -> listener?.onBtnLessSelected(view.tag as Produit)
+            R.id.btnPlus -> listener?.onBtnPlusSelected(view.tag as Produit)
         }
     }
-
-
 }

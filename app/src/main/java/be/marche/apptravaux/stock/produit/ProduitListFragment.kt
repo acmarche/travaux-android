@@ -17,6 +17,7 @@ import be.marche.apptravaux.stock.entity.Produit
 import kotlinx.android.synthetic.main.produit_list_fragment.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterListener {
 
@@ -34,7 +35,11 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
         fun newInstance() = ProduitListFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = ProduitListFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -47,7 +52,7 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
         }
 
         listener = this
-        produitListAdapter = ProduitListAdapter(produits, listener)
+        produitListAdapter = ProduitListAdapter(listener)
 
         recyclerViewProduitList.apply {
             layoutManager = LinearLayoutManager(context)
@@ -57,18 +62,21 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
         categorie = categorieViewModel.categorie
         if (categorie != null) {
             activity?.title = categorie!!.nom
-            produitViewModel.getProduitsByCategorie(categorie!!).observe(viewLifecycleOwner, Observer { produits ->
-                UpdateUi(produits)
-            })
+            produitViewModel.getProduitsByCategorie(categorie!!)
+                .observe(viewLifecycleOwner, Observer { produits ->
+                    UpdateUi(produits)
+                })
         } else {
-           produitViewModel.produits.observe(viewLifecycleOwner, Observer<List<Produit>> { UpdateUi(it) })
+            produitViewModel.produits.observe(
+                viewLifecycleOwner,
+                Observer<List<Produit>> { UpdateUi(it) })
         }
     }
 
     private fun UpdateUi(newproduits: List<Produit>) {
         produits.clear()
         produits.addAll(newproduits)
-        produitListAdapter.notifyDataSetChanged()
+        produitListAdapter.setProduits(produits)
     }
 
     override fun onProduitSelected(produit: Produit) {
@@ -76,32 +84,43 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
     }
 
     override fun onBtnLessSelected(produit: Produit) {
+        Timber.w("zeze moins")
         checkInternet(produit, 1)
     }
 
     override fun onBtnPlusSelected(produit: Produit) {
+        Timber.w("zeze plus")
         checkInternet(produit, 2)
     }
 
     private fun checkInternet(produit: Produit, action: Int) {
 
-        ConnectivityLiveData(activity?.application).observe(viewLifecycleOwner, Observer { connected ->
+        ConnectivityLiveData(activity?.application).observe(
+            viewLifecycleOwner,
+            Observer { connected ->
 
-            when (connected) {
-                true -> {
-                    when (action) {
-                        1 -> if (produit.quantite > 0) {
-                            produitViewModel.saveAsync(produit, produit.quantite - 1)
+                when (connected) {
+                    true -> {
+                        when (action) {
+                            1 -> if (produit.quantite > 0) {
+                                Timber.w("zeze action " + action)
+                                produitViewModel.saveAsync(produit, produit.quantite - 1)
+                            }
+                            2 -> {
+                                produitViewModel.saveAsync(produit, produit.quantite + 1)
+                                Timber.w("zeze action " + action)
+                            }
                         }
-                        2 -> produitViewModel.saveAsync(produit, produit.quantite + 1)
+                    }
+                    false -> {
+                        Toast.makeText(
+                            getActivity(),
+                            getString(R.string.message_no_connectivity),
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
                     }
                 }
-                false -> {
-                    Toast.makeText(getActivity(), getString(R.string.message_no_connectivity), Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }
-        })
+            })
     }
-
 }

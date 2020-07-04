@@ -9,6 +9,7 @@ import be.marche.apptravaux.stock.entity.Categorie
 import be.marche.apptravaux.stock.entity.Produit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class ProduitViewModel(
     val stockService: StockService,
@@ -19,11 +20,11 @@ class ProduitViewModel(
         emit(produitRepository.getAllProduits())
     }
 
-    fun getProduitById(produitId: Int): LiveData<Produit> = liveData {
+    fun getProduitById(produitId: Int): LiveData<Produit> = liveData (Dispatchers.IO){
         emit(produitRepository.getProduitById(produitId))
     }
 
-    fun getProduitsByCategorie(categorie: Categorie): LiveData<List<Produit>> = liveData {
+    fun getProduitsByCategorie(categorie: Categorie): LiveData<List<Produit>> = liveData(Dispatchers.IO) {
         emit(produitRepository.getProduitsByCategorie(categorie))
     }
 
@@ -31,6 +32,7 @@ class ProduitViewModel(
         viewModelScope.launch {
             produit.quantite = quantite
             produitRepository.updateProduit(produit)
+     //       produits.value = produitRepository.getAllProduits()
         }
     }
 
@@ -41,7 +43,9 @@ class ProduitViewModel(
 
             if (response.isSuccessful) {
                 response.body()?.let {
+                    Timber.w("zeze ici " + produit)
                     changeQuantite(produit, quantite)
+
                 }
             }
         }
