@@ -17,7 +17,6 @@ import be.marche.apptravaux.stock.entity.Produit
 import kotlinx.android.synthetic.main.produit_list_fragment.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterListener {
 
@@ -68,6 +67,8 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
                     produits?.let { notifyAdapter(it) }
                 })
         }
+
+        checkInternet()
     }
 
     private fun notifyAdapter(newproduits: List<Produit>) {
@@ -79,39 +80,38 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
     }
 
     override fun onBtnLessSelected(produit: Produit) {
-        checkInternet(produit, 1)
+        changeQuantite(produit, 1)
     }
 
     override fun onBtnPlusSelected(produit: Produit) {
-        checkInternet(produit, 2)
+        changeQuantite(produit, 2)
     }
 
-    private fun checkInternet(produit: Produit, action: Int) {
+    private fun changeQuantite(produit: Produit, action: Int) {
+        when (action) {
+            1 -> if (produit.quantite > 0) {
+                produitViewModel.changeQuantite(produit, produit.quantite - 1)
+                produitViewModel.saveAsync(produit, produit.quantite)
+            }
+            2 -> {
+                produitViewModel.changeQuantite(produit, produit.quantite + 1)
+                produitViewModel.saveAsync(produit, produit.quantite)
+            }
+        }
+    }
 
-        ConnectivityLiveData(activity?.application).observe(
+    private fun checkInternet() {
+        ConnectivityLiveData(requireActivity().application).observe(
             viewLifecycleOwner,
             Observer { connected ->
-
                 when (connected) {
                     true -> {
-                        when (action) {
-                            1 -> if (produit.quantite > 0) {
-                                Timber.w("zeze action " + action)
-                                produitViewModel.saveAsync(produit, produit.quantite - 1)
-                            }
-                            2 -> {
-                                produitViewModel.saveAsync(produit, produit.quantite + 1)
-                                Timber.w("zeze action " + action)
-                            }
-                        }
+                        binding.messageView.visibility = View.INVISIBLE
+                        binding.recyclerViewProduitList.visibility = View.VISIBLE
                     }
                     false -> {
-                        Toast.makeText(
-                            getActivity(),
-                            getString(R.string.message_no_connectivity),
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
+                        binding.messageView.visibility = View.VISIBLE
+                        binding.recyclerViewProduitList.visibility = View.INVISIBLE
                     }
                 }
             })

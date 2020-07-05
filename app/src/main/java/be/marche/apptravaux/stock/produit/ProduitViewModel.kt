@@ -36,6 +36,7 @@ class ProduitViewModel(
         viewModelScope.launch {
             produit.quantite = quantite
             produitRepository.updateProduit(produit)
+          //  saveAsync(produit, produit.quantite)
         }
     }
 
@@ -46,7 +47,7 @@ class ProduitViewModel(
 
             if (response.isSuccessful) {
                 response.body()?.let {
-                    changeQuantite(produit, quantite)
+        //            changeQuantite(produit, quantite)
                 }
             }
         }
