@@ -27,7 +27,6 @@ import be.marche.apptravaux.permission.PermissionUtil
 import be.marche.apptravaux.utils.FileHelper
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
 import java.io.File
 import java.io.IOException
 

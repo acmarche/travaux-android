@@ -16,9 +16,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
 
-class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListener {
+class MapFragment : Fragment(), OnMapReadyCallback {
 
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
@@ -48,11 +47,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListen
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
-                    Timber.w("zeze new loc" + location)
                     moveMap(location.latitude, location.longitude)
-                    moveMarker(location.latitude, location.longitude)
+                    addMarker(location.latitude, location.longitude)
                 }
-              //  fusedLocationClient.removeLocationUpdates(locationCallback)
+                //  fusedLocationClient.removeLocationUpdates(locationCallback)
             }
         }
 
@@ -100,27 +98,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListen
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), zoom))
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
-        //   loadingProgressBar.hide()
-        map.setOnMarkerDragListener(this)
-
-        moveMap(avaloirModel.coordinates.latitude, avaloirModel.coordinates.longitude)
-        moveMarker(avaloirModel.coordinates.latitude, avaloirModel.coordinates.longitude)
-    }
-
-    protected fun moveMarker(latitude: Double, longitude: Double) {
+    private fun addMarker(latitude: Double, longitude: Double) {
         val options = MarkerOptions()
             .position(LatLng(latitude, longitude))
             // .title(avaloir.rue)
             //  .snippet(avaloir.localite)
-            .draggable(true)
-
         map.clear()
         marker = map.addMarker(options)
     }
 
-    protected fun updateUi() {
+    private fun moveMarker(latitude: Double, longitude: Double) {
+        val latLng = LatLng(map.cameraPosition.target.latitude, map.cameraPosition.target.longitude)
+        marker.position = latLng
+    }
+
+    private fun updateUi() {
         binding.coordinatesTextView.text = getString(
             R.string.avaloir_location_title,
             avaloirModel.coordinates.latitude.toString(),
@@ -128,19 +120,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListen
         )
     }
 
-    override fun onMarkerDragEnd(marker: Marker) {
-        Timber.w("zeze drag end")
-        avaloirModel.registerCoordinates(marker.position.latitude, marker.position.longitude)
-        moveMap(marker.position.latitude, marker.position.longitude)
-        updateUi()
+    override fun onMapReady(googleMap: GoogleMap) {
+        map = googleMap
+        //   loadingProgressBar.hide()
+
+        moveMap(avaloirModel.coordinates.latitude, avaloirModel.coordinates.longitude)
+        addMarker(avaloirModel.coordinates.latitude, avaloirModel.coordinates.longitude)
+
+        map.setOnCameraMoveListener {
+            moveMarker(map.cameraPosition.target.latitude, map.cameraPosition.target.longitude)
+        }
+
+        map.setOnCameraIdleListener {
+            val latLng =
+                LatLng(map.cameraPosition.target.latitude, map.cameraPosition.target.longitude)
+            moveMarker(latLng.latitude, latLng.longitude)
+            avaloirModel.registerCoordinates(latLng.latitude, latLng.longitude)
+            updateUi()
+        }
     }
-
-    override fun onMarkerDragStart(marker: Marker?) {
-
-    }
-
-    override fun onMarkerDrag(marker: Marker?) {
-
-    }
-
 }

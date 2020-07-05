@@ -133,7 +133,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="help_move_marker">Maintenez votre doigt sur le marqueur et glissez</string>
+    <string name="help_move_marker">Maintenez votre doigt sur la carte et glissez</string>
     <string name="cardview_contents">This is a CardView widget. CardView widgets can have
         shadows and rounded corners.
         \n\nTo create a card with a shadow, use the <font fgcolor="#FFFFFFFF">android:elevation</font>
