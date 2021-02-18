@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import be.marche.apptravaux.R
 import be.marche.apptravaux.stock.entity.Produit
 import android.text.Editable
-import timber.log.Timber
 import java.util.*
 
 class ProduitListAdapter internal constructor(
@@ -85,7 +84,6 @@ class ProduitListAdapter internal constructor(
                                             if (produitQuantiteView.text.isNotEmpty()) {
                                                 quantite =
                                                     produitQuantiteView.text.toString().toInt()
-                                                Timber.w("zeze emit " + quantite)
                                                 listener?.onQuantiteChanged(
                                                     produitQuantiteView.tag as Produit,
                                                     quantite

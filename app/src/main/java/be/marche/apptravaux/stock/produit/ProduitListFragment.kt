@@ -15,8 +15,6 @@ import be.marche.apptravaux.stock.entity.Produit
 import be.marche.apptravaux.utils.NetworkUtils
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
-
 
 class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterListener {
 
@@ -80,7 +78,6 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
     }
 
     override fun onQuantiteChanged(produit: Produit, quantite: Int) {
-        Timber.w("zeze update " + quantite)
         changeQuantite(produit, quantite)
     }
 
