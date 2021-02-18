@@ -154,6 +154,7 @@
     <string name="btn_moins">Moins</string>
     <string name="btn_plus">Plus</string>
     <string name="photo_produit">photo_produit</string>
+    <string name="quantite_libre">Quantité</string>
     <plurals name="nbr_produits">
         <item quantity="one">%d produit</item>
         <item quantity="other">%d produits</item>

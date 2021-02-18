@@ -37,7 +37,7 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = ProduitListFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -57,13 +57,13 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
         if (categorie != null) {
             activity?.title = categorie!!.nom
             produitViewModel.getProduitsByCategorie(categorie!!)
-                .observe(viewLifecycleOwner, Observer { produits ->
+                .observe(viewLifecycleOwner, { produits ->
                     notifyAdapter(produits)
                 })
         } else {
             produitViewModel.produits.observe(
                 viewLifecycleOwner,
-                Observer<List<Produit>> { produits ->
+                { produits ->
                     produits?.let { notifyAdapter(it) }
                 })
         }
@@ -103,8 +103,6 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
     private fun checkInternet() {
         NetworkUtils.getNetworkLiveData(requireActivity().application)
             .observe(requireActivity(), { connected ->
-                Timber.w("zeze connect " + connected)
-
                 when (connected) {
                     true -> {
                         binding.messageView.visibility = View.INVISIBLE
