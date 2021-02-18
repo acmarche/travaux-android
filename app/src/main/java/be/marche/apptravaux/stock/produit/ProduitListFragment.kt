@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.marche.apptravaux.R
 import be.marche.apptravaux.databinding.ProduitListFragmentBinding
@@ -17,6 +16,7 @@ import be.marche.apptravaux.utils.NetworkUtils
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+
 
 class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterListener {
 
@@ -79,25 +79,24 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
         Toast.makeText(getActivity(), getString(R.string.help_text), Toast.LENGTH_SHORT).show()
     }
 
+    override fun onQuantiteChanged(produit: Produit, quantite: Int) {
+        Timber.w("zeze update " + quantite)
+        changeQuantite(produit, quantite)
+    }
+
     override fun onBtnLessSelected(produit: Produit) {
-        changeQuantite(produit, 1)
+        if (produit.quantite > 0) {
+            changeQuantite(produit, produit.quantite - 1)
+        }
     }
 
     override fun onBtnPlusSelected(produit: Produit) {
-        changeQuantite(produit, 2)
+        changeQuantite(produit, produit.quantite + 1)
     }
 
-    private fun changeQuantite(produit: Produit, action: Int) {
-        when (action) {
-            1 -> if (produit.quantite > 0) {
-                produitViewModel.changeQuantite(produit, produit.quantite - 1)
-                produitViewModel.saveAsync(produit, produit.quantite)
-            }
-            2 -> {
-                produitViewModel.changeQuantite(produit, produit.quantite + 1)
-                produitViewModel.saveAsync(produit, produit.quantite)
-            }
-        }
+    private fun changeQuantite(produit: Produit, quantite: Int) {
+        produitViewModel.changeQuantite(produit, quantite)
+        produitViewModel.saveAsync(produit, quantite)
     }
 
     private fun checkInternet() {

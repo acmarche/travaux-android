@@ -11,7 +11,6 @@ class ProduitViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val cardView = itemView.findViewById<CardView>(R.id.cardViewProduit)!!
     val produitNomView = itemView.findViewById<TextView>(R.id.produitNomView)!!
-    //val produitPhotoView = itemView.findViewById<ImageView>(R.id.produitPhotoView)
     val produitQuantiteView = itemView.findViewById<TextView>(R.id.produitQuantiteView)
     val btnLessView = itemView.findViewById<ImageView>(R.id.btnLess)
     val btnPlusView = itemView.findViewById<ImageView>(R.id.btnPlus)
