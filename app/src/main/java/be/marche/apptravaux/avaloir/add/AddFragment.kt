@@ -20,11 +20,11 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import be.marche.apptravaux.BuildConfig
 import be.marche.apptravaux.R
-import be.marche.apptravaux.api.ConnectivityLiveData
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirAddBinding
 import be.marche.apptravaux.permission.PermissionUtil
 import be.marche.apptravaux.utils.FileHelper
+import be.marche.apptravaux.utils.NetworkUtils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.io.File
@@ -184,7 +184,7 @@ class AddFragment : Fragment(), LifecycleOwner {
 
     private fun checkInternet() {
         activity?.application?.let {
-            ConnectivityLiveData(it).observe(viewLifecycleOwner, Observer { connected ->
+            NetworkUtils.getNetworkLiveData(it).observe(viewLifecycleOwner, { connected ->
                 when (connected) {
                     true -> {
                         binding.errorTextView.text = getString(R.string.message_ok_connectivity)

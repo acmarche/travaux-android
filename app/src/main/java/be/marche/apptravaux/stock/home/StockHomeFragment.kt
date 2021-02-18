@@ -5,13 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import be.marche.apptravaux.R
-import be.marche.apptravaux.api.ConnectivityLiveData
 import be.marche.apptravaux.databinding.FragmentStockHomeBinding
 import be.marche.apptravaux.stock.SyncViewModel
 import be.marche.apptravaux.stock.categorie.CategorieViewModel
+import be.marche.apptravaux.utils.NetworkUtils
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -50,9 +49,8 @@ class StockHomeFragment : Fragment() {
     }
 
     private fun refreshDataBase() {
-        ConnectivityLiveData(activity?.application).observe(
-            requireActivity(),
-            Observer { connected ->
+        NetworkUtils.getNetworkLiveData(requireActivity().application)
+            .observe(requireActivity(), { connected ->
                 when (connected) {
                     true -> {
                         binding.messageView.visibility = View.INVISIBLE

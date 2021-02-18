@@ -9,14 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.marche.apptravaux.R
-import be.marche.apptravaux.api.ConnectivityLiveData
 import be.marche.apptravaux.databinding.ProduitListFragmentBinding
 import be.marche.apptravaux.stock.categorie.CategorieViewModel
 import be.marche.apptravaux.stock.entity.Categorie
 import be.marche.apptravaux.stock.entity.Produit
-import kotlinx.android.synthetic.main.produit_list_fragment.*
+import be.marche.apptravaux.utils.NetworkUtils
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterListener {
 
@@ -48,7 +48,7 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
         listener = this
         produitListAdapter = ProduitListAdapter(listener)
 
-        recyclerViewProduitList.apply {
+        binding.recyclerViewProduitList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = produitListAdapter
         }
@@ -101,9 +101,10 @@ class ProduitListFragment : Fragment(), ProduitListAdapter.ProduitListAdapterLis
     }
 
     private fun checkInternet() {
-        ConnectivityLiveData(requireActivity().application).observe(
-            viewLifecycleOwner,
-            Observer { connected ->
+        NetworkUtils.getNetworkLiveData(requireActivity().application)
+            .observe(requireActivity(), { connected ->
+                Timber.w("zeze connect " + connected)
+
                 when (connected) {
                     true -> {
                         binding.messageView.visibility = View.INVISIBLE

@@ -14,10 +14,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import be.marche.apptravaux.BuildConfig
 import be.marche.apptravaux.R
-import be.marche.apptravaux.api.ConnectivityLiveData
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.FragmentAvaloirHomeBinding
 import be.marche.apptravaux.permission.PermissionUtil
+import be.marche.apptravaux.utils.NetworkUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -106,7 +106,7 @@ class AvaloirHomeFragment : Fragment() {
 
     private fun refreshDataBase() {
         activity?.application?.let {
-            ConnectivityLiveData(it).observe(viewLifecycleOwner, Observer { connected ->
+            NetworkUtils.getNetworkLiveData(it).observe(viewLifecycleOwner, { connected ->
                 when (connected) {
                     true -> {
                         binding.errorTextView.text = getString(R.string.message_ok_connectivity)

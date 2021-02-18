@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import be.marche.apptravaux.R
 import be.marche.apptravaux.avaloir.entity.Avaloir
 import be.marche.apptravaux.databinding.AvaloirListItemBinding
-import coil.api.load
+import coil.load
 
 class AvaloirListAdapter internal constructor(
 

@@ -17,7 +17,7 @@ import be.marche.apptravaux.avaloir.entity.DateNettoyage
 import be.marche.apptravaux.avaloir.model.AvaloirViewModel
 import be.marche.apptravaux.databinding.ContentScrollingBinding
 import be.marche.apptravaux.databinding.FragmentAvaloirShowBinding
-import coil.api.load
+import coil.load
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
