@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 @SuppressLint("StaticFieldLeak")
 class MainViewModel @Inject constructor(
