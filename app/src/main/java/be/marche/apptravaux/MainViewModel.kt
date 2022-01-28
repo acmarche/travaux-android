@@ -2,6 +2,7 @@ package be.marche.apptravaux
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
@@ -33,14 +34,19 @@ class MainViewModel @Inject constructor(
         _uiState.value = WeatherUiState.Loading
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             try {
-                repository.fetchWeather("2.5", "5");
+                val response = repository.fetchWeather("2.5", "5");
+                Log.d("ZEZE", "response: ${response.toString()}")
+
+                /* _uiState.value = WeatherUiState.Loaded(
+                     TravauxUiModel("jfs", "cool")
+                 )*/
+
             } catch (ex: Exception) {
-
-
+                Log.d("ZEZE", "error: ${ex.message}")
+                onErrorOccurred()
             }
         }
     }
-
 
     private fun onQueryLimitReached() {
         _uiState.value = WeatherUiState.Error(

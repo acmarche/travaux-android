@@ -6,8 +6,8 @@ import retrofit2.http.Query
 
 interface NetworkingService {
 
-    @GET("/agenda.php")
+    @GET("actus.php")
     suspend fun fetchWeather(
-    ): TravauxApiResponse
+    ): List<TravauxApiResponse>
 
 }

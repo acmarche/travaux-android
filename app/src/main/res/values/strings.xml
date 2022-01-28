@@ -2,4 +2,5 @@
     <string name="app_name">AppTravaux6</string>
     <string name="something_went_wrong">oups error</string>
     <string name="query_limit_reached">reached max error</string>
+    <string name="problem_occurred">erreur survenue</string>
 </resources>
