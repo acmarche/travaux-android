@@ -37,9 +37,9 @@ class MainViewModel @Inject constructor(
                 val response = repository.fetchWeather("2.5", "5");
                 Log.d("ZEZE", "response: ${response.toString()}")
 
-                /* _uiState.value = WeatherUiState.Loaded(
+                 _uiState.value = WeatherUiState.Loaded(
                      TravauxUiModel("jfs", "cool")
-                 )*/
+                 )
 
             } catch (ex: Exception) {
                 Log.d("ZEZE", "error: ${ex.message}")

@@ -32,7 +32,7 @@ class ListActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTravaux6Theme {
-                //               Conversation(SampleData.conversationSample)
+                //Conversation(SampleData.conversationSample)
                 LoadNews()
             }
         }
@@ -74,7 +74,6 @@ fun Conversation(messages: List<Message>) {
         }
     }
 }
-
 
 @Composable
 fun ErrorDialog(message: String) {
