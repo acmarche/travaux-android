@@ -44,7 +44,7 @@ class AppModule {
 
     companion object {
         const val NETWORK_REQUEST_TIMEOUT_SECONDS = 15L
-        const val BASE_URL = "https://marche.be/api"
+        const val BASE_URL = "https://www.marche.be/api/"
     }
 
 }
