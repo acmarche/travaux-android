@@ -15,7 +15,7 @@ data class Avaloir(
     val numero: String? = null,
     val localite: String? = null,
     var imageUrl: String? = null,
-    val descriptif: String? = null
+    val descriptif: String? = null,
 )
 
 @Entity
@@ -26,7 +26,6 @@ data class Commentaire(
     val content: String,
     val createdAt: Date
 )
-
 
 @Entity
 data class DateNettoyage(

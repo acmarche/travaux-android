@@ -4,12 +4,6 @@ import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
 
-
-data class TravauxUiModel(
-    var city: String = "",
-    var weather: String = "",
-)
-
 data class DataResponse(
     val error: Int,
     val message: String,
@@ -42,4 +36,16 @@ data class Coordinates
     (
     val latitude: Double,
     val longitude: Double
+)
+
+data class NewsUiState(
+    val isSignedIn: Boolean = false,
+    val isPremium: Boolean = false,
+    val newsItems: List<NewsItemUiState> = listOf(),
+)
+
+data class NewsItemUiState(
+    val title: String,
+    val body: String,
+    val bookmarked: Boolean = false,
 )

@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 
 class MainActivity : ComponentActivity() {
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
 data class Message(val author: String, val body: String)
 
 @Composable
-fun MessageCard(msg: Message) {
+fun MessageCard(msg: Avaloir) {
     Row(modifier = Modifier.padding(all = 8.dp)) {
         Image(
             painter = painterResource(R.drawable.profile_picture),
@@ -61,7 +62,7 @@ fun MessageCard(msg: Message) {
         // We toggle the isExpanded variable when we click on this Column
         Column(modifier = Modifier.clickable { isExpanded = !isExpanded }) {
             Text(
-                text = msg.author,
+                text = "rue: ${msg.rue}",
                 color = MaterialTheme.colors.secondaryVariant,
                 style = MaterialTheme.typography.subtitle2
             )
@@ -77,7 +78,7 @@ fun MessageCard(msg: Message) {
                 modifier = Modifier.animateContentSize().padding(1.dp)
             ) {
                 Text(
-                    text = msg.body,
+                    text = "desc: ${msg.descriptif}",
                     modifier = Modifier.padding(all = 4.dp),
                     // If the message is expanded, we display all its content
                     // otherwise we only display the first line
@@ -93,7 +94,7 @@ fun MessageCard(msg: Message) {
 fun PreviewMessageCard() {
     AppTravaux6Theme {
        MessageCard(
-           msg = Message("Colleague", "Hey, take a look at Jetpack Compose, it's great!")
+           msg = Avaloir(1,12,50.5,5.20,"rue jolis bois", "24", "Aye")
        )
    }
 }

@@ -1,16 +1,24 @@
 package be.marche.apptravaux.di
 
+import android.content.Context
+import androidx.room.Room
+import be.marche.apptravaux.database.AppDatabase
+import be.marche.apptravaux.database.AvaloirDao
+import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
-import be.marche.apptravaux.networking.NetworkingService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 /**
  * App scoped module for dependency injections
@@ -21,13 +29,25 @@ import java.util.concurrent.TimeUnit
 class AppModule {
 
     @Provides
-    fun provideRetrofit(): NetworkingService =
+    @Singleton
+    fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
+        val applicationScope = CoroutineScope(SupervisorJob())
+        return AppDatabase.getDatabase(context = appContext, applicationScope)
+    }
+
+    @Provides
+    fun provideAvaloirDao(appDatabase: AppDatabase): AvaloirDao {
+        return appDatabase.avaloirDao()
+    }
+
+    @Provides
+    fun provideRetrofit(): AvaloirService =
         Retrofit.Builder()
             .client(getOkHttpClient())
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(NetworkingService::class.java)
+            .create(AvaloirService::class.java)
 
     private fun getOkHttpClient() =
         OkHttpClient.Builder()
@@ -44,7 +64,7 @@ class AppModule {
 
     companion object {
         const val NETWORK_REQUEST_TIMEOUT_SECONDS = 15L
-        const val BASE_URL = "https://www.marche.be/api/"
+        const val BASE_URL = "https://apptravaux.marche.be/"
     }
 
 }

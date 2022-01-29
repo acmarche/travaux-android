@@ -3,19 +3,17 @@ package be.marche.apptravaux.networking
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
-import be.marche.apptravaux.networking.models.TravauxApiResponse
 import be.marche.apptravaux.ui.theme.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
 
+interface AvaloirService {
 
-interface NetworkingService {
-
-    @GET("actus.php")
-    suspend fun fetchWeather(
-    ): List<TravauxApiResponse>
+    @GET("avaloirs/api/all")
+    suspend fun fetchAvaloir(
+    ): List<Avaloir>
 
     @GET("avaloirs/api/all")
     suspend fun getAllAvaloirs(
