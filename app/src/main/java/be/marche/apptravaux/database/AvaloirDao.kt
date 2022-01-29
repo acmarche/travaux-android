@@ -35,4 +35,8 @@ interface AvaloirDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCommentaires(commentaires: List<Commentaire>)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(avaloir: Avaloir)
+
 }
