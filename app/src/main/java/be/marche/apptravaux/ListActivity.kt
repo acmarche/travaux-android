@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import be.marche.apptravaux.entities.Avaloir
+import be.marche.apptravaux.navigation.Navigation
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +31,8 @@ class ListActivity : ComponentActivity() {
         setContent {
             AppTravaux6Theme {
                 //Conversation(SampleData.conversationSample)
-                LoadNews()
+                //LoadNews()
+                Navigation()
             }
         }
     }
