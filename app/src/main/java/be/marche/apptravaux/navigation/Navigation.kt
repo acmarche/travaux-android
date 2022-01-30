@@ -9,13 +9,20 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import be.marche.apptravaux.screens.DetailScreen
 import be.marche.apptravaux.screens.HomeScreen
+import be.marche.apptravaux.screens.avaloir.AvaloirListScreen
+import be.marche.apptravaux.viewModel.AvaloirViewModel
 
 @Composable
-fun Navigation() {
+fun Navigation(
+    avaloirViewModel: AvaloirViewModel
+) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = TravauxScreens.HomeScreen.route) {
         composable(route = TravauxScreens.HomeScreen.route) {
             HomeScreen(navController = navController)
+        }
+        composable(route = TravauxScreens.AvaloirListScreen.route) {
+            AvaloirListScreen(navController = navController, avaloirViewModel=avaloirViewModel)
         }
         composable(
             route = TravauxScreens.DetailScreen.route + "/{countryId}",

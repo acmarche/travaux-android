@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,31 +27,16 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ListActivity : ComponentActivity() {
 
+    private val avaloirViewModel: AvaloirViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AppTravaux6Theme {
                 //Conversation(SampleData.conversationSample)
                 //LoadNews()
-                Navigation()
+                Navigation(avaloirViewModel)
             }
-        }
-    }
-}
-
-@Composable
-fun LoadNews(mainViewModel: AvaloirViewModel = viewModel()) {
-    when (val state = mainViewModel.uiState.collectAsState().value) {
-        is AvaloirViewModel.AvaloirUiState.Loading -> {
-            Log.d("ZEZE", "loading")
-        }
-        is AvaloirViewModel.AvaloirUiState.Error -> {
-            Log.d("ZEZE", "error")
-            ErrorDialog(state.message)
-        }
-        is AvaloirViewModel.AvaloirUiState.Loaded -> {
-            Log.d("ZEZE", "loaded")
-            WeatherLoadedScreen(state.data)
         }
     }
 }
@@ -71,16 +57,6 @@ fun Conversation(messages: List<Avaloir>) {
             MessageCard(message)
         }
     }
-}
-
-@Composable
-fun ErrorDialog(message: String) {
-    Text(
-        text = message,
-        modifier = Modifier
-            .padding(start = 24.dp, top = 50.dp, end = 24.dp, bottom = 50.dp),
-        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp)
-    )
 }
 
 @Preview
