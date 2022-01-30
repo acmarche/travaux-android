@@ -18,8 +18,8 @@ import be.marche.apptravaux.ui.theme.CardData
 
 @Composable
 fun AvaloirRow(
-    avaloir: Avaloir, onItemCLick: (Int) ->
-    Unit
+    avaloir: Avaloir,
+    onItemCLick: (Int) -> Unit
 ) {
     Card(
         modifier = Modifier
