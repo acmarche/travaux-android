@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.Observer
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.Navigation
 import be.marche.apptravaux.screens.avaloir.ItemAvaloir
@@ -22,6 +23,7 @@ class ListActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+      //  syncContent()
         setContent {
             AppTravaux6Theme {
                 //Conversation(SampleData.conversationSample)
@@ -30,21 +32,28 @@ class ListActivity : ComponentActivity() {
             }
         }
     }
-}
 
-@Composable
-fun WeatherLoadedScreen(avaloirs: List<Avaloir>) {
-    LazyColumn {
-        items(avaloirs) { avaloir ->
-         //   ItemAvaloir(avaloir)
+    private fun syncContent() {
+        avaloirViewModel.getAllAvaloirsFromServer().observe(this, { avaloirs ->
+            avaloirViewModel.insertAvaloirs(avaloirs)
+        })
+
+    }
+
+    @Composable
+    fun WeatherLoadedScreen(avaloirs: List<Avaloir>) {
+        LazyColumn {
+            items(avaloirs) { avaloir ->
+                //   ItemAvaloir(avaloir)
+            }
         }
     }
-}
 
-@Preview
-@Composable
-fun PreviewConversation() {
-    AppTravaux6Theme {
-        //Conversation(SampleData.conversationSample)
+    @Preview
+    @Composable
+    fun PreviewConversation() {
+        AppTravaux6Theme {
+            //Conversation(SampleData.conversationSample)
+        }
     }
 }

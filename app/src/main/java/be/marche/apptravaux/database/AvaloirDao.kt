@@ -24,8 +24,11 @@ interface AvaloirDao {
     @Query("SELECT * FROM commentaire WHERE avaloirId = :avaloirId")
     fun getCommentairesByAvaloirId(avaloirId: Int): List<Commentaire>
 
-    @Query("SELECT * FROM avaloir WHERE id = :avaloirId")
+    @Query("SELECT * FROM avaloir WHERE idReferent = :avaloirId")
     fun getById(avaloirId: Int): Avaloir
+
+    @Query("SELECT * FROM avaloir WHERE idReferent = :avaloirId")
+    fun getByIdFlow(avaloirId: Int):  Flow<Avaloir>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAvaloirs(avaloirs: List<Avaloir>)

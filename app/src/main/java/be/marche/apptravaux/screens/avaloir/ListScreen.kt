@@ -55,7 +55,7 @@ fun LoadAvaloirs(
         items(items = avaloirs) { avaloir ->
             ItemAvaloir(avaloir) { avoirId ->
                 Log.d("ZEZE", "id {$avoirId}")
-                navController.navigate(TravauxScreens.DetailScreen.route + "/$avoirId")
+                navController.navigate(TravauxScreens.AvaloirDetailScreen.route + "/$avoirId")
             }
         }
     }

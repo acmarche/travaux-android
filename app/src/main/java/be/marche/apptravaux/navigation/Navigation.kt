@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import be.marche.apptravaux.screens.DetailScreen
+import be.marche.apptravaux.screens.AvaloirDetailScreen
 import be.marche.apptravaux.screens.HomeScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirListScreen
 import be.marche.apptravaux.viewModel.AvaloirViewModel
@@ -22,15 +22,19 @@ fun Navigation(
             HomeScreen(navController = navController)
         }
         composable(route = TravauxScreens.AvaloirListScreen.route) {
-            AvaloirListScreen(navController = navController, avaloirViewModel=avaloirViewModel)
+            AvaloirListScreen(navController = navController, avaloirViewModel = avaloirViewModel)
         }
         composable(
-            route = TravauxScreens.DetailScreen.route + "/{countryId}",
-            arguments = listOf(navArgument(name = "countryId") {
+            route = TravauxScreens.AvaloirDetailScreen.route + "/{avaloirId}",
+            arguments = listOf(navArgument(name = "avaloirId") {
                 type = NavType.IntType
             })
         ) { entry ->
-            DetailScreen(navController, entry.arguments?.getInt("countryId"))
+            AvaloirDetailScreen(
+                navController,
+                avaloirViewModel,
+                entry.arguments?.getInt("avaloirId")
+            )
         }
     }
 }

@@ -33,8 +33,11 @@ class AvaloirRepository @Inject constructor (
         return avaloirDao.getCommentairesByAvaloirId(avaloirId)
     }
 
-    fun getById(avaloirId: Int): Avaloir {
+    fun findById(avaloirId: Int): Avaloir {
         return avaloirDao.getById(avaloirId)
+    }
+    fun findByIdFlow(avaloirId: Int): Flow<Avaloir> {
+        return avaloirDao.getByIdFlow(avaloirId)
     }
 
     suspend fun getAllAvaloirsFromApi() = avaloirService.getAllAvaloirs()
