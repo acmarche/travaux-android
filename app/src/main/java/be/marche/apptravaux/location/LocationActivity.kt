@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 private const val TAG = "MainActivity"
 private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
 
-class MainActivity : ComponentActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class LocationActivity : ComponentActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
     private var foregroundOnlyLocationServiceBound = false
     private var currentOnlyLocationService: CurrentLocationService? = null
     private lateinit var foregroundOnlyBroadcastReceiver: ForegroundOnlyBroadcastReceiver
@@ -152,13 +152,13 @@ class MainActivity : ComponentActivity(), SharedPreferences.OnSharedPreferenceCh
 
         if (provideRationale) {
             ActivityCompat.requestPermissions(
-                this@MainActivity,
+                this@LocationActivity,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
             )
         } else {
             ActivityCompat.requestPermissions(
-                this@MainActivity,
+                this@LocationActivity,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
             )
