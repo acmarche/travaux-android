@@ -24,6 +24,7 @@ import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.TravauxScreens
 import be.marche.apptravaux.viewModel.AvaloirViewModel
+import coil.compose.rememberImagePainter
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 
 @Composable
@@ -74,13 +75,21 @@ fun ItemAvaloir(
             },
     ) {
         Image(
-            painter = painterResource(R.drawable.profile_picture),
+            painter = rememberImagePainter(avaloir.imageUrl),
             contentDescription = null,
             modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
+                .size(128.dp)
                 .border(1.5.dp, MaterialTheme.colors.secondaryVariant, CircleShape)
+                .clip(CircleShape)
         )
+        /*  Image(
+              painter = painterResource(R.drawable.profile_picture),
+              contentDescription = null,
+              modifier = Modifier
+                  .size(40.dp)
+                  .clip(CircleShape)
+                  .border(1.5.dp, MaterialTheme.colors.secondaryVariant, CircleShape)
+          )*/
         Spacer(modifier = Modifier.width(8.dp))
 
         // We keep track if the message is expanded or not in this
