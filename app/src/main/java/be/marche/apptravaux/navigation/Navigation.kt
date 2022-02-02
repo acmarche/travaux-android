@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import be.marche.apptravaux.screens.AvaloirDetailScreen
 import be.marche.apptravaux.screens.HomeScreen
+import be.marche.apptravaux.screens.MainScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirListScreen
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 
@@ -35,6 +36,9 @@ fun Navigation(
                 avaloirViewModel,
                 entry.arguments?.getInt("avaloirId")
             )
+        }
+        composable(route = TravauxScreens.MainScreen.route) {
+            MainScreen()
         }
     }
 }
