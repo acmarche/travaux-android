@@ -31,6 +31,7 @@ class AvaloirViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<AvaloirUiState>(AvaloirUiState.Empty)
     val uiState: StateFlow<AvaloirUiState> = _uiState
+    var avaloir = MutableStateFlow<Avaloir?>(null)
 
     init {
         fetchAvaloirs()
@@ -53,11 +54,12 @@ class AvaloirViewModel @Inject constructor(
     }
 
     fun findById(avaloirId: Int): Flow<Avaloir> {
-      val t=   avaloirRepository.findByIdFlow(avaloirId)
-        return t.distinctUntilChanged();
+        val t = avaloirRepository.findByIdFlow(avaloirId)
+        return t.distinctUntilChanged()
     }
 
-    fun findById2(avaloirId: Int): LiveData<Avaloir> = liveData {
+    fun findByIdAsLive(avaloirId: Int): LiveData<Avaloir> = liveData {
+        avaloir.value = avaloirRepository.findById(avaloirId)
         emit(avaloirRepository.findById(avaloirId))
     }
 
@@ -80,11 +82,6 @@ class AvaloirViewModel @Inject constructor(
         class Error(val message: String) : AvaloirUiState()
     }
 
-    companion object {
-        const val AUSTIN_LONG = "50.733330"
-        const val AUSTIN_LAT = "5.266666"
-    }
-
     fun getAllAvaloirsFromServer(): LiveData<List<Avaloir>> = liveData {
         emit(avaloirRepository.getAllAvaloirsFromApi())
     }
@@ -102,18 +99,3 @@ class AvaloirViewModel @Inject constructor(
     }
 
 }
-
-/**
- *   // Using LiveData and caching what allWords returns has several benefits:
-// - We can put an observer on the data (instead of polling for changes) and only update the
-//   the UI when the data actually changes.
-// - Repository is completely separated from the UI through the ViewModel.
-val allWords: LiveData<List<Avaloir>> = repository.allWords.asLiveData()
-
-/**
- * Launching a new coroutine to insert the data in a non-blocking way
-*/
-fun insert(word: Avaloir) = viewModelScope.launch {
-repository.insert(word)
-}
- */
