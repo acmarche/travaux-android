@@ -22,7 +22,7 @@ import com.myricseptember.countryfactcomposefinal.widgets.CardRow
 @Composable
 fun HomeScreen(navController: NavController) {
     val c = CardData("Gestion des avaloirs", TravauxScreens.AvaloirListScreen.route)
-    val d = CardData("Gestion des stocks", TravauxScreens.AvaloirDetailScreen.route)
+    val d = CardData("Gestion des stocks", TravauxScreens.MainScreen.route)
     val cards: List<CardData> = listOf(c, d)
 
     Scaffold(topBar = {
