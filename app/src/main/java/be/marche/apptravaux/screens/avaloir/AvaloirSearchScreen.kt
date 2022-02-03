@@ -1,8 +1,5 @@
-package be.marche.apptravaux.samples
+package be.marche.apptravaux.screens.avaloir
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,36 +10,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import be.marche.apptravaux.ui.theme.AppTravaux6Theme
-import be.marche.apptravaux.ui.theme.Purple500
+import androidx.navigation.NavController
+import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.Teal200
+import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.myricseptember.countryfactcomposefinal.widgets.FloatAlertDialog
 
-class BottomAppBarWithFab : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            AppTravaux6Theme {
-                Surface(color = MaterialTheme.colors.background) {
-                    BottomAppBarWithFabC()
-                }
-            }
-        }
-    }
-}
-
 @Composable
-fun BottomAppBarWithFabC() {
+fun AvaloirSearchScreen(
+    navController: NavController,
+    avaloirViewModel: AvaloirViewModel
+) {
     val content = remember { mutableStateOf("Home Screen") }
     val selectedItem = remember { mutableStateOf("home") }
     val openDialog = remember { mutableStateOf(false) }
@@ -52,7 +39,7 @@ fun BottomAppBarWithFabC() {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Bottom App Bar with FAB"
+                        text = "Rechercher"
                     )
                 },
                 navigationIcon = {
@@ -64,7 +51,7 @@ fun BottomAppBarWithFabC() {
                         Icon(Icons.Filled.Menu, contentDescription = "")
                     }
                 },
-                backgroundColor = Purple500,
+                backgroundColor = Colors.Pink500,
                 elevation = AppBarDefaults.TopAppBarElevation
             )
         },
@@ -126,9 +113,9 @@ fun BottomAppBarWithFabC() {
                                 selectedItem.value = "setting"
                             },
                             icon = {
-                                Icon(Icons.Filled.Settings, contentDescription = "setting")
+                                Icon(Icons.Filled.Search, contentDescription = "search")
                             },
-                            label = { Text(text = "Setting") },
+                            label = { Text(text = "Search") },
                             alwaysShowLabel = false
                         )
                     }
@@ -137,12 +124,3 @@ fun BottomAppBarWithFabC() {
         }
     )
 }
-
-
-    @Preview
-    @Composable
-    fun PreviewConversation() {
-        AppTravaux6Theme {
-BottomAppBarWithFabC()
-        }
-    }

@@ -1,4 +1,4 @@
-package be.marche.apptravaux.screens
+package be.marche.apptravaux.screens.avaloir
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -10,22 +10,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import be.marche.apptravaux.navigation.TravauxScreens
+import be.marche.apptravaux.screens.CardData
 import com.myricseptember.countryfactcomposefinal.widgets.CardRow
 
-data class CardData(val texte: String, val url: String)
-
 @Composable
-fun HomeScreen(navController: NavController) {
-    val c = CardData("Gestion des avaloirs", TravauxScreens.AvaloirHomeScreen.route)
-    val d = CardData("Gestion des stocks", TravauxScreens.StockHomeScreen.route)
-    val e = CardData("Demo", TravauxScreens.DemoScreen.route)
-    val cards: List<CardData> = listOf(c, d, e)
+fun AvaloirHomeScreen(navController: NavController) {
+    val c = CardData("Rechercher", TravauxScreens.AvaloirSearchScreen.route)
+    val d = CardData("Liste des avaloirs", TravauxScreens.AvaloirListScreen.route)
+    val cards: List<CardData> = listOf(c, d)
 
-    MainContentHome(navController = navController, datas = cards)
+    MainContentAvaloirHome(navController = navController, datas = cards)
 }
 
 @Composable
-fun MainContentHome(
+fun MainContentAvaloirHome(
     navController: NavController,
     datas: List<CardData>
 ) {

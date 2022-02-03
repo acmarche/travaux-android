@@ -1,4 +1,4 @@
-package be.marche.apptravaux.screens.avaloir
+package be.marche.apptravaux.samples
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -30,7 +30,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainActivity : ComponentActivity() {
+class MapActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

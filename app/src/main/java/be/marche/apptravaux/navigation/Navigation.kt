@@ -7,10 +7,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import be.marche.apptravaux.samples.BottomAppBarWithFabC
 import be.marche.apptravaux.screens.AvaloirDetailScreen
 import be.marche.apptravaux.screens.HomeScreen
-import be.marche.apptravaux.screens.MainScreen
+import be.marche.apptravaux.screens.avaloir.AvaloirHomeScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirListScreen
+import be.marche.apptravaux.screens.avaloir.AvaloirSearchScreen
+import be.marche.apptravaux.screens.stock.StockHomeScreen
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 
 class Navigation {
@@ -28,8 +31,22 @@ fun Navigation(
             HomeScreen(navController = navController)
         }
 
+        /**
+         * AVALOIRS
+         */
+        composable(route = TravauxScreens.AvaloirHomeScreen.route) {
+            AvaloirHomeScreen(navController = navController)
+        }
+
         composable(route = TravauxScreens.AvaloirListScreen.route) {
             AvaloirListScreen(navController = navController, avaloirViewModel = avaloirViewModel)
+        }
+
+        composable(route = TravauxScreens.AvaloirSearchScreen.route) {
+            AvaloirSearchScreen(
+                navController = navController,
+                avaloirViewModel = avaloirViewModel
+            )
         }
 
         composable(
@@ -45,8 +62,17 @@ fun Navigation(
             )
         }
 
-        composable(route = TravauxScreens.MainScreen.route) {
-            MainScreen()
+        /**
+         * STOCKS
+         */
+        composable(route = TravauxScreens.StockHomeScreen.route) {
+            StockHomeScreen(
+
+            )
+        }
+
+        composable(route = TravauxScreens.DemoScreen.route) {
+            BottomAppBarWithFabC()
         }
     }
 }
