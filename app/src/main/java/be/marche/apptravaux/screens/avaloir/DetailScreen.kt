@@ -11,7 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import be.marche.apptravaux.entities.Avaloir
-import be.marche.apptravaux.screens.avaloir.GoogleMap
+import be.marche.apptravaux.screens.widgets.GoogleMapWidget
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import coil.compose.rememberImagePainter
 
@@ -46,7 +46,7 @@ fun AvaloirDetailScreen(
                 if (avaloir != null) {
                     Text(text = "rue ${avaloir.rue} ", fontWeight = FontWeight.Bold)
                     Text(text = "id ${avaloir.idReferent} ")
-                    GoogleMap()
+                    GoogleMapWidget(avaloir.latitude, avaloir.longitude, avaloir.rue)
                 } else {
                     Text(text = "Not found")
                 }

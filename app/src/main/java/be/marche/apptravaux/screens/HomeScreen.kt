@@ -16,8 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import be.marche.apptravaux.navigation.TravauxScreens
-import be.marche.apptravaux.ui.theme.CardData
 import com.myricseptember.countryfactcomposefinal.widgets.CardRow
+
+data class CardData(val texte: String, val url: String)
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -25,16 +26,7 @@ fun HomeScreen(navController: NavController) {
     val d = CardData("Gestion des stocks", TravauxScreens.MainScreen.route)
     val cards: List<CardData> = listOf(c, d)
 
-    Scaffold(topBar = {
-        TopAppBar(
-            backgroundColor = Color.Transparent, elevation =
-            0.dp, modifier = Modifier.padding(start = 8.dp)
-        ) {
-            Text(text = "AppTravaux", fontWeight = FontWeight.Bold)
-        }
-    }) {
-        MainContent(navController = navController, datas = cards)
-    }
+    MainContent(navController = navController, datas = cards)
 }
 
 @Composable
@@ -46,9 +38,7 @@ fun MainContent(
     Column(modifier = Modifier.padding(12.dp)) {
         LazyColumn {
             items(datas) { data ->
-                CardRow(data) { countryId ->
-                    Log.d("ZEZE", "id {$countryId}")
-                    Log.d("ZEZE", "url {$data.url}")
+                CardRow(data) {
                     navController.navigate(data.url)
                 }
             }

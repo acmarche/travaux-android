@@ -1,5 +1,7 @@
 package be.marche.apptravaux
 
+data class Message(val author: String, val body: String)
+
 object SampleData {
     // Sample conversation data
     val conversationSample = listOf(

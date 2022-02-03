@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -14,7 +13,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.marche.apptravaux.entities.Avaloir
-import be.marche.apptravaux.ui.theme.CardData
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import be.marche.apptravaux.screens.CardData
 
 @Composable
 fun AvaloirRow(
@@ -75,4 +79,30 @@ fun ErrorDialog(message: String) {
             .padding(start = 24.dp, top = 50.dp, end = 24.dp, bottom = 50.dp),
         style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp)
     )
+}
+
+@Composable
+fun FloatAlertDialog(openDialog: MutableState<Boolean>) {
+    if (openDialog.value) {
+        AlertDialog(
+            onDismissRequest = {
+                openDialog.value = false
+            },
+            title = {
+                Text(text = "Floating Action", fontWeight = FontWeight.Bold)
+            },
+            text = {
+                Text(text = "Let's Start...")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        openDialog.value = false
+                    }
+                ) {
+                    Text(text = "Ok")
+                }
+            }
+        )
+    }
 }

@@ -49,5 +49,3 @@ data class NewsItemUiState(
     val body: String,
     val bookmarked: Boolean = false,
 )
-
-data class CardData(val texte: String, val url: String)

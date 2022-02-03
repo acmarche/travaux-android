@@ -13,18 +13,25 @@ import be.marche.apptravaux.screens.MainScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirListScreen
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 
+class Navigation {
+    //companion object PARAM_AVALOIR = ""
+}
+
 @Composable
 fun Navigation(
     avaloirViewModel: AvaloirViewModel
 ) {
     val navController = rememberNavController()
+
     NavHost(navController = navController, startDestination = TravauxScreens.HomeScreen.route) {
         composable(route = TravauxScreens.HomeScreen.route) {
             HomeScreen(navController = navController)
         }
+
         composable(route = TravauxScreens.AvaloirListScreen.route) {
             AvaloirListScreen(navController = navController, avaloirViewModel = avaloirViewModel)
         }
+
         composable(
             route = TravauxScreens.AvaloirDetailScreen.route + "/{avaloirId}",
             arguments = listOf(navArgument(name = "avaloirId") {
@@ -37,6 +44,7 @@ fun Navigation(
                 entry.arguments?.getInt("avaloirId")
             )
         }
+
         composable(route = TravauxScreens.MainScreen.route) {
             MainScreen()
         }

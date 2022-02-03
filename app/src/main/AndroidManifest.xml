@@ -22,13 +22,13 @@
             android:value="AIzaSyAt2WjkYpQZSFQSHEpnprVhmsmCkZaK9HQ"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ListActivity"
             android:exported="false" />
         <activity
             android:name=".location.LocationActivity"
             android:exported="false" />
         <activity
-            android:name=".ListActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppTravaux6.NoActionBar">
