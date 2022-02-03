@@ -46,7 +46,7 @@ fun AvaloirDetailScreen(
                 if (avaloir != null) {
                     Text(text = "rue ${avaloir.rue} ", fontWeight = FontWeight.Bold)
                     Text(text = "id ${avaloir.idReferent} ")
-                    GoogleMapWidget(avaloir.latitude, avaloir.longitude, avaloir.rue)
+                    GoogleMapWidget(avaloir.latitude, avaloir.longitude, avaloir.rue, false)
                 } else {
                     Text(text = "Not found")
                 }

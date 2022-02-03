@@ -17,8 +17,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.GoogleMap.OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION
-import com.google.android.libraries.maps.GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE
 import com.google.android.libraries.maps.GoogleMapOptions
 import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.CameraPosition
@@ -34,8 +32,8 @@ import kotlinx.coroutines.launch
 var marker: Marker? = null
 
 @Composable
-fun GoogleMapWidget(latitude: Double, longitude: Double, name: String?) {
-    val mapView = rememberMapViewWithLifeCycle()
+fun GoogleMapWidget(latitude: Double, longitude: Double, name: String?, move: Boolean) {
+    val mapView = rememberMapViewWithLifeCycle(move)
 
     Column(
         modifier = Modifier
@@ -49,10 +47,10 @@ fun GoogleMapWidget(latitude: Double, longitude: Double, name: String?) {
                 val map = mapView.awaitMap()
                 map.uiSettings.isZoomControlsEnabled = true
                 val latLng = LatLng(latitude, longitude)
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f))
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
                 val markerOption = MarkerOptions()
                     .title("Init")
-                    .position(LatLng(50.5, 5.5))
+                    .position(latLng)
                     .title(name)
                     .position(latLng)
                 marker = map.addMarker(markerOption)
@@ -62,7 +60,7 @@ fun GoogleMapWidget(latitude: Double, longitude: Double, name: String?) {
 }
 
 @Composable
-fun rememberMapViewWithLifeCycle(): MapView {
+fun rememberMapViewWithLifeCycle(move: Boolean): MapView {
     val mapOptions = GoogleMapOptions()
         .mapType(GoogleMap.MAP_TYPE_NORMAL)
         .zoomControlsEnabled(true)
@@ -75,16 +73,15 @@ fun rememberMapViewWithLifeCycle(): MapView {
         }
     }
 
-    mapView.getMapAsync { map ->
-        var cameraPosition: CameraPosition
-        var cameraChangeReason = REASON_DEVELOPER_ANIMATION
-
-        map.setOnCameraMoveStartedListener { reason ->
-            cameraChangeReason = reason
-            if (reason == REASON_GESTURE) {
-                cameraPosition = map.cameraPosition
-                Log.d("ZEZE", "move {$cameraPosition}")
+    if (move == true) {
+        mapView.getMapAsync { map ->
+            map.setOnCameraMoveListener {
+                val cameraPosition: CameraPosition = map.cameraPosition
                 moveMarker(cameraPosition.target.latitude, cameraPosition.target.longitude)
+            }
+            map.setOnCameraIdleListener {
+                //registerCoordinates
+                Log.d("ZEZE", "idle")
             }
         }
     }
