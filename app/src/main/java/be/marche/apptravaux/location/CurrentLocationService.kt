@@ -12,10 +12,9 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import be.marche.apptravaux.MainActivity
-import be.marche.apptravaux.R
 import com.google.android.gms.location.*
 import java.util.concurrent.TimeUnit
+import be.marche.apptravaux.R
 
 class CurrentLocationService: Service() {
     private var configurationChange = false
@@ -65,7 +64,7 @@ class CurrentLocationService: Service() {
         return START_NOT_STICKY
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
+    override fun onBind(intent: Intent?): IBinder {
         stopForeground(true)
         serviceRunningInForeground = false
         configurationChange = false
@@ -131,7 +130,7 @@ class CurrentLocationService: Service() {
         val bigTextStyle = NotificationCompat.BigTextStyle()
             .bigText(mainNotificationText)
             .setBigContentTitle(titleText)
-        val launchActivity = Intent(this, MainActivity::class.java)
+        val launchActivity = Intent(this, CurrentLocationActivity::class.java)
         val cancelIntent = Intent(this, CurrentLocationService::class.java)
         cancelIntent.putExtra(EXTRA_CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION, true)
         val servicePendingIntent = PendingIntent.getService(
@@ -177,34 +176,3 @@ class CurrentLocationService: Service() {
         private const val NOTIFICATION_CHANNEL_ID = "channel_01"
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
