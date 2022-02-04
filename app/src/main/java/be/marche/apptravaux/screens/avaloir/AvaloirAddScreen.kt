@@ -34,9 +34,6 @@ import kotlinx.coroutines.launch
 class AvaloirAddScreen(
     avaloirViewModel: AvaloirViewModel
 ) {
-
-    var isCameraSelected = false
-
     @ExperimentalMaterialApi
     @Composable
     fun TakePicure() {
@@ -56,9 +53,7 @@ class AvaloirAddScreen(
             contract = ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                if (isCameraSelected) {
-                    cameraLauncher.launch()
-                }
+                cameraLauncher.launch()
                 coroutineScope.launch {
                     bottomSheetModalState.hide()
                 }
@@ -109,7 +104,6 @@ class AvaloirAddScreen(
                                             }
                                         }
                                         else -> {
-                                            isCameraSelected = true
                                             permissionLauncher.launch(Manifest.permission.CAMERA)
                                         }
                                     }
