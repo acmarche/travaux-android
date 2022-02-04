@@ -1,13 +1,16 @@
 package be.marche.apptravaux.navigation
 
 
+import android.content.Intent
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import be.marche.apptravaux.AvaloirAddActivity
 import be.marche.apptravaux.samples.BottomAppBarWithFabC
 import be.marche.apptravaux.screens.AvaloirDetailScreen
 import be.marche.apptravaux.screens.HomeScreen
@@ -47,9 +50,8 @@ fun Navigation(
         }
 
         composable(route = TravauxScreens.AvaloirAddScreen.route) {
-            val t =
-                AvaloirAddScreen(navController = navController, avaloirViewModel = avaloirViewModel)
-            t.TakePicure()
+            val intent = Intent(navController.context, AvaloirAddActivity::class.java)
+            startActivity(navController.context, intent, null)
         }
 
         composable(route = TravauxScreens.AvaloirSearchScreen.route) {

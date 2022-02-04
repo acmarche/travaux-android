@@ -22,7 +22,7 @@
             android:value="AIzaSyAt2WjkYpQZSFQSHEpnprVhmsmCkZaK9HQ"/>
 
         <activity
-            android:name=".ListActivity"
+            android:name=".AvaloirAddActivity"
             android:exported="false" />
 
         <activity

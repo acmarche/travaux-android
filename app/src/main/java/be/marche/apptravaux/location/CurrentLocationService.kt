@@ -12,11 +12,12 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import be.marche.apptravaux.MainActivity
+import be.marche.apptravaux.R
 import com.google.android.gms.location.*
 import java.util.concurrent.TimeUnit
-import be.marche.apptravaux.R
 
-class CurrentLocationService: Service() {
+class CurrentLocationService : Service() {
     private var configurationChange = false
     private var serviceRunningInForeground = false
     private val localBinder = LocalBinder()
@@ -55,7 +56,8 @@ class CurrentLocationService: Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val cancelLocationTrackFromNotify = intent.getBooleanExtra(
-            EXTRA_CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION, false)
+            EXTRA_CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION, false
+        )
 
         if (cancelLocationTrackFromNotify) {
             unSubscribeToLocationUpdates()
@@ -94,7 +96,8 @@ class CurrentLocationService: Service() {
                 sendLocation(location!!)
             }
             fusedLocationProviderClient.requestLocationUpdates(
-                locationRequest, locationCallback, Looper.getMainLooper())
+                locationRequest, locationCallback, Looper.getMainLooper()
+            )
         } catch (unlikely: SecurityException) {
             SharedPreferenceUtil.saveLocationTrackingPref(this, false)
         }
@@ -116,7 +119,7 @@ class CurrentLocationService: Service() {
         }
     }
 
-    private fun generateNotification(location: Location?) : Notification {
+    private fun generateNotification(location: Location?): Notification {
         val mainNotificationText = location?.toText() ?: getString(R.string.no_location_text)
         val titleText = getString(R.string.app_name)
 
@@ -130,7 +133,7 @@ class CurrentLocationService: Service() {
         val bigTextStyle = NotificationCompat.BigTextStyle()
             .bigText(mainNotificationText)
             .setBigContentTitle(titleText)
-        val launchActivity = Intent(this, CurrentLocationActivity::class.java)
+        val launchActivity = Intent(this, MainActivity::class.java)
         val cancelIntent = Intent(this, CurrentLocationService::class.java)
         cancelIntent.putExtra(EXTRA_CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION, true)
         val servicePendingIntent = PendingIntent.getService(
@@ -139,7 +142,8 @@ class CurrentLocationService: Service() {
         val activityPendingIntent = PendingIntent.getActivity(
             this, 0, launchActivity, 0
         )
-        val notificationCompatBuilder = NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL_ID)
+        val notificationCompatBuilder =
+            NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL_ID)
 
         return notificationCompatBuilder.setStyle(bigTextStyle)
             .setContentTitle(titleText)
@@ -153,7 +157,9 @@ class CurrentLocationService: Service() {
                 activityPendingIntent
             )
             .addAction(
-                R.drawable.ic_cancel, getString(R.string.stop_location_updates_button_text), servicePendingIntent
+                R.drawable.ic_cancel,
+                getString(R.string.stop_location_updates_button_text),
+                servicePendingIntent
             )
             .build()
     }
@@ -162,16 +168,18 @@ class CurrentLocationService: Service() {
         super.onDestroy()
     }
 
-    inner class LocalBinder: Binder() {
+    inner class LocalBinder : Binder() {
         internal val service: CurrentLocationService get() = this@CurrentLocationService
     }
 
     companion object {
         private const val TAG = "ForegroundOnlyLocationService"
         private const val PACKAGE_NAME = "com.jetpack.getcurrentlocation"
-        internal const val ACTION_FOREGROUND_ONLY_LOCATION_BROADCAST = "$PACKAGE_NAME.action.FOREGROUND_ONLY_LOCATION_BROADCAST"
+        internal const val ACTION_FOREGROUND_ONLY_LOCATION_BROADCAST =
+            "$PACKAGE_NAME.action.FOREGROUND_ONLY_LOCATION_BROADCAST"
         internal const val EXTRA_LOCATION = "$PACKAGE_NAME.extra.LOCATION"
-        private const val EXTRA_CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION = "$PACKAGE_NAME.extra.CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION"
+        private const val EXTRA_CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION =
+            "$PACKAGE_NAME.extra.CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION"
         private const val NOTIFICATION_ID = 123
         private const val NOTIFICATION_CHANNEL_ID = "channel_01"
     }

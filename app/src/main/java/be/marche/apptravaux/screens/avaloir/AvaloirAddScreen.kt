@@ -1,16 +1,8 @@
 package be.marche.apptravaux.screens.avaloir
 
 import android.Manifest
-import android.content.ComponentName
-import android.content.ServiceConnection
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.net.Uri
-import android.os.Build
-import android.os.IBinder
-import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,14 +27,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavController
-import be.marche.apptravaux.MainActivity
+import be.marche.apptravaux.AvaloirAddActivity
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import kotlinx.coroutines.launch
 
 class AvaloirAddScreen(
-    navController: NavController,
-    avaloirViewModel: AvaloirViewModel) {
+    avaloirViewModel: AvaloirViewModel
+) {
 
     var isCameraSelected = false
 
@@ -58,7 +49,7 @@ class AvaloirAddScreen(
         val cameraLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.TakePicturePreview()
         ) { btm: Bitmap? ->
-            MainActivity.MyBitmap.bitmap = btm
+            AvaloirAddActivity.MyBitmap.bitmap = btm
         }
 
         val permissionLauncher = rememberLauncherForActivityResult(
@@ -166,7 +157,7 @@ class AvaloirAddScreen(
             }
         }
 
-        MainActivity.MyBitmap.bitmap?.let { btm ->
+        AvaloirAddActivity.MyBitmap.bitmap?.let { btm ->
             Image(
                 bitmap = btm.asImageBitmap(),
                 contentDescription = "Image",

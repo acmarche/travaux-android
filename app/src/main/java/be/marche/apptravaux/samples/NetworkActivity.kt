@@ -3,27 +3,26 @@ package be.marche.apptravaux.samples
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import be.marche.apptravaux.R
 import be.marche.apptravaux.networking.ConnectionState
 import be.marche.apptravaux.networking.connectivityState
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
-import be.marche.apptravaux.ui.theme.green
-import be.marche.apptravaux.ui.theme.red
+import com.myricseptember.countryfactcomposefinal.widgets.ConnectivityStatusBox
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 
@@ -33,6 +32,7 @@ class MainActivity : ComponentActivity() {
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             AppTravaux6Theme {
                 Surface(color = MaterialTheme.colors.background) {
@@ -93,41 +93,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun ConnectivityStatusBox(
-    isConnected: Boolean
-) {
-    val backgroundColor by animateColorAsState(targetValue = if (isConnected) green else red)
-    val message = if (isConnected) "Back Online!" else "No Internet Connection!"
-    val iconResource = if (isConnected) {
-        R.drawable.ic_connectivity_available
-    } else {
-        R.drawable.ic_connectivity_unavailable
-    }
-    Box(
-        modifier = Modifier
-            .background(backgroundColor)
-            .fillMaxWidth()
-            .padding(8.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(id = iconResource),
-                contentDescription = "Connection Image",
-                tint = Color.White
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Text(
-                text = message,
-                color = Color.White,
-                fontSize = 15.sp
-            )
-        }
-    }
-}
 
 @ExperimentalAnimationApi
 @ExperimentalCoroutinesApi
