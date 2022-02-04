@@ -1,6 +1,7 @@
 package be.marche.apptravaux.navigation
 
 
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -10,6 +11,7 @@ import androidx.navigation.navArgument
 import be.marche.apptravaux.samples.BottomAppBarWithFabC
 import be.marche.apptravaux.screens.AvaloirDetailScreen
 import be.marche.apptravaux.screens.HomeScreen
+import be.marche.apptravaux.screens.avaloir.AvaloirAddScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirHomeScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirListScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirSearchScreen
@@ -20,6 +22,7 @@ class Navigation {
     //companion object PARAM_AVALOIR = ""
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Navigation(
     avaloirViewModel: AvaloirViewModel
@@ -27,6 +30,7 @@ fun Navigation(
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = TravauxScreens.HomeScreen.route) {
+
         composable(route = TravauxScreens.HomeScreen.route) {
             HomeScreen(navController = navController)
         }
@@ -40,6 +44,12 @@ fun Navigation(
 
         composable(route = TravauxScreens.AvaloirListScreen.route) {
             AvaloirListScreen(navController = navController, avaloirViewModel = avaloirViewModel)
+        }
+
+        composable(route = TravauxScreens.AvaloirAddScreen.route) {
+            val t =
+                AvaloirAddScreen(navController = navController, avaloirViewModel = avaloirViewModel)
+            t.TakePicure()
         }
 
         composable(route = TravauxScreens.AvaloirSearchScreen.route) {
