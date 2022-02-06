@@ -11,7 +11,7 @@ class WordRepository(private val wordDao: AvaloirDao) {
 
     // Room executes all queries on a separate thread.
     // Observed Flow will notify the observer when the data has changed.
-    val allWords: Flow<List<Avaloir>> = wordDao.getFlow()
+    val allWords: Flow<List<Avaloir>> = wordDao.getFlowList()
     val allWords2: List<Avaloir> = wordDao.getAll()
 
     // By default Room runs suspend queries off the main thread, therefore, we don't need to

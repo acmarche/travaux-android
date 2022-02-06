@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import be.marche.apptravaux.navigation.TravauxScreens
 import com.myricseptember.countryfactcomposefinal.widgets.CardRow
 
@@ -16,6 +17,9 @@ data class CardData(val texte: String, val url: String)
 
 @Composable
 fun HomeScreen(navController: NavController) {
+
+    val navHostController = rememberNavController()
+
     val c = CardData("Gestion des avaloirs", TravauxScreens.AvaloirHomeScreen.route)
     val d = CardData("Gestion des stocks", TravauxScreens.StockHomeScreen.route)
     val e = CardData("Demo", TravauxScreens.DemoScreen.route)

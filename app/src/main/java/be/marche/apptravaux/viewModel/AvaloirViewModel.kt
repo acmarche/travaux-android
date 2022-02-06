@@ -3,23 +3,20 @@ package be.marche.apptravaux.viewModel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.repository.AvaloirRepository
-import dagger.assisted.Assisted
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import androidx.lifecycle.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 
 @HiltViewModel
 @SuppressLint("StaticFieldLeak")
@@ -58,10 +55,10 @@ class AvaloirViewModel @Inject constructor(
         return t.distinctUntilChanged()
     }
 
-    fun findByIdAsLive(avaloirId: Int): LiveData<Avaloir> = liveData {
-        avaloir.value = avaloirRepository.findById(avaloirId)
-        emit(avaloirRepository.findById(avaloirId))
-    }
+    /*   fun findByIdAsLive(avaloirId: Int): LiveData<Avaloir> = liveData {
+           avaloir.value = avaloirRepository.findById(avaloirId)
+           emit(avaloirRepository.findById(avaloirId))
+       }*/
 
     private fun onQueryLimitReached() {
         _uiState.value = AvaloirUiState.Error(
@@ -82,9 +79,9 @@ class AvaloirViewModel @Inject constructor(
         class Error(val message: String) : AvaloirUiState()
     }
 
-    fun getAllAvaloirsFromServer(): LiveData<List<Avaloir>> = liveData {
-        emit(avaloirRepository.getAllAvaloirsFromApi())
-    }
+    /*  fun getAllAvaloirsFromServer(): LiveData<List<Avaloir>> = liveData {
+          emit(avaloirRepository.getAllAvaloirsFromApi())
+      }*/
 
     fun insertAvaloir(avaloir: Avaloir) {
         viewModelScope.launch {

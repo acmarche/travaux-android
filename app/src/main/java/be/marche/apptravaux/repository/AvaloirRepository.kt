@@ -5,11 +5,10 @@ import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
 import be.marche.apptravaux.networking.AvaloirService
-import be.marche.apptravaux.networking.models.TravauxApiResponse
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class AvaloirRepository @Inject constructor (
+class AvaloirRepository @Inject constructor(
     private val avaloirDao: AvaloirDao,
     private val avaloirService: AvaloirService
 ) {
@@ -21,8 +20,12 @@ class AvaloirRepository @Inject constructor (
         return avaloirDao.getAll()
     }
 
-    fun getFlow(): Flow<List<Avaloir>> {
-        return avaloirDao.getFlow()
+    fun getFlowList(): Flow<List<Avaloir>> {
+        return avaloirDao.getFlowList()
+    }
+
+    fun getFlowOne(avaloirId: Int): Flow<Avaloir> {
+        return avaloirDao.getByIdFlow(avaloirId)
     }
 
     fun getDatesByAvaloirId(avaloirId: Int): List<DateNettoyage> {
@@ -36,6 +39,7 @@ class AvaloirRepository @Inject constructor (
     fun findById(avaloirId: Int): Avaloir {
         return avaloirDao.getById(avaloirId)
     }
+
     fun findByIdFlow(avaloirId: Int): Flow<Avaloir> {
         return avaloirDao.getByIdFlow(avaloirId)
     }

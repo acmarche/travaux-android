@@ -16,7 +16,10 @@ interface AvaloirDao {
     fun getAll(): List<Avaloir>
 
     @Query("SELECT * FROM avaloir")
-    fun getFlow(): Flow<List<Avaloir>>
+    fun getFlowList(): Flow<List<Avaloir>>
+
+    @Query("SELECT * FROM avaloir WHERE idReferent = :avaloirId")
+    fun getFlowById(avaloirId: Int): Flow<Avaloir>
 
     @Query("SELECT * FROM datenettoyage WHERE avaloirId = :avaloirId")
     fun getDatesByAvaloirId(avaloirId: Int): List<DateNettoyage>

@@ -14,6 +14,7 @@ import be.marche.apptravaux.AvaloirAddActivity
 import be.marche.apptravaux.samples.BottomAppBarWithFabC
 import be.marche.apptravaux.screens.AvaloirDetailScreen
 import be.marche.apptravaux.screens.HomeScreen
+import be.marche.apptravaux.screens.RequestMultiplePermissionsScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirAddScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirHomeScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirListScreen
@@ -36,6 +37,9 @@ fun Navigation(
 
         composable(route = TravauxScreens.HomeScreen.route) {
             HomeScreen(navController = navController)
+        }
+        composable(route = TravauxScreens.PermissionScreen.route) {
+            RequestMultiplePermissionsScreen(navController = navController)
         }
 
         /**
