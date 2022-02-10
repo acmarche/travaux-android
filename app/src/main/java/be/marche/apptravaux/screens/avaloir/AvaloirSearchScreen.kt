@@ -20,8 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import be.marche.apptravaux.navigation.TravauxScreens
-import be.marche.apptravaux.samples.ConnectivityStatus
+import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.myricseptember.countryfactcomposefinal.widgets.FloatAlertDialog
@@ -78,7 +77,7 @@ fun AvaloirSearchScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(TravauxScreens.AvaloirAddScreen.route)
+                    navController.navigate(TravauxRoutes.AvaloirAddScreen.route)
                 },
                 shape = RoundedCornerShape(50),
                 backgroundColor = Colors.Gray900
@@ -98,7 +97,7 @@ fun AvaloirSearchScreen(
                         BottomNavigationItem(
                             selected = selectedItem.value == "home",
                             onClick = {
-                                navController.navigate(TravauxScreens.AvaloirHomeScreen.route)
+                                navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
                             },
                             icon = {
                                 Icon(Icons.Filled.Home, contentDescription = "home")

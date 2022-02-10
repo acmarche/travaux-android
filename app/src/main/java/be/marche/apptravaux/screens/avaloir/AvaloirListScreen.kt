@@ -17,12 +17,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
-import be.marche.apptravaux.navigation.TravauxScreens
+import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import coil.compose.rememberImagePainter
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
@@ -56,7 +54,7 @@ fun LoadAvaloirs(
         items(items = avaloirs) { avaloir ->
             ItemAvaloir(avaloir) { avoirId ->
                 Log.d("ZEZE", "id {$avoirId}")
-                navController.navigate(TravauxScreens.AvaloirDetailScreen.route + "/$avoirId")
+                navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/$avoirId")
             }
         }
     }

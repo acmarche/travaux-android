@@ -32,39 +32,39 @@ fun Navigation(
 
     NavHost(
         navController = navController,
-        startDestination = TravauxScreens.PermissionScreen.route
+        startDestination = TravauxRoutes.PermissionScreen.route
     ) {
 
         val intent = Intent(navController.context, PermissionActivity::class.java)
 
-        composable(route = TravauxScreens.PermissionScreen.route) {
+        composable(route = TravauxRoutes.PermissionScreen.route) {
             PermissionsScreen(
-                { navController.navigate(TravauxScreens.HomeScreen.route) },
+                { navController.navigate(TravauxRoutes.HomeScreen.route) },
                 { startActivity(navController.context, intent, null) }
             )
         }
 
-        composable(route = TravauxScreens.HomeScreen.route) {
+        composable(route = TravauxRoutes.HomeScreen.route) {
             HomeScreen(navController = navController)
         }
 
         /**
          * AVALOIRS
          */
-        composable(route = TravauxScreens.AvaloirHomeScreen.route) {
+        composable(route = TravauxRoutes.AvaloirHomeScreen.route) {
             AvaloirHomeScreen(navController = navController)
         }
 
-        composable(route = TravauxScreens.AvaloirListScreen.route) {
+        composable(route = TravauxRoutes.AvaloirListScreen.route) {
             AvaloirListScreen(navController = navController, avaloirViewModel = avaloirViewModel)
         }
 
-        composable(route = TravauxScreens.AvaloirAddScreen.route) {
+        composable(route = TravauxRoutes.AvaloirAddScreen.route) {
             val intent = Intent(navController.context, AvaloirAddActivity::class.java)
             startActivity(navController.context, intent, null)
         }
 
-        composable(route = TravauxScreens.AvaloirSearchScreen.route) {
+        composable(route = TravauxRoutes.AvaloirSearchScreen.route) {
             AvaloirSearchScreen(
                 navController = navController,
                 avaloirViewModel = avaloirViewModel
@@ -72,7 +72,7 @@ fun Navigation(
         }
 
         composable(
-            route = TravauxScreens.AvaloirDetailScreen.route + "/{avaloirId}",
+            route = TravauxRoutes.AvaloirDetailScreen.route + "/{avaloirId}",
             arguments = listOf(navArgument(name = "avaloirId") {
                 type = NavType.IntType
             })
@@ -87,13 +87,13 @@ fun Navigation(
         /**
          * STOCKS
          */
-        composable(route = TravauxScreens.StockHomeScreen.route) {
+        composable(route = TravauxRoutes.StockHomeScreen.route) {
             StockHomeScreen(
 
             )
         }
 
-        composable(route = TravauxScreens.DemoScreen.route) {
+        composable(route = TravauxRoutes.DemoScreen.route) {
             //BottomAppBarWithFabC()
             val intent = Intent(navController.context, PermissionActivity::class.java)
             startActivity(navController.context, intent, null)

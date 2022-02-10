@@ -9,14 +9,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import be.marche.apptravaux.navigation.TravauxScreens
+import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.CardData
 import com.myricseptember.countryfactcomposefinal.widgets.CardRow
 
 @Composable
 fun AvaloirHomeScreen(navController: NavController) {
-    val c = CardData("Rechercher", TravauxScreens.AvaloirSearchScreen.route)
-    val d = CardData("Liste des avaloirs", TravauxScreens.AvaloirListScreen.route)
+    val c = CardData("Rechercher", TravauxRoutes.AvaloirSearchScreen.route)
+    val d = CardData("Liste des avaloirs", TravauxRoutes.AvaloirListScreen.route)
     val cards: List<CardData> = listOf(c, d)
 
     MainContentAvaloirHome(navController = navController, datas = cards)

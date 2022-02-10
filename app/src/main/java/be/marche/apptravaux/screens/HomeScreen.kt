@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import be.marche.apptravaux.navigation.TravauxScreens
+import be.marche.apptravaux.navigation.TravauxRoutes
 import com.myricseptember.countryfactcomposefinal.widgets.CardRow
 
 data class CardData(val texte: String, val url: String)
@@ -20,9 +20,9 @@ fun HomeScreen(navController: NavController) {
 
     val navHostController = rememberNavController()
 
-    val c = CardData("Gestion des avaloirs", TravauxScreens.AvaloirHomeScreen.route)
-    val d = CardData("Gestion des stocks", TravauxScreens.StockHomeScreen.route)
-    val e = CardData("Demo", TravauxScreens.DemoScreen.route)
+    val c = CardData("Gestion des avaloirs", TravauxRoutes.AvaloirHomeScreen.route)
+    val d = CardData("Gestion des stocks", TravauxRoutes.StockHomeScreen.route)
+    val e = CardData("Demo", TravauxRoutes.DemoScreen.route)
     val cards: List<CardData> = listOf(c, d, e)
 
     MainContentHome(navController = navController, datas = cards)
