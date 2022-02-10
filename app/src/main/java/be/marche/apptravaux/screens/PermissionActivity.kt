@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import be.marche.apptravaux.permission.PermissionUtil
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
@@ -35,13 +36,7 @@ class PermissionActivity : ComponentActivity() {
         setContent {
             AppTravaux6Theme {
                 val multiplePermissionsState = rememberMultiplePermissionsState(
-                    listOf(
-                        android.Manifest.permission.ACCESS_NETWORK_STATE,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION,
-                        android.Manifest.permission.CAMERA,
-                       // android.Manifest.permission.FOREGROUND_SERVICE,
-                        android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                    )
+                    PermissionUtil.listOfPermissions
                 )
                 RequestPermissionUi(
                     multiplePermissionsState,
