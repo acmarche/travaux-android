@@ -11,7 +11,6 @@ import be.marche.apptravaux.navigation.TravauxScreens
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
-
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PermissionsScreen(navController: NavController) {
@@ -24,6 +23,7 @@ fun PermissionsScreen(navController: NavController) {
             Manifest.permission.READ_EXTERNAL_STORAGE,
         )
     )
+    Log.d("ZEZE", "launch permissions screen")
     LaunchedEffect(multiplePermissionsState) {
         when {
             // If all permissions are granted, then show screen with the feature enabled
