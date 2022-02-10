@@ -2,6 +2,7 @@ package be.marche.apptravaux.navigation
 
 
 import android.content.Intent
+import android.util.Log
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat.startActivity
@@ -11,35 +12,35 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import be.marche.apptravaux.AvaloirAddActivity
-import be.marche.apptravaux.samples.BottomAppBarWithFabC
 import be.marche.apptravaux.screens.AvaloirDetailScreen
 import be.marche.apptravaux.screens.HomeScreen
-import be.marche.apptravaux.screens.RequestMultiplePermissionsScreen
-import be.marche.apptravaux.screens.avaloir.AvaloirAddScreen
+import be.marche.apptravaux.screens.PermissionActivity
+import be.marche.apptravaux.screens.PermissionsScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirHomeScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirListScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirSearchScreen
 import be.marche.apptravaux.screens.stock.StockHomeScreen
 import be.marche.apptravaux.viewModel.AvaloirViewModel
+import com.google.accompanist.permissions.MultiplePermissionsState
 
 class Navigation {
     //companion object PARAM_AVALOIR = ""
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Navigation(
     avaloirViewModel: AvaloirViewModel
 ) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = TravauxScreens.HomeScreen.route) {
+    NavHost(navController = navController, startDestination = TravauxScreens.PermissionScreen.route) {
+
+        composable(route = TravauxScreens.PermissionScreen.route) {
+            PermissionsScreen(navController = navController)
+        }
 
         composable(route = TravauxScreens.HomeScreen.route) {
             HomeScreen(navController = navController)
-        }
-        composable(route = TravauxScreens.PermissionScreen.route) {
-            RequestMultiplePermissionsScreen(navController = navController)
         }
 
         /**
@@ -88,7 +89,9 @@ fun Navigation(
         }
 
         composable(route = TravauxScreens.DemoScreen.route) {
-            BottomAppBarWithFabC()
+            //BottomAppBarWithFabC()
+            val intent = Intent(navController.context, PermissionActivity::class.java)
+            startActivity(navController.context, intent, null)
         }
     }
 }

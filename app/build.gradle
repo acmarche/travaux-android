@@ -118,7 +118,7 @@ dependencies {
     /**
      * Tools
      */
-    implementation("io.coil-kt:coil-compose:1.3.1")
+    implementation("io.coil-kt:coil-compose:1.4.0")
     //WorkManager
     def work_version = "2.7.1"
     implementation "androidx.work:work-runtime-ktx:$work_version"
