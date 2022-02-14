@@ -21,7 +21,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 import java.io.File
 
 class CameraActivity : ComponentActivity() {
-    @ExperimentalPermissionsApi
+
+    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

@@ -28,8 +28,7 @@ import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
 
-    @ExperimentalCoroutinesApi
-    @ExperimentalAnimationApi
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

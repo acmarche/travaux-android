@@ -39,7 +39,7 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
-        kotlinCompilerVersion '1.5.21'
+        kotlinCompilerVersion '1.6.10'
     }
     packagingOptions {
         resources {
@@ -68,8 +68,8 @@ dependencies {
      * viewmodel in compose
      */
     implementation "androidx.fragment:fragment-ktx:1.4.1"
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1'
 
     /**
      * LiveData
@@ -114,7 +114,7 @@ dependencies {
     /**
      * Navigation
      */
-    implementation("androidx.navigation:navigation-compose:2.4.0")
+    implementation("androidx.navigation:navigation-compose:2.4.1")
     /**
      * Tools
      */
