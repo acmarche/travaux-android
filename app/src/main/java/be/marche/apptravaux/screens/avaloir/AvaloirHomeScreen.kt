@@ -21,7 +21,7 @@ import com.myricseptember.countryfactcomposefinal.widgets.CardRow
 
 @Composable
 fun AvaloirHomeScreen(navController: NavController) {
-    val c = CardData("Rechercher", TravauxRoutes.AvaloirSearchScreen.route)
+    val c = CardData("Rechercher", TravauxRoutes.AvaloirAddScreen.route)
     val d = CardData("Liste des avaloirs", TravauxRoutes.AvaloirListScreen.route)
     val cards: List<CardData> = listOf(c, d)
 

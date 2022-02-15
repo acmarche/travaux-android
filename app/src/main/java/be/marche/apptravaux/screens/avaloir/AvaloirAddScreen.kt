@@ -3,6 +3,8 @@ package be.marche.apptravaux.screens.avaloir
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.location.Location
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,16 +30,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import be.marche.apptravaux.AvaloirAddActivity
+import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import kotlinx.coroutines.launch
 
 class AvaloirAddScreen(
-    avaloirViewModel: AvaloirViewModel
+    val avaloirViewModel: AvaloirViewModel
 ) {
     @ExperimentalMaterialApi
     @Composable
     fun TakePicure() {
-
+        Log.d("ZEZE", "take picture")
         val context = LocalContext.current
         val bottomSheetModalState =
             rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -162,6 +165,32 @@ class AvaloirAddScreen(
                     .padding(top = 10.dp),
                 contentScale = ContentScale.Fit
             )
+        }
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    fun LocationScreen(location: Location?) {
+        AppTravaux6Theme {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = "Rechercher avaloir",
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    )
+                }
+            ) {
+                if (location != null) {
+                    Text(text = "Ma location ${location.latitude}, ${location.longitude}")
+                } else {
+                    Text(text = "Pas de location")
+                }
+            }
         }
     }
 }

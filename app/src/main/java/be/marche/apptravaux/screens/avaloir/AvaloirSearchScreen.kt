@@ -1,5 +1,6 @@
 package be.marche.apptravaux.screens.avaloir
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,7 +34,7 @@ fun AvaloirSearchScreen(
     val content = remember { mutableStateOf("Home Screen") }
     val selectedItem = remember { mutableStateOf("home") }
     val openDialog = remember { mutableStateOf(false) }
-
+    Log.d("TAG", "avaloir search screen")
     Scaffold(
         topBar = {
             TopAppBar(

@@ -2,6 +2,7 @@ package be.marche.apptravaux.navigation
 
 
 import android.content.Intent
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavType
@@ -60,6 +61,7 @@ fun Navigation(
         }
 
         composable(route = TravauxRoutes.AvaloirAddScreen.route) {
+            Log.d("ZEZE", "nav context ${navController.context}")
             val intent = Intent(navController.context, AvaloirAddActivity::class.java)
             startActivity(navController.context, intent, null)
         }
