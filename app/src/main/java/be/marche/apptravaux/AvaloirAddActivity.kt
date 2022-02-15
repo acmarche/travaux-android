@@ -9,7 +9,6 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import be.marche.apptravaux.location.CurrentLocationService
 import be.marche.apptravaux.location.LocationService
@@ -45,7 +44,6 @@ class AvaloirAddActivity : ComponentActivity() {
     val locationService = LocationService()
     private val avaloirViewModel: AvaloirViewModel by viewModels()
 
-    @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -55,7 +53,6 @@ class AvaloirAddActivity : ComponentActivity() {
     }
 
     private inner class ForegroundOnlyBroadcastReceiver : BroadcastReceiver() {
-        @OptIn(ExperimentalMaterialApi::class)
         override fun onReceive(context: Context, intent: Intent) {
             val location = intent.getParcelableExtra<Location>(
                 CurrentLocationService.EXTRA_LOCATION
