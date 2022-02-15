@@ -10,13 +10,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import be.marche.apptravaux.entities.Avaloir
@@ -42,6 +41,9 @@ fun AvaloirListScreen(
             Log.d("ZEZE", "loaded")
             LoadAvaloirs(state.data, navController)
         }
+        else -> {
+
+        }
     }
 }
 
@@ -50,11 +52,25 @@ fun LoadAvaloirs(
     avaloirs: List<Avaloir>,
     navController: NavController,
 ) {
-    LazyColumn {
-        items(items = avaloirs) { avaloir ->
-            ItemAvaloir(avaloir) { avoirId ->
-                Log.d("ZEZE", "id {$avoirId}")
-                navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/$avoirId")
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Liste des avaloirs",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            )
+        }
+    ) {
+        LazyColumn {
+            items(items = avaloirs) { avaloir ->
+                ItemAvaloir(avaloir) { avoirId ->
+                    Log.d("ZEZE", "id {$avoirId}")
+                    navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/$avoirId")
+                }
             }
         }
     }

@@ -1,12 +1,16 @@
 package be.marche.apptravaux.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -17,8 +21,6 @@ data class CardData(val texte: String, val url: String)
 
 @Composable
 fun HomeScreen(navController: NavController) {
-
-    val navHostController = rememberNavController()
 
     val c = CardData("Gestion des avaloirs", TravauxRoutes.AvaloirHomeScreen.route)
     val d = CardData("Gestion des stocks", TravauxRoutes.StockHomeScreen.route)
@@ -33,14 +35,28 @@ fun MainContentHome(
     navController: NavController,
     datas: List<CardData>
 ) {
-    val context = LocalContext.current
-    Column(modifier = Modifier.padding(12.dp)) {
-        LazyColumn {
-            items(datas) { data ->
-                CardRow(data) {
-                    navController.navigate(data.url)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Appli travaux",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            )
+        }
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            LazyColumn {
+                items(datas) { data ->
+                    CardRow(data) {
+                        navController.navigate(data.url)
+                    }
                 }
             }
         }
+
     }
 }
