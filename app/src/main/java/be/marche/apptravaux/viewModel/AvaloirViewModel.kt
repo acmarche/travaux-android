@@ -39,7 +39,7 @@ class AvaloirViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             try {
                 val response = avaloirRepository.fetchAvaloir();
-                Log.d("ZEZE", "response: ${response.toString()}")
+                Log.d("ZEZE", "response api: ${response.toString()}")
 
                 _uiState.value = AvaloirUiState.Loaded(response)
 

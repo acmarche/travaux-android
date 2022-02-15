@@ -9,22 +9,21 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import be.marche.apptravaux.location.CurrentLocationService
 import be.marche.apptravaux.location.LocationService
-import be.marche.apptravaux.location.SharedPreferenceUtil
 import be.marche.apptravaux.screens.avaloir.AvaloirAddScreen
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AvaloirAddActivity : ComponentActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class AvaloirAddActivity : ComponentActivity() {
 
     private var foregroundOnlyLocationServiceBound = false
     private var currentOnlyLocationService: CurrentLocationService? = null
     private lateinit var foregroundOnlyBroadcastReceiver: AvaloirAddActivity.ForegroundOnlyBroadcastReceiver
-    private lateinit var sharedPreferences: SharedPreferences
+
     private val foregroundOnlyServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             val binder = service as CurrentLocationService.LocalBinder
@@ -49,40 +48,10 @@ class AvaloirAddActivity : ComponentActivity(), SharedPreferences.OnSharedPrefer
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //  syncContent()
 
         Log.d("ZEZE", "Add activity create")
         foregroundOnlyBroadcastReceiver = ForegroundOnlyBroadcastReceiver()
-        sharedPreferences =
-            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-
-        val enabled = sharedPreferences.getBoolean(
-            SharedPreferenceUtil.KEY_FOREGROUND_ENABLED, false
-        )
-        if (enabled) {
-            currentOnlyLocationService?.unSubscribeToLocationUpdates()
-        } else {
-            if (locationService.foregroundPermissionApproved(this)) {
-                currentOnlyLocationService?.subscribeToLocationUpdates()
-                    ?: Log.d("TAG", "Service Not Bound")
-            } else {
-                locationService.requestForegroundPermissions(this)
-            }
-        }
-    }
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        if (key == SharedPreferenceUtil.KEY_FOREGROUND_ENABLED) {
-            updateButtonState(
-                sharedPreferences.getBoolean(
-                    SharedPreferenceUtil.KEY_FOREGROUND_ENABLED, false
-                )
-            )
-        }
-    }
-
-    private fun updateButtonState(trackingLocation: Boolean) {
-        //Update the location here #trackingLocation
+        currentOnlyLocationService?.unSubscribeToLocationUpdates()
     }
 
     private inner class ForegroundOnlyBroadcastReceiver : BroadcastReceiver() {
@@ -106,18 +75,14 @@ class AvaloirAddActivity : ComponentActivity(), SharedPreferences.OnSharedPrefer
 
     override fun onStart() {
         super.onStart()
-
-        updateButtonState(
-            sharedPreferences.getBoolean(SharedPreferenceUtil.KEY_FOREGROUND_ENABLED, false)
-        )
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-
+        Log.d("ZEZE", "Add activity start")
         val serviceIntent = Intent(this, CurrentLocationService::class.java)
         bindService(serviceIntent, foregroundOnlyServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
     override fun onResume() {
         super.onResume()
+        Log.d("ZEZE", "Add activity resume")
         LocalBroadcastManager.getInstance(this).registerReceiver(
             foregroundOnlyBroadcastReceiver,
             IntentFilter(
@@ -127,6 +92,7 @@ class AvaloirAddActivity : ComponentActivity(), SharedPreferences.OnSharedPrefer
     }
 
     override fun onPause() {
+        Log.d("ZEZE", "Add activity pause")
         LocalBroadcastManager.getInstance(this).unregisterReceiver(
             foregroundOnlyBroadcastReceiver
         )
@@ -134,6 +100,7 @@ class AvaloirAddActivity : ComponentActivity(), SharedPreferences.OnSharedPrefer
     }
 
     override fun onStop() {
+        Log.d("ZEZE", "Add activity stop")
         if (currentOnlyLocationService != null) {
             currentOnlyLocationService?.unSubscribeToLocationUpdates()
         }
@@ -142,7 +109,6 @@ class AvaloirAddActivity : ComponentActivity(), SharedPreferences.OnSharedPrefer
             unbindService(foregroundOnlyServiceConnection)
             foregroundOnlyLocationServiceBound = false
         }
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
 
         super.onStop()
     }
