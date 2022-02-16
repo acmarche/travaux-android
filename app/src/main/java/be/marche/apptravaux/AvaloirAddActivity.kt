@@ -9,6 +9,10 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import be.marche.apptravaux.location.CurrentLocationService
 import be.marche.apptravaux.location.LocationService
@@ -61,7 +65,16 @@ class AvaloirAddActivity : ComponentActivity() {
             if (location != null) {
                 locationService.locations = location
                 Log.d("ZEZE", "ma location {$location}")
+                avaloirViewModel.search(location.latitude, location.longitude,"25m")
+
                 setContent {
+
+                  //  val uiState = avaloirViewModel.uiState2.observeAsState()
+
+                    avaloirViewModel.resultSearch.collectAsState().value
+
+                    CircularProgressIndicator()
+
                     val t =
                         AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
                     t.LocationScreen(location)

@@ -3,12 +3,18 @@ package be.marche.apptravaux.viewModel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
+import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.repository.AvaloirRepository
+import be.marche.apptravaux.ui.theme.ResponseUiState
+import be.marche.apptravaux.ui.theme.SearchRequest
+import be.marche.apptravaux.ui.theme.SearchResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +28,7 @@ import javax.inject.Inject
 @SuppressLint("StaticFieldLeak")
 class AvaloirViewModel @Inject constructor(
     private val avaloirRepository: AvaloirRepository,
+    private val avaloirService: AvaloirService,
     @ApplicationContext private val applicationContext: Context,
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider
 ) : ViewModel() {
@@ -39,7 +46,7 @@ class AvaloirViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             try {
                 val response = avaloirRepository.fetchAvaloir();
-                Log.d("ZEZE", "response api: ${response.toString()}")
+                Log.d("ZEZE", "init viewmodel response api: ${response.toString()}")
 
                 _uiState.value = AvaloirUiState.Loaded(response)
 
@@ -94,5 +101,31 @@ class AvaloirViewModel @Inject constructor(
             avaloirRepository.insertAvaloirs(avaloirs)
         }
     }
+
+    var resultSearch = MutableStateFlow<ResponseUiState>(ResponseUiState.Empty)
+
+    fun search(latitude: Double, longitude: Double, distance: String) {
+        viewModelScope.launch {
+            val response =
+                avaloirService.searchAvaloir(SearchRequest(latitude, longitude, distance))
+            if (response.isSuccessful) {
+                response.body()?.let { searchResponse ->
+                    resultSearch.value = searchResponse
+                }
+            }
+        }
+    }
+
+    sealed class UiState {
+        object SignedOut : UiState()
+        object InProgress : UiState()
+        object Error : UiState()
+        object SignIn : UiState()
+    }
+
+    private val _uiState2 = MutableLiveData<UiState>(UiState.SignedOut)
+    val uiState2: LiveData<UiState>
+        get() = _uiState2
+
 
 }

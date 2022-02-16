@@ -8,14 +8,18 @@
     <string name="launch_activity">Launch activity</string>
     <string name="location_unknown">Location Unknown</string>
     <string name="location_updates_label">Location Updates</string>
-
     <string name="permission_rationale">Location permission needed for core functionality</string>
     <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
     <string name="settings">Settings</string>
     <string name="ok">OK</string>
-
     <string name="start_location_updates_button_text">Start receiving location updates</string>
     <string name="stop_location_updates_button_text">Stop receiving location updates</string>
-
     <string name="location_updated">Location Updated: %1$s</string>
+    <string name="avaloir_location_user">Votre géolocalisation: %1$s,%2$s</string>
+    <string name="avaloir_location_title">Géolocalisation: %1$s,%2$s</string>
+    <string name="avaloir_location">%1$s, %2$s</string>
+    <plurals name="count_avaloir_found">
+        <item quantity="one">%d avaloir trouvé dans un rayon de 25m</item>
+        <item quantity="other">%d avaloirs trouvés dans un rayon de 25m</item>
+    </plurals>
 </resources>

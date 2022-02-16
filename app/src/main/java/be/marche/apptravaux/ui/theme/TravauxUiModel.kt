@@ -25,6 +25,13 @@ data class SearchResponse
     val avaloirs: List<Avaloir>
 )
 
+sealed class ResponseUiState {
+    object Empty : ResponseUiState()
+    object Loading : ResponseUiState()
+    class Loaded(val avaloirs: List<Avaloir>) : ResponseUiState()
+    class Error(val message: String) : ResponseUiState()
+}
+
 data class SearchRequest
     (
     val latitude: Double,

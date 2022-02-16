@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import be.marche.apptravaux.AvaloirAddActivity
+import be.marche.apptravaux.ListActivity
 import be.marche.apptravaux.screens.AvaloirDetailScreen
 import be.marche.apptravaux.screens.HomeScreen
 import be.marche.apptravaux.screens.PermissionActivity
@@ -97,8 +98,7 @@ fun Navigation(
 
         composable(route = TravauxRoutes.DemoScreen.route) {
             //BottomAppBarWithFabC()
-            val intent = Intent(navController.context, PermissionActivity::class.java)
-            startActivity(navController.context, intent, null)
+
         }
     }
 }

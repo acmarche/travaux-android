@@ -62,6 +62,6 @@ interface AvaloirService {
     @POST("avaloirs/api/search")
     suspend fun searchAvaloir(
         @Body params: SearchRequest
-    ): Response<SearchResponse>
+    ): Response<ResponseUiState>
 
 }

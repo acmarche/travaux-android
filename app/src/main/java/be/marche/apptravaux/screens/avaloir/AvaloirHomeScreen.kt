@@ -22,9 +22,15 @@ import com.myricseptember.countryfactcomposefinal.widgets.CardRow
 
 @Composable
 fun AvaloirHomeScreen(navController: NavController) {
-    val c = CardData("Rechercher", TravauxRoutes.AvaloirAddScreen.route)
-    val d = CardData("Liste des avaloirs", TravauxRoutes.AvaloirListScreen.route)
-    val cards: List<CardData> = listOf(c, d)
+    val intent = Intent(navController.context, AvaloirAddActivity::class.java)
+
+    val a =
+        CardData("Rechercher", { ContextCompat.startActivity(navController.context, intent, null) })
+    val b = CardData(
+        "Liste des avaloirs",
+        { navController.navigate(TravauxRoutes.AvaloirListScreen.route) }
+    )
+    val cards: List<CardData> = listOf(a, b)
 
     MainContentAvaloirHome(navController = navController, datas = cards)
 }
@@ -48,24 +54,13 @@ fun MainContentAvaloirHome(
         }
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
-
-            CardRow(CardData("Rechercher", TravauxRoutes.AvaloirAddScreen.route)) {
-                val intent = Intent(navController.context, AvaloirAddActivity::class.java)
-                ContextCompat.startActivity(navController.context, intent, null)
-            }
-
-            val data = CardData("Liste des avaloirs", TravauxRoutes.AvaloirListScreen.route)
-            CardRow(CardData("Rechercher", TravauxRoutes.AvaloirAddScreen.route)) {
-                navController.navigate(data.url)
-            }
-
-         /*   LazyColumn {
+            LazyColumn {
                 items(datas) { data ->
                     CardRow(data) {
-                        navController.navigate(data.url)
+                        data.action
                     }
                 }
-            }*/
+            }
         }
     }
 

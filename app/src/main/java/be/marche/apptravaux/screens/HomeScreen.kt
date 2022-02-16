@@ -1,5 +1,6 @@
 package be.marche.apptravaux.screens
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,27 +13,36 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import be.marche.apptravaux.ListActivity
 import be.marche.apptravaux.navigation.TravauxRoutes
 import com.myricseptember.countryfactcomposefinal.widgets.CardRow
 
-data class CardData(val texte: String, val url: String)
+data class CardData(val texte: String, val action: () -> Unit)
 
 @Composable
 fun HomeScreen(navController: NavController) {
 
-    val c = CardData("Gestion des avaloirs", TravauxRoutes.AvaloirHomeScreen.route)
-    val d = CardData("Gestion des stocks", TravauxRoutes.StockHomeScreen.route)
-    val e = CardData("Demo", TravauxRoutes.DemoScreen.route)
+    val intent = Intent(navController.context, ListActivity::class.java)
+    val c = CardData(
+        "Gestion des avaloirs",
+        { navController.navigate(TravauxRoutes.AvaloirHomeScreen.route) }
+    )
+    val d =
+        CardData("Gestion des stocks",
+            { navController.navigate(TravauxRoutes.StockHomeScreen.route) })
+
+    val e = CardData("Demo", { ContextCompat.startActivity(navController.context, intent, null) })
+
     val cards: List<CardData> = listOf(c, d, e)
 
-    MainContentHome(navController = navController, datas = cards)
+    MainContentHome(datas = cards)
 }
 
 @Composable
 fun MainContentHome(
-    navController: NavController,
     datas: List<CardData>
 ) {
     Scaffold(
@@ -51,9 +61,7 @@ fun MainContentHome(
         Column(modifier = Modifier.padding(12.dp)) {
             LazyColumn {
                 items(datas) { data ->
-                    CardRow(data) {
-                        navController.navigate(data.url)
-                    }
+                    CardRow(data, data.action)
                 }
             }
         }

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -57,8 +59,7 @@ fun AvaloirRow(
 @Composable
 fun CardRow(
     data: CardData,
-    onItemCLick: (String) ->
-    Unit
+    onItemCLick: () ->    Unit
 ) {
     Card(
         modifier = Modifier
@@ -66,7 +67,7 @@ fun CardRow(
             .fillMaxWidth()
             .height(130.dp)
             .clickable {
-                onItemCLick(data.url)
+                onItemCLick()
             },
         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
         elevation = 6.dp
@@ -198,5 +199,29 @@ fun MyScaffold(textTopBar: String, contentParam: @Composable (PaddingValues) -> 
             )
         },
         content = contentParam
+    )
+}
+
+@Composable
+fun MyAppTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
+    TopAppBar(
+        title = {
+            Text(
+                text = topAppBarText,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center)
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = onBackPressed) {
+                Icon(
+                        Icons.Filled.ArrowBack,
+                        contentDescription = "rrrrr"
+                    )
+            }
+        },
+        // ...
     )
 }
