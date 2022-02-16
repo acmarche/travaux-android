@@ -32,12 +32,11 @@ fun AvaloirHomeScreen(navController: NavController) {
     )
     val cards: List<CardData> = listOf(a, b)
 
-    MainContentAvaloirHome(navController = navController, datas = cards)
+    MainContentAvaloirHome(datas = cards)
 }
 
 @Composable
 fun MainContentAvaloirHome(
-    navController: NavController,
     datas: List<CardData>
 ) {
     Scaffold(
@@ -56,9 +55,7 @@ fun MainContentAvaloirHome(
         Column(modifier = Modifier.padding(12.dp)) {
             LazyColumn {
                 items(datas) { data ->
-                    CardRow(data) {
-                        data.action
-                    }
+                    CardRow(data,data.action)
                 }
             }
         }

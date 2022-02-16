@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
+import be.marche.apptravaux.entities.AvaloirUiState
+import be.marche.apptravaux.entities.UiState
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.repository.AvaloirRepository
@@ -35,7 +37,9 @@ class AvaloirViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<AvaloirUiState>(AvaloirUiState.Empty)
     val uiState: StateFlow<AvaloirUiState> = _uiState
+
     var avaloir = MutableStateFlow<Avaloir?>(null)
+        private set
 
     init {
         fetchAvaloirs()
@@ -54,6 +58,12 @@ class AvaloirViewModel @Inject constructor(
                 Log.d("ZEZE", "error: ${ex.message}")
                 onErrorOccurred()
             }
+        }
+    }
+
+    fun findByIdT(avaloirId: Int) {
+        viewModelScope.launch(coroutineDispatcherProvider.IO()) {
+            avaloir.value = avaloirRepository.findById(avaloirId)
         }
     }
 
@@ -79,12 +89,6 @@ class AvaloirViewModel @Inject constructor(
         )
     }
 
-    sealed class AvaloirUiState {
-        object Empty : AvaloirUiState()
-        object Loading : AvaloirUiState()
-        class Loaded(val data: List<Avaloir>) : AvaloirUiState()
-        class Error(val message: String) : AvaloirUiState()
-    }
 
     /*  fun getAllAvaloirsFromServer(): LiveData<List<Avaloir>> = liveData {
           emit(avaloirRepository.getAllAvaloirsFromApi())
@@ -116,12 +120,6 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
-    sealed class UiState {
-        object SignedOut : UiState()
-        object InProgress : UiState()
-        object Error : UiState()
-        object SignIn : UiState()
-    }
 
     private val _uiState2 = MutableLiveData<UiState>(UiState.SignedOut)
     val uiState2: LiveData<UiState>

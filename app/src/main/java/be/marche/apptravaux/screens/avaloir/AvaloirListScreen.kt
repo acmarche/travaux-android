@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import be.marche.apptravaux.entities.AvaloirUiState
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.viewModel.AvaloirViewModel
@@ -30,14 +31,14 @@ fun AvaloirListScreen(
     avaloirViewModel: AvaloirViewModel
 ) {
     when (val state = avaloirViewModel.uiState.collectAsState().value) {
-        is AvaloirViewModel.AvaloirUiState.Loading -> {
+        is AvaloirUiState.Loading -> {
             Log.d("ZEZE", "loading")
         }
-        is AvaloirViewModel.AvaloirUiState.Error -> {
+        is AvaloirUiState.Error -> {
             Log.d("ZEZE", "error")
             ErrorDialog(state.message)
         }
-        is AvaloirViewModel.AvaloirUiState.Loaded -> {
+        is AvaloirUiState.Loaded -> {
             Log.d("ZEZE", "loaded")
             LoadAvaloirs(state.data, navController)
         }
