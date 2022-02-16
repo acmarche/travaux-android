@@ -15,7 +15,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import be.marche.apptravaux.ListActivity
 import be.marche.apptravaux.navigation.TravauxRoutes
 import com.myricseptember.countryfactcomposefinal.widgets.CardRow
