@@ -70,12 +70,10 @@ class AvaloirAddActivity : ComponentActivity() {
             Log.d("ZEZE", "Add activity ForegroundOnlyBroadcastReceiver")
             if (location != null) {
 
-                locationService.locations = location
+          //      locationService.locations = location
                 Log.d("ZEZE", "ma location {$location}")
 
-                avaloirViewModel.search(location.latitude, location.longitude, "100m")
-
-                val screen = AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
+           //     avaloirViewModel.search(location.latitude, location.longitude, "100m")
 
                 setContent {
                     val navController = rememberNavController()
@@ -93,7 +91,7 @@ class AvaloirAddActivity : ComponentActivity() {
                                 )
                             }
                         ) {
-                            screen.SearchScreen(location, navController)
+
                         }
                     }
                 }
