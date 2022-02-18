@@ -30,29 +30,6 @@ fun AvaloirListScreen(
     navController: NavController,
     avaloirViewModel: AvaloirViewModel
 ) {
-    when (val state = avaloirViewModel.uiState.collectAsState().value) {
-        is AvaloirUiState.Loading -> {
-            Log.d("ZEZE", "loading")
-        }
-        is AvaloirUiState.Error -> {
-            Log.d("ZEZE", "error")
-            ErrorDialog(state.message)
-        }
-        is AvaloirUiState.Loaded -> {
-            Log.d("ZEZE", "loaded")
-            LoadAvaloirs(state.data, navController)
-        }
-        else -> {
-
-        }
-    }
-}
-
-@Composable
-fun LoadAvaloirs(
-    avaloirs: List<Avaloir>,
-    navController: NavController,
-) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -66,12 +43,35 @@ fun LoadAvaloirs(
             )
         }
     ) {
-        LazyColumn {
-            items(items = avaloirs) { avaloir ->
-                ItemAvaloir(avaloir) { avoirId ->
-                    Log.d("ZEZE", "id {$avoirId}")
-                    navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/$avoirId")
-                }
+        when (val state = avaloirViewModel.uiState.collectAsState().value) {
+            is AvaloirUiState.Loading -> {
+                Log.d("ZEZE", "loading")
+            }
+            is AvaloirUiState.Error -> {
+                Log.d("ZEZE", "error")
+                ErrorDialog(state.message)
+            }
+            is AvaloirUiState.Loaded -> {
+                Log.d("ZEZE", "loaded")
+                LoadAvaloirs(state.data, navController)
+            }
+            else -> {
+
+            }
+        }
+    }
+}
+
+@Composable
+fun LoadAvaloirs(
+    avaloirs: List<Avaloir>,
+    navController: NavController,
+) {
+    LazyColumn {
+        items(items = avaloirs) { avaloir ->
+            ItemAvaloir(avaloir) { avoirId ->
+                Log.d("ZEZE", "id {$avoirId}")
+                navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/$avoirId")
             }
         }
     }

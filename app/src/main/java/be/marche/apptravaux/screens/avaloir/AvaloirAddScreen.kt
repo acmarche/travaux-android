@@ -30,6 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import be.marche.apptravaux.AvaloirAddActivity
+import be.marche.apptravaux.entities.Avaloir
+import be.marche.apptravaux.entities.SearchResponseUiState
+import be.marche.apptravaux.ui.entities.SearchResponse
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import kotlinx.coroutines.launch
@@ -170,27 +173,29 @@ class AvaloirAddScreen(
 
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
+    fun SearchScreen(location: Location?, searchResponseUiState: SearchResponseUiState) {
+
+
+        when {
+            is SearchResponseUiState.loading -> Text()
+            searchResponseUiState.message -> Text()
+        }
+
+
+        CircularProgressIndicator(progress = 0.5f)
+        val t =
+            AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
+        t.LocationScreen(location)
+        LoadAvaloirs(avaloirs = avaloirs, navController)
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
     fun LocationScreen(location: Location?) {
-        AppTravaux6Theme {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = "Rechercher avaloir",
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    )
-                }
-            ) {
-                if (location != null) {
-                    Text(text = "Ma location ${location.latitude}, ${location.longitude}")
-                } else {
-                    Text(text = "Pas de location")
-                }
-            }
+        if (location != null) {
+            Text(text = "Ma location ${location.latitude}, ${location.longitude}")
+        } else {
+            Text(text = "Pas de location")
         }
     }
 }

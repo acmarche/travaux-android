@@ -1,5 +1,7 @@
 package be.marche.apptravaux.entities
 
+import be.marche.apptravaux.ui.entities.SearchResponse
+
 sealed class UiState {
     object SignedOut : UiState()
     object InProgress : UiState()
@@ -12,4 +14,18 @@ sealed class AvaloirUiState {
     object Loading : AvaloirUiState()
     class Loaded(val data: List<Avaloir>) : AvaloirUiState()
     class Error(val message: String) : AvaloirUiState()
+}
+
+sealed class ResponseUiState {
+    object Empty : ResponseUiState()
+    object Loading : ResponseUiState()
+    class Loaded(val avaloirs: List<Avaloir>) : ResponseUiState()
+    class Error(val message: String) : ResponseUiState()
+}
+
+sealed class SearchResponseUiState {
+    object Empty : SearchResponseUiState()
+    object Loading : SearchResponseUiState()
+    class Loaded(val response: SearchResponse) : SearchResponseUiState()
+    class Error(val message: String) : SearchResponseUiState()
 }

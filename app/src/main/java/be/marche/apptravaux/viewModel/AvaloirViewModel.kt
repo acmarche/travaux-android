@@ -10,15 +10,17 @@ import androidx.lifecycle.viewModelScope
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.AvaloirUiState
+import be.marche.apptravaux.entities.ResponseUiState
 import be.marche.apptravaux.entities.UiState
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.repository.AvaloirRepository
-import be.marche.apptravaux.ui.theme.ResponseUiState
-import be.marche.apptravaux.ui.theme.SearchRequest
-import be.marche.apptravaux.ui.theme.SearchResponse
+import be.marche.apptravaux.ui.entities.SearchRequest
+import be.marche.apptravaux.ui.entities.SearchResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -72,11 +74,6 @@ class AvaloirViewModel @Inject constructor(
         return t.distinctUntilChanged()
     }
 
-    /*   fun findByIdAsLive(avaloirId: Int): LiveData<Avaloir> = liveData {
-           avaloir.value = avaloirRepository.findById(avaloirId)
-           emit(avaloirRepository.findById(avaloirId))
-       }*/
-
     private fun onQueryLimitReached() {
         _uiState.value = AvaloirUiState.Error(
             applicationContext.getString(R.string.query_limit_reached)
@@ -106,7 +103,7 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
-    var resultSearch = MutableStateFlow<ResponseUiState>(ResponseUiState.Empty)
+    var resultSearch = MutableStateFlow<SearchResponse>(SearchResponse(0, "", listOf()))
 
     fun search(latitude: Double, longitude: Double, distance: String) {
         viewModelScope.launch {
@@ -114,16 +111,15 @@ class AvaloirViewModel @Inject constructor(
                 avaloirService.searchAvaloir(SearchRequest(latitude, longitude, distance))
             if (response.isSuccessful) {
                 response.body()?.let { searchResponse ->
+                    Log.d("ZEZE", "response search $searchResponse")
                     resultSearch.value = searchResponse
                 }
             }
         }
     }
 
-
     private val _uiState2 = MutableLiveData<UiState>(UiState.SignedOut)
     val uiState2: LiveData<UiState>
         get() = _uiState2
-
 
 }

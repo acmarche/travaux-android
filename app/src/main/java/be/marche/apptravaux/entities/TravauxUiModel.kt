@@ -1,4 +1,4 @@
-package be.marche.apptravaux.ui.theme
+package be.marche.apptravaux.ui.entities
 
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
@@ -24,13 +24,6 @@ data class SearchResponse
     val message: String,
     val avaloirs: List<Avaloir>
 )
-
-sealed class ResponseUiState {
-    object Empty : ResponseUiState()
-    object Loading : ResponseUiState()
-    class Loaded(val avaloirs: List<Avaloir>) : ResponseUiState()
-    class Error(val message: String) : ResponseUiState()
-}
 
 data class SearchRequest
     (

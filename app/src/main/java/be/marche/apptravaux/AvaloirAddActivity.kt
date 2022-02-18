@@ -9,14 +9,21 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.compose.rememberNavController
 import be.marche.apptravaux.location.CurrentLocationService
 import be.marche.apptravaux.location.LocationService
 import be.marche.apptravaux.screens.avaloir.AvaloirAddScreen
+import be.marche.apptravaux.screens.avaloir.LoadAvaloirs
+import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -63,21 +70,35 @@ class AvaloirAddActivity : ComponentActivity() {
             )
             Log.d("ZEZE", "Add activity ForegroundOnlyBroadcastReceiver")
             if (location != null) {
+
                 locationService.locations = location
                 Log.d("ZEZE", "ma location {$location}")
-                avaloirViewModel.search(location.latitude, location.longitude,"25m")
+
+                avaloirViewModel.search(location.latitude, location.longitude, "100m")
+
+                val t =                    AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
 
                 setContent {
-
-                  //  val uiState = avaloirViewModel.uiState2.observeAsState()
-
-                    avaloirViewModel.resultSearch.collectAsState().value
-
-                    CircularProgressIndicator()
-
-                    val t =
-                        AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
-                    t.LocationScreen(location)
+                    val navController = rememberNavController()
+                    val results = avaloirViewModel.resultSearch.collectAsState().value
+                    Log.d("ZEZE", "search avaloirs $results")
+                    AppTravaux6Theme {
+                        Scaffold(
+                            topBar = {
+                                TopAppBar(
+                                    title = {
+                                        Text(
+                                            text = "Recherche dans la zone 25m",
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                )
+                            }
+                        ) {
+                            t.SearchScreen(location, results)
+                        }
+                    }
                 }
             }
         }

@@ -93,7 +93,9 @@ class CurrentLocationService : Service() {
 
         try {
             fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
-                sendLocation(location!!)
+                if (location != null) {
+                    sendLocation(location)
+                }
             }
             fusedLocationProviderClient.requestLocationUpdates(
                 locationRequest, locationCallback, Looper.getMainLooper()
