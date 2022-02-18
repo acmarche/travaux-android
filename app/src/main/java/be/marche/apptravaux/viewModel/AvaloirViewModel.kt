@@ -3,6 +3,8 @@ package be.marche.apptravaux.viewModel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,6 +18,7 @@ import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.repository.AvaloirRepository
 import be.marche.apptravaux.ui.entities.SearchRequest
+import com.google.android.libraries.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
@@ -30,6 +33,10 @@ class AvaloirViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider
 ) : ViewModel() {
+
+
+    private var _locationPermissionGranted = MutableLiveData(true)
+    var locationPermissionGranted: LiveData<Boolean> = _locationPermissionGranted
 
     private val _uiState = MutableStateFlow<AvaloirUiState>(AvaloirUiState.Empty)
     val uiState: StateFlow<AvaloirUiState> = _uiState
@@ -117,6 +124,10 @@ class AvaloirViewModel @Inject constructor(
             }
         }
     }
+
+
+    private var _userCurrentLatLng = mutableStateOf(LatLng(0.0, 0.0))
+    var userCurrentLatLng: MutableState<LatLng> = _userCurrentLatLng
 
     val allAvaloirs: Flow<List<Avaloir>> = flow {
         // viewModelScope.launch {

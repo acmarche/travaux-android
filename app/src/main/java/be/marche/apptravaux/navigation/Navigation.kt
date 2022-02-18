@@ -61,7 +61,7 @@ fun Navigation(
         }
 
         composable(route = TravauxRoutes.AvaloirAddScreen.route) {
-            Log.d("ZEZE", "nav context ${navController.context}")
+            Log.d("ZEZE", "navigation context ${navController.context}")
             val screen = AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
             screen.SearchScreen(avaloirViewModel, navController)
         }

@@ -3,7 +3,6 @@ package be.marche.apptravaux.screens.avaloir
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.location.Location
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -15,9 +14,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,10 +28,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import be.marche.apptravaux.AvaloirAddActivity
 import be.marche.apptravaux.entities.SearchResponseUiState
+import be.marche.apptravaux.location.LocationService
+import be.marche.apptravaux.navigation.TravauxRoutes
+import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
+import com.google.android.libraries.maps.model.LatLng
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 class AvaloirAddScreen(
@@ -174,38 +177,94 @@ class AvaloirAddScreen(
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun SearchScreen(
-        location: Location?,
+        avaloirViewModel: AvaloirViewModel,
         navController: NavController
     ) {
         Log.d("ZEZE", "searchScreen")
-        Column {
-            LocationScreen(location = location)
-            when (val state = avaloirViewModel.resultSearch.collectAsState().value) {
-                is SearchResponseUiState.Loading -> {
-                    LoadScreen()
+        AppTravaux6Theme {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = "Recherche dans la zone 25m",
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    )
                 }
-                is SearchResponseUiState.Error -> {
-                    Log.d("ZEZE", "error")
-                    ErrorDialog(state.message)
-                }
-                is SearchResponseUiState.Loaded -> {
-                    Log.d("ZEZE", "loaded")
-                    Log.d("ZEZE", "search avaloirs ${state.response}")
-                    LoadAvaloirs(state.response.avaloirs, navController)
-                }
-                else -> {
-
-                }
+            ) {
+                BeginSearch(avaloirViewModel, navController)
             }
         }
     }
 
     @Composable
-    fun LocationScreen(location: Location?) {
+    fun BeginSearch(
+        avaloirViewModel: AvaloirViewModel,
+        navController: NavController
+    ) {
+        Log.d("ZEZE", "searchScreen begin")
+        val service = LocationService()
+        service.getDeviceLocation(navController.context, avaloirViewModel)
+        val location = avaloirViewModel.userCurrentLatLng.value
+
+        ContentSearch(navController, latLng = location)
+    }
+
+    @Composable
+    fun ContentSearch(
+        navController: NavController,
+        latLng: LatLng
+    ) {
+        Log.d("ZEZE", "searchScreen location {$latLng")
+
+        Column {
+
+            LocationText(latLng)
+
+            if (latLng.latitude > 0.0) {
+                Log.d("ZEZE", "searchScreen searching {$latLng")
+                avaloirViewModel.search(latLng.latitude, latLng.longitude, "100m")
+                ResultSearch(avaloirViewModel, navController)
+            }
+        }
+    }
+
+    @Composable
+    fun ResultSearch(
+        avaloirViewModel: AvaloirViewModel,
+        navController: NavController
+    ) {
+    val content = remember { mutableStateOf("Home Screen") }
+
+        Log.d("ZEZE", "searchScreen resultsearch")
+        when (val state = avaloirViewModel.resultSearch.collectAsState().value) {
+            is SearchResponseUiState.Loading -> {
+                LoadScreen()
+            }
+            is SearchResponseUiState.Error -> {
+                Log.d("ZEZE", "error")
+                ErrorDialog(state.message)
+            }
+            is SearchResponseUiState.Loaded -> {
+                Log.d("ZEZE", "loaded")
+                Log.d("ZEZE", "search avaloirs ${state.response}")
+                LoadAvaloirs(state.response.avaloirs, navController)
+            }
+            else -> {
+
+            }
+        }
+    }
+
+    @Composable
+    fun LocationText(location: LatLng?) {
         if (location != null) {
-            Text(text = "Ma location ${location.latitude}, ${location.longitude}")
+            Text(text = "Votre localisation: ${location.latitude}, ${location.longitude}")
         } else {
-            Text(text = "Pas de location")
+            Text(text = "Pas de localisation")
         }
     }
 

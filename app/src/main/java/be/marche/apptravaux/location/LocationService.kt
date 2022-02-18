@@ -5,7 +5,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.util.Log
 import androidx.core.app.ActivityCompat
+import be.marche.apptravaux.viewModel.AvaloirViewModel
+import com.google.android.gms.location.LocationServices
+import com.google.android.libraries.maps.model.LatLng
 
 class LocationService {
 
@@ -34,6 +38,40 @@ class LocationService {
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
             )
+        }
+    }
+
+    fun getDeviceLocation(
+        context: Context,
+        viewModel: AvaloirViewModel
+    ) {
+        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+
+        try {
+            if (viewModel.locationPermissionGranted.value == true) {
+                val locationResult = fusedLocationProviderClient.lastLocation
+
+                locationResult.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val lastKnownLocation = task.result
+
+                        if (lastKnownLocation != null) {
+                            Log.e("ZEZE", "location service ${lastKnownLocation.latitude}")
+                            viewModel.userCurrentLatLng.value =
+                                LatLng(
+                                    lastKnownLocation.latitude,
+                                    lastKnownLocation.longitude
+                                )
+                        }
+                    } else {
+                        Log.d("ZEZE", " Current User location is null")
+                    }
+                }
+
+            }
+
+        } catch (e: SecurityException) {
+            Log.d("Exception", "Exception:  $e.message.toString()")
         }
     }
 }
