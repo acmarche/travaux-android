@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.Colors
@@ -29,7 +30,7 @@ import com.myricseptember.countryfactcomposefinal.widgets.FloatAlertDialog
 @Composable
 fun AvaloirSearchScreen(
     navController: NavController,
-    avaloirViewModel: AvaloirViewModel
+    avaloirViewModel: AvaloirViewModel= viewModel()
 ) {
     val content = remember { mutableStateOf("Home Screen") }
     val selectedItem = remember { mutableStateOf("home") }

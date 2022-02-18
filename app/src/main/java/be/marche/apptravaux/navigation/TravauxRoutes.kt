@@ -3,6 +3,7 @@ package be.marche.apptravaux.navigation
 sealed class TravauxRoutes(val route: String) {
     object HomeScreen : TravauxRoutes("home_screen")
     object PermissionScreen : TravauxRoutes("permission_screen")
+    object PermissionAskScreen : TravauxRoutes("permission_ask_screen")
     object AvaloirHomeScreen : TravauxRoutes("avaloir_home_screen")
     object AvaloirListScreen : TravauxRoutes("avaloir_list_screen")
     object AvaloirAddScreen : TravauxRoutes("avaloir_add_screen")

@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import be.marche.apptravaux.AvaloirAddActivity
@@ -177,7 +178,7 @@ class AvaloirAddScreen(
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun SearchScreen(
-        avaloirViewModel: AvaloirViewModel,
+        avaloirViewModel: AvaloirViewModel= viewModel(),
         navController: NavController
     ) {
         Log.d("ZEZE", "searchScreen")
@@ -202,13 +203,17 @@ class AvaloirAddScreen(
 
     @Composable
     fun BeginSearch(
-        avaloirViewModel: AvaloirViewModel,
+        avaloirViewModel: AvaloirViewModel= viewModel(),
         navController: NavController
     ) {
         Log.d("ZEZE", "searchScreen begin")
         val service = LocationService()
         service.getDeviceLocation(navController.context, avaloirViewModel)
         val location = avaloirViewModel.userCurrentLatLng.value
+
+        LaunchedEffect(location) {
+
+        }
 
         ContentSearch(navController, latLng = location)
     }
@@ -225,8 +230,10 @@ class AvaloirAddScreen(
             LocationText(latLng)
 
             if (latLng.latitude > 0.0) {
-                Log.d("ZEZE", "searchScreen searching {$latLng")
-                avaloirViewModel.search(latLng.latitude, latLng.longitude, "100m")
+                LaunchedEffect(true) {
+                    Log.d("ZEZE", "searchScreen searching {$latLng")
+                    avaloirViewModel.search(latLng.latitude, latLng.longitude, "100m")
+                }
                 ResultSearch(avaloirViewModel, navController)
             }
         }
@@ -234,10 +241,10 @@ class AvaloirAddScreen(
 
     @Composable
     fun ResultSearch(
-        avaloirViewModel: AvaloirViewModel,
+        avaloirViewModel: AvaloirViewModel= viewModel(),
         navController: NavController
     ) {
-    val content = remember { mutableStateOf("Home Screen") }
+        val content = remember { mutableStateOf("Home Screen") }
 
         Log.d("ZEZE", "searchScreen resultsearch")
         when (val state = avaloirViewModel.resultSearch.collectAsState().value) {
