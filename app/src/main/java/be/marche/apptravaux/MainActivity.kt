@@ -6,10 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.lifecycleScope
 import be.marche.apptravaux.navigation.Navigation
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -18,7 +21,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //  syncContent()
+
+        lifecycleScope.launch {
+        //    syncContent()
+        }
+
         setContent {
             AppTravaux6Theme {
                 Navigation(avaloirViewModel)
@@ -26,20 +33,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun syncContent() {
-        /*   when (val state = avaloirViewModel.uiState.observeAsState.value) {
-               is AvaloirViewModel.AvaloirUiState.Loading -> {
-                   Log.d("ZEZE", "loading")
-               }
-               is AvaloirViewModel.AvaloirUiState.Error -> {
-                   Log.d("ZEZE", "error")
-               //    ErrorDialog(state.message)
-               }
-               is AvaloirViewModel.AvaloirUiState.Loaded -> {
-                   Log.d("ZEZE", "loaded")
-              //     LoadAvaloirs(state.data, navController)
-               }
-           }*/
+    private suspend fun syncContent() {
+        avaloirViewModel.allAvaloirs.collect {
+            avaloirViewModel.insertAvaloirs(it)
+        }
     }
 
     @Preview

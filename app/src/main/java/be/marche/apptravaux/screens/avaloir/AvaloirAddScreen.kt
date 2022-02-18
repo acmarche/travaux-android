@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,12 +30,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import be.marche.apptravaux.AvaloirAddActivity
-import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.SearchResponseUiState
-import be.marche.apptravaux.ui.entities.SearchResponse
-import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
+import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 import kotlinx.coroutines.launch
 
 class AvaloirAddScreen(
@@ -173,23 +173,33 @@ class AvaloirAddScreen(
 
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    fun SearchScreen(location: Location?, searchResponseUiState: SearchResponseUiState) {
+    fun SearchScreen(
+        location: Location?,
+        navController: NavController
+    ) {
+        Log.d("ZEZE", "searchScreen")
+        Column {
+            LocationScreen(location = location)
+            when (val state = avaloirViewModel.resultSearch.collectAsState().value) {
+                is SearchResponseUiState.Loading -> {
+                    LoadScreen()
+                }
+                is SearchResponseUiState.Error -> {
+                    Log.d("ZEZE", "error")
+                    ErrorDialog(state.message)
+                }
+                is SearchResponseUiState.Loaded -> {
+                    Log.d("ZEZE", "loaded")
+                    Log.d("ZEZE", "search avaloirs ${state.response}")
+                    LoadAvaloirs(state.response.avaloirs, navController)
+                }
+                else -> {
 
-
-        when {
-            is SearchResponseUiState.loading -> Text()
-            searchResponseUiState.message -> Text()
+                }
+            }
         }
-
-
-        CircularProgressIndicator(progress = 0.5f)
-        val t =
-            AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
-        t.LocationScreen(location)
-        LoadAvaloirs(avaloirs = avaloirs, navController)
     }
 
-    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun LocationScreen(location: Location?) {
         if (location != null) {
@@ -197,5 +207,12 @@ class AvaloirAddScreen(
         } else {
             Text(text = "Pas de location")
         }
+    }
+
+    @Composable
+    fun LoadScreen() {
+        Text(text = "Recherche en cours...")
+        CircularProgressIndicator(progress = 0.5f)
+        Log.d("ZEZE", "loading")
     }
 }

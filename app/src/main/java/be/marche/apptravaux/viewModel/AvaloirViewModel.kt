@@ -10,21 +10,15 @@ import androidx.lifecycle.viewModelScope
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.AvaloirUiState
-import be.marche.apptravaux.entities.ResponseUiState
+import be.marche.apptravaux.entities.SearchResponseUiState
 import be.marche.apptravaux.entities.UiState
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.repository.AvaloirRepository
 import be.marche.apptravaux.ui.entities.SearchRequest
-import be.marche.apptravaux.ui.entities.SearchResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -103,19 +97,32 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
-    var resultSearch = MutableStateFlow<SearchResponse>(SearchResponse(0, "", listOf()))
+    private val _resultSearch = MutableStateFlow<SearchResponseUiState>(SearchResponseUiState.Empty)
+    val resultSearch: StateFlow<SearchResponseUiState> = _resultSearch
 
     fun search(latitude: Double, longitude: Double, distance: String) {
+
+        _resultSearch.value = SearchResponseUiState.Loading
+
         viewModelScope.launch {
             val response =
                 avaloirService.searchAvaloir(SearchRequest(latitude, longitude, distance))
             if (response.isSuccessful) {
                 response.body()?.let { searchResponse ->
                     Log.d("ZEZE", "response search $searchResponse")
-                    resultSearch.value = searchResponse
+                    _resultSearch.value = SearchResponseUiState.Loaded(searchResponse)
                 }
+            } else {
+                //  _resultSearch.value = SearchResponseUiState.Error(message = "merde")
             }
         }
+    }
+
+    val allAvaloirs: Flow<List<Avaloir>> = flow {
+        // viewModelScope.launch {
+        val latestNews = avaloirRepository.getAllAvaloirsFromApi()
+        emit(latestNews)
+        //  }
     }
 
     private val _uiState2 = MutableLiveData<UiState>(UiState.SignedOut)

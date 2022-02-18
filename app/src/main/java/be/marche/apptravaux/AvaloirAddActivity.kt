@@ -10,7 +10,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -21,8 +20,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.compose.rememberNavController
 import be.marche.apptravaux.location.CurrentLocationService
 import be.marche.apptravaux.location.LocationService
+import be.marche.apptravaux.navigation.Navigation
 import be.marche.apptravaux.screens.avaloir.AvaloirAddScreen
-import be.marche.apptravaux.screens.avaloir.LoadAvaloirs
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AvaloirAddActivity : ComponentActivity() {
 
+    private val avaloirViewModel: AvaloirViewModel by viewModels()
     private var foregroundOnlyLocationServiceBound = false
     private var currentOnlyLocationService: CurrentLocationService? = null
     private lateinit var foregroundOnlyBroadcastReceiver: AvaloirAddActivity.ForegroundOnlyBroadcastReceiver
@@ -53,7 +53,6 @@ class AvaloirAddActivity : ComponentActivity() {
     }
 
     val locationService = LocationService()
-    private val avaloirViewModel: AvaloirViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,12 +75,10 @@ class AvaloirAddActivity : ComponentActivity() {
 
                 avaloirViewModel.search(location.latitude, location.longitude, "100m")
 
-                val t =                    AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
+                val screen = AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
 
                 setContent {
                     val navController = rememberNavController()
-                    val results = avaloirViewModel.resultSearch.collectAsState().value
-                    Log.d("ZEZE", "search avaloirs $results")
                     AppTravaux6Theme {
                         Scaffold(
                             topBar = {
@@ -96,7 +93,7 @@ class AvaloirAddActivity : ComponentActivity() {
                                 )
                             }
                         ) {
-                            t.SearchScreen(location, results)
+                            screen.SearchScreen(location, navController)
                         }
                     }
                 }

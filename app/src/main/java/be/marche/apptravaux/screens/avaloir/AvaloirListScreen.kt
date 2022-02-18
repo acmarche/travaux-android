@@ -65,13 +65,12 @@ fun AvaloirListScreen(
 @Composable
 fun LoadAvaloirs(
     avaloirs: List<Avaloir>,
-    navController: NavController,
+    navController: NavController
 ) {
     LazyColumn {
         items(items = avaloirs) { avaloir ->
             ItemAvaloir(avaloir) { avoirId ->
-                Log.d("ZEZE", "id {$avoirId}")
-                navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/$avoirId")
+                navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/${avaloir.idReferent}")
             }
         }
     }
@@ -86,6 +85,7 @@ fun ItemAvaloir(
         modifier = Modifier
             .padding(all = 8.dp)
             .clickable {
+                Log.e("ZEZE", "id ${avaloir.idReferent}")
                 onItemCLick(avaloir.idReferent)
             },
     ) {
@@ -97,26 +97,13 @@ fun ItemAvaloir(
                 .border(1.5.dp, MaterialTheme.colors.secondaryVariant, CircleShape)
                 .clip(CircleShape)
         )
-        /*  Image(
-              painter = painterResource(R.drawable.profile_picture),
-              contentDescription = null,
-              modifier = Modifier
-                  .size(40.dp)
-                  .clip(CircleShape)
-                  .border(1.5.dp, MaterialTheme.colors.secondaryVariant, CircleShape)
-          )*/
         Spacer(modifier = Modifier.width(8.dp))
 
-        // We keep track if the message is expanded or not in this
-        // variable
-        var isExpanded by remember { mutableStateOf(false) }
-        // surfaceColor will be updated gradually from one color to the other
         val surfaceColor: Color by animateColorAsState(
-            if (isExpanded) MaterialTheme.colors.primary else MaterialTheme.colors.surface,
+            MaterialTheme.colors.primary
         )
 
-        // We toggle the isExpanded variable when we click on this Column
-        Column(modifier = Modifier.clickable { isExpanded = !isExpanded }) {
+        Column() {
             Text(
                 text = "rue: ${avaloir.rue}",
                 color = MaterialTheme.colors.secondaryVariant,
@@ -138,9 +125,6 @@ fun ItemAvaloir(
                 Text(
                     text = "Localité: ${avaloir.localite}",
                     modifier = Modifier.padding(all = 4.dp),
-                    // If the message is expanded, we display all its content
-                    // otherwise we only display the first line
-                    maxLines = if (isExpanded) Int.MAX_VALUE else 1,
                     style = MaterialTheme.typography.body2
                 )
             }

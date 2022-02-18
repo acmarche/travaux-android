@@ -21,19 +21,15 @@ fun AvaloirDetailScreen(
     avaloirViewModel: AvaloirViewModel,
     avaloirId: Int?
 ) {
-    var item by remember { mutableStateOf<Avaloir?>(null) }
-    val (text, setText) = remember { mutableStateOf("") }
-
+    Log.d("ZEZE avaloir id", "${avaloirId}")
     LaunchedEffect(avaloirId) { // only launch once whenever cardId change
-        if (avaloirId != null) {
-            item = null //getX
-        }
+        Log.d("ZEZE effect avaloir id", "${avaloirId}")
     }
 
     if (avaloirId != null) {
         if (avaloirId > 0) {
             val avaloir = avaloirViewModel.findById(avaloirId).collectAsState(initial = null).value
-            Log.d("ZEZE", "${avaloir}")
+            Log.d("ZEZE detail sceen ", "${avaloir}")
 
             Column {
                 avaloir?.imageUrl?.let {

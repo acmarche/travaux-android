@@ -80,6 +80,7 @@ fun Navigation(
                 type = NavType.IntType
             })
         ) { entry ->
+            Log.d("ZEZE", "navigation ${entry.arguments?.getInt("avaloirId")}")
             AvaloirDetailScreen(
                 navController,
                 avaloirViewModel,
