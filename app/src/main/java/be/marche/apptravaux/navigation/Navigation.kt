@@ -8,7 +8,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import be.marche.apptravaux.screens.*
+import be.marche.apptravaux.screens.AvaloirDetailScreen
+import be.marche.apptravaux.screens.HomeScreen
+import be.marche.apptravaux.screens.PermissionsAskScreen
+import be.marche.apptravaux.screens.PermissionsScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirAddScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirHomeScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirListScreen
@@ -60,14 +63,12 @@ fun Navigation(
         composable(route = TravauxRoutes.AvaloirAddScreen.route) {
             Log.d("ZEZE", "navigation context ${navController.context}")
             val screen = AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
-            screen.SearchScreen(avaloirViewModel, navController)
+            screen.AddScreenMain(avaloirViewModel, navController)
         }
 
         composable(route = TravauxRoutes.AvaloirSearchScreen.route) {
-            AvaloirSearchScreen(
-                navController = navController,
-                avaloirViewModel = avaloirViewModel
-            )
+            val screen = AvaloirSearchScreen(navController, avaloirViewModel)
+            screen.SearchMainScreen()
         }
 
         composable(

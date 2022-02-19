@@ -120,7 +120,8 @@ class AvaloirViewModel @Inject constructor(
                     _resultSearch.value = SearchResponseUiState.Loaded(searchResponse)
                 }
             } else {
-                //  _resultSearch.value = SearchResponseUiState.Error(message = "merde")
+                _resultSearch.value =
+                    SearchResponseUiState.Error("Erreur survenue: ${response.message()}")
             }
         }
     }

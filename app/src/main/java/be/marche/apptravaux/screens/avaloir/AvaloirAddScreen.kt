@@ -14,7 +14,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,16 +30,9 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import be.marche.apptravaux.AvaloirAddActivity
-import be.marche.apptravaux.entities.SearchResponseUiState
-import be.marche.apptravaux.location.LocationService
-import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
-import com.google.android.libraries.maps.model.LatLng
-import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 class AvaloirAddScreen(
@@ -177,18 +171,18 @@ class AvaloirAddScreen(
 
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    fun SearchScreen(
+    fun AddScreenMain(
         avaloirViewModel: AvaloirViewModel = viewModel(),
         navController: NavController
     ) {
-        Log.d("ZEZE", "searchScreen main")
+        Log.d("ZEZE", "addScreen main")
         AppTravaux6Theme {
             Scaffold(
                 topBar = {
                     TopAppBar(
                         title = {
                             Text(
-                                text = "Recherche dans la zone 25m",
+                                text = "Ajouter un avaloir",
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center
                             )
@@ -196,82 +190,8 @@ class AvaloirAddScreen(
                     )
                 }
             ) {
-                BeginSearch(avaloirViewModel, navController)
+                Text("Add screen")
             }
         }
-    }
-
-    @Composable
-    fun BeginSearch(
-        avaloirViewModel: AvaloirViewModel = viewModel(),
-        navController: NavController
-    ) {
-        Log.d("ZEZE", "searchScreen begin")
-        val service = LocationService()
-        service.getDeviceLocation(navController.context, avaloirViewModel)
-        val location = avaloirViewModel.userCurrentLatLng.value
-        ContentSearch(navController, latLng = location)
-    }
-
-    @Composable
-    fun ContentSearch(
-        navController: NavController,
-        latLng: LatLng
-    ) {
-        Log.d("ZEZE", "searchScreen location {$latLng")
-
-        Column {
-
-            LocationText(latLng)
-
-            if (latLng.latitude > 0.0) {
-                LaunchedEffect(true) {
-                    Log.d("ZEZE", "searchScreen searching {$latLng")
-                    avaloirViewModel.search(latLng.latitude, latLng.longitude, "100m")
-                }
-                ResultSearch(avaloirViewModel, navController)
-            }
-        }
-    }
-
-    @Composable
-    fun ResultSearch(
-        avaloirViewModel: AvaloirViewModel = viewModel(),
-        navController: NavController
-    ) {
-        Log.d("ZEZE", "searchScreen resultsearch")
-        when (val state = avaloirViewModel.resultSearch.collectAsState().value) {
-            is SearchResponseUiState.Loading -> {
-                LoadScreen()
-            }
-            is SearchResponseUiState.Error -> {
-                Log.d("ZEZE", "error")
-                ErrorDialog(state.message)
-            }
-            is SearchResponseUiState.Loaded -> {
-                Log.d("ZEZE", "loaded")
-                Log.d("ZEZE", "search avaloirs ${state.response}")
-                LoadAvaloirs(state.response.avaloirs, navController)
-            }
-            else -> {
-
-            }
-        }
-    }
-
-    @Composable
-    fun LocationText(location: LatLng?) {
-        if (location != null) {
-            Text(text = "Votre localisation: ${location.latitude}, ${location.longitude}")
-        } else {
-            Text(text = "Pas de localisation")
-        }
-    }
-
-    @Composable
-    fun LoadScreen() {
-        Text(text = "Recherche en cours...")
-        CircularProgressIndicator(progress = 0.5f)
-        Log.d("ZEZE", "loading")
     }
 }
