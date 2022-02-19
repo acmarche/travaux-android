@@ -28,19 +28,18 @@ import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.libraries.maps.model.LatLng
+import com.myricseptember.countryfactcomposefinal.widgets.CircularProgressIndicatorSample
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 
 class AvaloirSearchScreen(
     val navController: NavController,
     val avaloirViewModel: AvaloirViewModel
 ) {
-    val service = LocationService()
+    private val service = LocationService()
 
     @Composable
     fun SearchMainScreen() {
-        val content = remember { mutableStateOf("Home Screen") }
         val selectedItem = remember { mutableStateOf("home") }
-        val openDialog = remember { mutableStateOf(false) }
         Log.d("ZEZE", "avaloir search screen")
         Scaffold(
             topBar = {
@@ -100,11 +99,10 @@ class AvaloirSearchScreen(
                                 label = { Text(text = "Home") },
                                 alwaysShowLabel = false
                             )
-
                             BottomNavigationItem(
                                 selected = selectedItem.value == "Setting",
                                 onClick = {
-                                    content.value = "Setting Screen"
+                                    //    content.value = "Setting Screen"
                                     selectedItem.value = "setting"
                                 },
                                 icon = {
@@ -127,8 +125,8 @@ class AvaloirSearchScreen(
     ) {
         Log.d("ZEZE", "searchScreen begin")
         service.getDeviceLocation(navController.context, avaloirViewModel)
-        val location = avaloirViewModel.userCurrentLatLng.value
-        ContentSearch(navController, latLng = location)
+        val location =  avaloirViewModel.userCurrentLatLng.value
+        ContentSearch(navController, location)
     }
 
     @Composable
@@ -167,7 +165,9 @@ class AvaloirSearchScreen(
         Log.d("ZEZE", "searchScreen resultsearch")
         when (val state = avaloirViewModel.resultSearch.collectAsState().value) {
             is SearchResponseUiState.Loading -> {
-                LoadScreen()
+                //LoadScreen()
+                Text(text = "Recherche en cours...")
+                CircularProgressIndicatorSample()
             }
             is SearchResponseUiState.Error -> {
                 Log.d("ZEZE", "error")

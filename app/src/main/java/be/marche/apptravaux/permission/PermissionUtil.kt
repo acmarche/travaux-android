@@ -21,21 +21,20 @@ class PermissionUtil(val context: Context) {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
             )
 
-
         @OptIn(ExperimentalPermissionsApi::class)
         fun getPermissionsText(permissions: List<PermissionState>): String {
             val revokedPermissionsSize = permissions.size
             if (revokedPermissionsSize == 0) return ""
 
             val textToShow = StringBuilder().apply {
-                append("The ")
+                append("Le ")
             }
 
             for (i in permissions.indices) {
                 textToShow.append(permissions[i].permission)
                 when {
                     revokedPermissionsSize > 1 && i == revokedPermissionsSize - 2 -> {
-                        textToShow.append(", and ")
+                        textToShow.append(", et ")
                     }
                     i == revokedPermissionsSize - 1 -> {
                         textToShow.append(" ")
@@ -45,10 +44,9 @@ class PermissionUtil(val context: Context) {
                     }
                 }
             }
-            textToShow.append(if (revokedPermissionsSize == 1) "permission is" else "permissions are")
+            textToShow.append(if (revokedPermissionsSize == 1) "permission est" else "permissions sont")
             return textToShow.toString()
         }
-
     }
 
     fun checkSelfPermissions(permission: String): Boolean {
