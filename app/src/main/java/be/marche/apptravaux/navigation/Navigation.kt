@@ -1,10 +1,7 @@
 package be.marche.apptravaux.navigation
 
-
-import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost

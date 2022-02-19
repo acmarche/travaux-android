@@ -35,7 +35,7 @@ fun AvaloirSearchScreen(
     val content = remember { mutableStateOf("Home Screen") }
     val selectedItem = remember { mutableStateOf("home") }
     val openDialog = remember { mutableStateOf(false) }
-    Log.d("TAG", "avaloir search screen")
+    Log.d("ZEZE", "avaloir search screen")
     Scaffold(
         topBar = {
             TopAppBar(

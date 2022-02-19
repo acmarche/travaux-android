@@ -178,10 +178,10 @@ class AvaloirAddScreen(
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun SearchScreen(
-        avaloirViewModel: AvaloirViewModel= viewModel(),
+        avaloirViewModel: AvaloirViewModel = viewModel(),
         navController: NavController
     ) {
-        Log.d("ZEZE", "searchScreen")
+        Log.d("ZEZE", "searchScreen main")
         AppTravaux6Theme {
             Scaffold(
                 topBar = {
@@ -203,18 +203,13 @@ class AvaloirAddScreen(
 
     @Composable
     fun BeginSearch(
-        avaloirViewModel: AvaloirViewModel= viewModel(),
+        avaloirViewModel: AvaloirViewModel = viewModel(),
         navController: NavController
     ) {
         Log.d("ZEZE", "searchScreen begin")
         val service = LocationService()
         service.getDeviceLocation(navController.context, avaloirViewModel)
         val location = avaloirViewModel.userCurrentLatLng.value
-
-        LaunchedEffect(location) {
-
-        }
-
         ContentSearch(navController, latLng = location)
     }
 
@@ -241,11 +236,9 @@ class AvaloirAddScreen(
 
     @Composable
     fun ResultSearch(
-        avaloirViewModel: AvaloirViewModel= viewModel(),
+        avaloirViewModel: AvaloirViewModel = viewModel(),
         navController: NavController
     ) {
-        val content = remember { mutableStateOf("Home Screen") }
-
         Log.d("ZEZE", "searchScreen resultsearch")
         when (val state = avaloirViewModel.resultSearch.collectAsState().value) {
             is SearchResponseUiState.Loading -> {

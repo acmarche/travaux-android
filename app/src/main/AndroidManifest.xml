@@ -25,12 +25,6 @@
         <activity
             android:name=".ListActivity"
             android:exported="false" />
-        <activity
-            android:name=".AvaloirAddActivity"
-            android:exported="false" />
-        <activity
-            android:name=".screens.PermissionActivity"
-            android:exported="false" />
 
         <activity
             android:name=".MainActivity"

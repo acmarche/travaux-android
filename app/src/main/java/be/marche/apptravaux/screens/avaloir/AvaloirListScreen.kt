@@ -105,7 +105,7 @@ fun ItemAvaloir(
 
         Column() {
             Text(
-                text = "rue: ${avaloir.rue}",
+                text = "Rue: ${avaloir.rue}",
                 color = MaterialTheme.colors.secondaryVariant,
                 style = MaterialTheme.typography.subtitle2
             )
