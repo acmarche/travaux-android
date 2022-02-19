@@ -43,7 +43,6 @@ fun MainContentAvaloirHome(
                     Text(
                         text = "Gestion des avaloirs",
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
                     )
                 },
                 navigationIcon = {

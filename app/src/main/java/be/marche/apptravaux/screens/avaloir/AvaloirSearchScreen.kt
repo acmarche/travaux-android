@@ -3,6 +3,8 @@ package be.marche.apptravaux.screens.avaloir
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -13,13 +15,17 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.SearchResponseUiState
 import be.marche.apptravaux.location.LocationService
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.Colors
+import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.libraries.maps.model.LatLng
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
@@ -43,7 +49,6 @@ class AvaloirSearchScreen(
                         Text(
                             text = "Recherche dans un rayon de 25m",
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
                         )
                     },
                     navigationIcon = {
@@ -52,7 +57,10 @@ class AvaloirSearchScreen(
                                 navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
                             }
                         ) {
-                            Icon(Icons.Filled.ArrowBack, contentDescription = "Retour")
+                            Icon(
+                                Icons.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.back)
+                            )
                         }
                     },
                     backgroundColor = Colors.Pink500,
@@ -130,10 +138,17 @@ class AvaloirSearchScreen(
     ) {
         Log.d("ZEZE", "searchScreen location {$latLng")
 
-        Column {
-
+        Column(modifier = Modifier.padding(15.dp)) {
             LocationText(latLng)
-
+            Divider(
+                modifier = Modifier.height(MEDIUM_PADDING),
+                color = MaterialTheme.colors.background
+            )
+            DescriptionText()
+            Divider(
+                modifier = Modifier.height(MEDIUM_PADDING),
+                color = MaterialTheme.colors.background
+            )
             if (latLng.latitude > 0.0) {
                 LaunchedEffect(true) {
                     Log.d("ZEZE", "searchScreen searching {$latLng")
@@ -162,6 +177,10 @@ class AvaloirSearchScreen(
                 Log.d("ZEZE", "loaded")
                 Log.d("ZEZE", "search avaloirs ${state.response}")
                 Text("${state.response.avaloirs.count()} avaloir(s) trouvé(s) dans un rayon de 25m")
+                Divider(
+                    modifier = Modifier.height(MEDIUM_PADDING),
+                    color = MaterialTheme.colors.background
+                )
                 LoadAvaloirs(state.response.avaloirs, navController)
             }
             else -> {
@@ -177,6 +196,14 @@ class AvaloirSearchScreen(
         } else {
             Text(text = "Pas de localisation")
         }
+    }
+
+    @Composable
+    fun DescriptionText() {
+        Text(
+            text = "Cliquez sur un avaloir trouvé ou ajouter un autre",
+            modifier = Modifier.padding(5.dp)
+        )
     }
 
     @Composable

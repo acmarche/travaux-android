@@ -70,9 +70,15 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
-    fun findById(avaloirId: Int): Flow<Avaloir> {
-        val t = avaloirRepository.findByIdFlow(avaloirId)
-        return t.distinctUntilChanged()
+    private val _selectedAvaloir: MutableStateFlow<Avaloir?> = MutableStateFlow(null)
+    val selectedAvaloir: StateFlow<Avaloir?> = _selectedAvaloir
+
+    fun getSelectedAvaloir(avaloirId: Int) {
+        viewModelScope.launch {
+            avaloirRepository.findByIdFlow(avaloirId).collect { task ->
+                _selectedAvaloir.value = task
+            }
+        }
     }
 
     private fun onQueryLimitReached() {
@@ -86,7 +92,6 @@ class AvaloirViewModel @Inject constructor(
             applicationContext.getString(R.string.something_went_wrong)
         )
     }
-
 
     /*  fun getAllAvaloirsFromServer(): LiveData<List<Avaloir>> = liveData {
           emit(avaloirRepository.getAllAvaloirsFromApi())

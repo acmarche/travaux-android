@@ -78,9 +78,11 @@ fun Navigation(
             })
         ) { entry ->
             Log.d("ZEZE", "navigation ${entry.arguments?.getInt("avaloirId")}")
-            AvaloirDetailScreen(
+            val screen = AvaloirDetailScreen(
                 navController,
-                avaloirViewModel,
+                avaloirViewModel
+            )
+            screen.AvaloirDetailScreenMain(
                 entry.arguments?.getInt("avaloirId")
             )
         }

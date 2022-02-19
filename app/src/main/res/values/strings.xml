@@ -18,6 +18,7 @@
     <string name="avaloir_location_user">Votre géolocalisation: %1$s,%2$s</string>
     <string name="avaloir_location_title">Géolocalisation: %1$s,%2$s</string>
     <string name="avaloir_location">%1$s, %2$s</string>
+    <string name="back">Retour</string>
     <plurals name="count_avaloir_found">
         <item quantity="one">%d avaloir trouvé dans un rayon de 25m</item>
         <item quantity="other">%d avaloirs trouvés dans un rayon de 25m</item>
