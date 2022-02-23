@@ -1,6 +1,7 @@
 package be.marche.apptravaux.navigation
 
 import android.util.Log
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -23,6 +24,7 @@ class Navigation {
     //companion object PARAM_AVALOIR = ""
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Navigation(
     avaloirViewModel: AvaloirViewModel = viewModel()
@@ -64,6 +66,12 @@ fun Navigation(
             Log.d("ZEZE", "navigation context ${navController.context}")
             val screen = AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
             screen.AddScreenMain(avaloirViewModel, navController)
+        }
+
+        composable(route = TravauxRoutes.AvaloirPhotoScreen.route) {
+            Log.d("ZEZE", "navigation context ${navController.context}")
+            val screen = AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
+            screen.TakePicure(avaloirViewModel, navController)
         }
 
         composable(route = TravauxRoutes.AvaloirSearchScreen.route) {

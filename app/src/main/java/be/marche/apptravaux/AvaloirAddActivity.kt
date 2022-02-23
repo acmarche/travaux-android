@@ -1,7 +1,6 @@
 package be.marche.apptravaux
 
 import android.content.*
-import android.graphics.Bitmap
 import android.location.Location
 import android.os.Bundle
 import android.os.IBinder
@@ -13,20 +12,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.compose.rememberNavController
 import be.marche.apptravaux.location.CurrentLocationService
-import be.marche.apptravaux.location.LocationService
-import be.marche.apptravaux.navigation.Navigation
-import be.marche.apptravaux.screens.avaloir.AvaloirAddScreen
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
+@Deprecated(message = "sert a rien")
 class AvaloirAddActivity : ComponentActivity() {
 
     private val avaloirViewModel: AvaloirViewModel by viewModels()
@@ -48,12 +44,6 @@ class AvaloirAddActivity : ComponentActivity() {
         }
     }
 
-    object MyBitmap {
-        var bitmap: Bitmap? = null
-    }
-
-    val locationService = LocationService()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -70,10 +60,10 @@ class AvaloirAddActivity : ComponentActivity() {
             Log.d("ZEZE", "Add activity ForegroundOnlyBroadcastReceiver")
             if (location != null) {
 
-          //      locationService.locations = location
+                //      locationService.locations = location
                 Log.d("ZEZE", "ma location {$location}")
 
-           //     avaloirViewModel.search(location.latitude, location.longitude, "100m")
+                //     avaloirViewModel.search(location.latitude, location.longitude, "100m")
 
                 setContent {
                     val navController = rememberNavController()

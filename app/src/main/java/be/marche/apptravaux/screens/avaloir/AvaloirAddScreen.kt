@@ -32,21 +32,119 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import be.marche.apptravaux.AvaloirAddActivity
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.GoogleMapWidget
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.ui.theme.Colors.Pink500
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
+import com.google.android.libraries.maps.model.LatLng
 import kotlinx.coroutines.launch
 
 class AvaloirAddScreen(
     val avaloirViewModel: AvaloirViewModel
 ) {
+
+    object MyBitmap {
+        var bitmap: Bitmap? = null
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    fun AddScreenMain(
+        avaloirViewModel: AvaloirViewModel = viewModel(),
+        navController: NavController
+    ) {
+        Log.d("ZEZE", "addScreen main")
+        val location = avaloirViewModel.userCurrentLatLng.value
+        Log.d("ZEZE", "addScreen location $location")
+        AppTravaux6Theme {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = "Ajouter un avaloir",
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        navigationIcon = {
+                            IconButton(
+                                onClick = {
+                                    navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
+                                }
+                            ) {
+                                Icon(Icons.Filled.ArrowBack, contentDescription = "Retour")
+                            }
+                        },
+                        backgroundColor = Pink500,
+                        elevation = AppBarDefaults.TopAppBarElevation
+                    )
+                }
+            ) {
+               ContentMainScreen(navController, location)
+            }
+        }
+    }
+    @Composable
+    fun ContentMainScreen(
+        navController: NavController,
+        location: LatLng
+    ) {
+        Column {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(vertical = 25.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Déplacer la carte pour corriger la localisation",
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            Divider(
+                modifier = Modifier.height(MEDIUM_PADDING),
+                color = MaterialTheme.colors.background
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(vertical = 25.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Button(onClick = { navController.navigate(TravauxRoutes.AvaloirPhotoScreen.route) }) {
+                    Text("Valider et prendre une photo")
+                }
+                Button(onClick = {
+                    navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
+                }
+                ) {
+                    Text("Annuler")
+                }
+            }
+            Divider(
+                modifier = Modifier.height(MEDIUM_PADDING),
+                color = MaterialTheme.colors.background
+            )
+            GoogleMapWidget(
+                location.latitude,
+                location.longitude,
+                null,
+                true
+            )
+        }
+    }
+
     @ExperimentalMaterialApi
     @Composable
-    fun TakePicure() {
+    fun TakePicure(
+        avaloirViewModel: AvaloirViewModel = viewModel(),
+        navController: NavController) {
         Log.d("ZEZE", "take picture")
         val context = LocalContext.current
         val bottomSheetModalState =
@@ -56,7 +154,7 @@ class AvaloirAddScreen(
         val cameraLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.TakePicturePreview()
         ) { btm: Bitmap? ->
-            AvaloirAddActivity.MyBitmap.bitmap = btm
+            MyBitmap.bitmap = btm
         }
 
         val permissionLauncher = rememberLauncherForActivityResult(
@@ -139,10 +237,18 @@ class AvaloirAddScreen(
                 Button(
                     onClick = {
                         coroutineScope.launch {
-                            if (!bottomSheetModalState.isVisible) {
-                                bottomSheetModalState.show()
-                            } else {
-                                bottomSheetModalState.hide()
+                            when (PackageManager.PERMISSION_GRANTED) {
+                                ContextCompat.checkSelfPermission(
+                                    context, Manifest.permission.CAMERA
+                                ) -> {
+                                    cameraLauncher.launch()
+                                    coroutineScope.launch {
+                                        bottomSheetModalState.hide()
+                                    }
+                                }
+                                else -> {
+                                    permissionLauncher.launch(Manifest.permission.CAMERA)
+                                }
                             }
                         }
                     },
@@ -161,7 +267,7 @@ class AvaloirAddScreen(
             }
         }
 
-        AvaloirAddActivity.MyBitmap.bitmap?.let { btm ->
+        MyBitmap.bitmap?.let { btm ->
             Image(
                 bitmap = btm.asImageBitmap(),
                 contentDescription = "Image",
@@ -172,90 +278,6 @@ class AvaloirAddScreen(
                     .padding(top = 10.dp),
                 contentScale = ContentScale.Fit
             )
-        }
-    }
-
-    @OptIn(ExperimentalMaterialApi::class)
-    @Composable
-    fun AddScreenMain(
-        avaloirViewModel: AvaloirViewModel = viewModel(),
-        navController: NavController
-    ) {
-        Log.d("ZEZE", "addScreen main")
-        val location = avaloirViewModel.userCurrentLatLng.value
-        Log.d("ZEZE", "addScreen location $location")
-        AppTravaux6Theme {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = "Ajouter un avaloir",
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(
-                                onClick = {
-                                    navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
-                                }
-                            ) {
-                                Icon(Icons.Filled.ArrowBack, contentDescription = "Retour")
-                            }
-                        },
-                        backgroundColor = Pink500,
-                        elevation = AppBarDefaults.TopAppBarElevation
-                    )
-                }
-            ) {
-                Column {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .padding(vertical = 25.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Déplacer la carte pour corriger la localisation",
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                    Divider(
-                        modifier = Modifier.height(MEDIUM_PADDING),
-                        color = MaterialTheme.colors.background
-                    )
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .padding(vertical = 25.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Button(onClick = { navController.navigate(TravauxRoutes.AvaloirHomeScreen.route) }) {
-                            Text("Valider et prendre une photo")
-                        }
-                        Button(onClick = {
-                            navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
-                        }
-                        ) {
-                            Text("Annuler")
-                        }
-                    }
-                    Divider(
-                        modifier = Modifier.height(MEDIUM_PADDING),
-                        color = MaterialTheme.colors.background
-                    )
-                    GoogleMapWidget(
-                        location.latitude,
-                        location.longitude,
-                        null,
-                        true
-                    )
-                }
-            }
         }
     }
 }
