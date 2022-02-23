@@ -29,6 +29,9 @@ import javax.inject.Singleton
 class AppModule {
 
     @Provides
+    fun provideBaseUrl() = "https://apptravaux.marche.be/"
+
+    @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
         val applicationScope = CoroutineScope(SupervisorJob())

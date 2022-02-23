@@ -21,6 +21,7 @@ import be.marche.apptravaux.ui.entities.SearchRequest
 import com.google.android.libraries.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -131,7 +132,6 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
-
     private var _userCurrentLatLng = mutableStateOf(LatLng(0.0, 0.0))
     var userCurrentLatLng: MutableState<LatLng> = _userCurrentLatLng
 
@@ -146,4 +146,16 @@ class AvaloirViewModel @Inject constructor(
     val uiState2: LiveData<UiState>
         get() = _uiState2
 
+
+    fun makeFlow(): Flow<Int> = flow {
+        repeat(3) { num ->
+            delay(1000)
+            emit(num)
+        }
+    }
+
+    suspend fun main() {
+        makeFlow()
+            .collect { println(it) }
+    }
 }

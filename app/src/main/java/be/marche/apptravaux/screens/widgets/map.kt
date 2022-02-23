@@ -80,8 +80,9 @@ fun rememberMapViewWithLifeCycle(move: Boolean): MapView {
                 moveMarker(cameraPosition.target.latitude, cameraPosition.target.longitude)
             }
             map.setOnCameraIdleListener {
+
                 //registerCoordinates
-                Log.d("ZEZE", "idle")
+                Log.d("ZEZE", "move camera")
             }
         }
     }

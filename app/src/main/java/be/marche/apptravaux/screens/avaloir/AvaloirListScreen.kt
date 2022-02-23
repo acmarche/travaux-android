@@ -11,6 +11,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +23,7 @@ import androidx.navigation.NavController
 import be.marche.apptravaux.entities.AvaloirUiState
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.TravauxRoutes
+import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import coil.compose.rememberImagePainter
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
@@ -39,7 +42,18 @@ fun AvaloirListScreen(
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
-                }
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
+                        }
+                    ) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Retour")
+                    }
+                },
+                backgroundColor = Colors.Pink500,
+                elevation = AppBarDefaults.TopAppBarElevation
             )
         }
     ) {

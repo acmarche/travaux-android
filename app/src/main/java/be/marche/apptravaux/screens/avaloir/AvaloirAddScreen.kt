@@ -14,6 +14,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -31,7 +33,11 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import be.marche.apptravaux.AvaloirAddActivity
+import be.marche.apptravaux.navigation.TravauxRoutes
+import be.marche.apptravaux.screens.widgets.GoogleMapWidget
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
+import be.marche.apptravaux.ui.theme.Colors.Pink500
+import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import kotlinx.coroutines.launch
 
@@ -176,6 +182,8 @@ class AvaloirAddScreen(
         navController: NavController
     ) {
         Log.d("ZEZE", "addScreen main")
+        val location = avaloirViewModel.userCurrentLatLng.value
+        Log.d("ZEZE", "addScreen location $location")
         AppTravaux6Theme {
             Scaffold(
                 topBar = {
@@ -186,11 +194,67 @@ class AvaloirAddScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center
                             )
-                        }
+                        },
+                        navigationIcon = {
+                            IconButton(
+                                onClick = {
+                                    navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
+                                }
+                            ) {
+                                Icon(Icons.Filled.ArrowBack, contentDescription = "Retour")
+                            }
+                        },
+                        backgroundColor = Pink500,
+                        elevation = AppBarDefaults.TopAppBarElevation
                     )
                 }
             ) {
-                Text("Add screen")
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .padding(vertical = 25.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Déplacer la carte pour corriger la localisation",
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Divider(
+                        modifier = Modifier.height(MEDIUM_PADDING),
+                        color = MaterialTheme.colors.background
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .padding(vertical = 25.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Button(onClick = { navController.navigate(TravauxRoutes.AvaloirHomeScreen.route) }) {
+                            Text("Valider et prendre une photo")
+                        }
+                        Button(onClick = {
+                            navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
+                        }
+                        ) {
+                            Text("Annuler")
+                        }
+                    }
+                    Divider(
+                        modifier = Modifier.height(MEDIUM_PADDING),
+                        color = MaterialTheme.colors.background
+                    )
+                    GoogleMapWidget(
+                        location.latitude,
+                        location.longitude,
+                        null,
+                        true
+                    )
+                }
             }
         }
     }
