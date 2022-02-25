@@ -2,15 +2,12 @@
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- https://stackoverflow.com/questions/42516126/fileprovider-illegalargumentexception-failed-to-find-configured-root -->
     <files-path
-        name="my_images"
-        path="/my_images" />
+        name="images"
+        path="images" />
     <files-path
         name="my_docs"
         path="docs/" />
     <external-files-path
-        name="my_images2"
-        path="images/" />
-    <external-files-path
-        name="my_images2"
-        path="/" />
+        name="Pictures"
+        path="Pictures" />
 </paths>

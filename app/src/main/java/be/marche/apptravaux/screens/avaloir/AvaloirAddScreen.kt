@@ -4,22 +4,24 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +42,7 @@ import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.libraries.maps.model.LatLng
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 
 class AvaloirAddScreen(
@@ -155,6 +158,10 @@ class AvaloirAddScreen(
     ) {
         Log.d("ZEZE", "take picture")
 
+        val statePhoto = remember {
+            mutableStateOf(false)
+        }
+
         val context = LocalContext.current
         val uri = fileHelper.createUri(context)
 
@@ -172,6 +179,7 @@ class AvaloirAddScreen(
         ) { result: Boolean ->
             if (result) {
                 Log.d("ZEZE", " oki camera $uri")
+                statePhoto.value = true
             } else {
                 Log.d("ZEZE", " KO camera $uri")
             }
@@ -186,7 +194,37 @@ class AvaloirAddScreen(
                 Toast.makeText(context, "Permission Denied!", Toast.LENGTH_SHORT).show()
             }
         }
+        ImageFromUri(statePhoto, uri)
         Content(permissionLauncher, cameraLauncher, uri)
+    }
+
+    private @Composable
+    fun ImageFromUri(statePhoto: MutableState<Boolean>, uri: Uri) {
+        val context = LocalContext.current
+        if (statePhoto.value) {
+            Log.e("ZEZE", "load img uri $uri")
+            var bitmap: Bitmap? = null
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri)
+            } catch (e: IOException) {
+                Log.d("ZEZE", "error bitmap ${e.message}")
+                e.printStackTrace();
+            }
+            if (bitmap != null) {
+                Log.d("ZEZE", "ok bitmap")
+
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = "Image",
+                    alignment = Alignment.TopCenter,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.45f)
+                        .padding(top = 10.dp),
+                    contentScale = ContentScale.Fit
+                )
+            }
+        }
     }
 
     @Composable

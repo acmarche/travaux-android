@@ -168,11 +168,9 @@ class FileHelper {
     }
 
     fun createUri(context: Context): Uri {
-        val fileName = "avaloir_" + System.currentTimeMillis() + ".png"
-        val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        Log.d("ZEZE", "files dir ${context.getFilesDir()}")
-        val dirPath = File(context.getFilesDir(), "/my_images/")
-        Log.d("ZEZE", "create uri dir path $dirPath")
+        //val fileName = "avaloir_" + System.currentTimeMillis() + ".jpg"
+        val fileName = "avaloir_zeze" + ".jpg"
+        val dirPath: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val file = File(dirPath, fileName)
         Log.d("ZEZE", "create uri fiile path ${file.path}")
         return getUriForFile(

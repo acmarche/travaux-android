@@ -1,6 +1,5 @@
 package be.marche.apptravaux.navigation
 
-import android.util.Log
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -63,13 +62,11 @@ fun Navigation(
         }
 
         composable(route = TravauxRoutes.AvaloirAddScreen.route) {
-            Log.d("ZEZE", "navigation context ${navController.context}")
             val screen = AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
             screen.AddScreenMain(avaloirViewModel, navController)
         }
 
         composable(route = TravauxRoutes.AvaloirPhotoScreen.route) {
-            Log.d("ZEZE", "navigation context ${navController.context}")
             val screen = AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
             screen.TakePicure(avaloirViewModel, navController)
         }
@@ -85,7 +82,6 @@ fun Navigation(
                 type = NavType.IntType
             })
         ) { entry ->
-            Log.d("ZEZE", "navigation ${entry.arguments?.getInt("avaloirId")}")
             val screen = AvaloirDetailScreen(
                 navController,
                 avaloirViewModel
