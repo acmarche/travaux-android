@@ -3,12 +3,11 @@ package be.marche.apptravaux.screens.avaloir
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -20,8 +19,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,17 +34,30 @@ import be.marche.apptravaux.screens.widgets.GoogleMapWidget
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.ui.theme.Colors.Pink500
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
+import be.marche.apptravaux.utils.FileHelper
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.libraries.maps.model.LatLng
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 import kotlinx.coroutines.launch
+import java.io.File
+
 
 class AvaloirAddScreen(
     val avaloirViewModel: AvaloirViewModel
 ) {
 
+    val fileHelper = FileHelper()
+
     object MyBitmap {
         var bitmap: Bitmap? = null
+    }
+
+    object MyFile {
+        var myFile: File? = null
+    }
+
+    object MyUri {
+        var myUri: Uri? = null
     }
 
     @OptIn(ExperimentalMaterialApi::class)
@@ -154,9 +164,6 @@ class AvaloirAddScreen(
         Log.d("ZEZE", "take picture")
 
         val context = LocalContext.current
-        val dir = context.getApplicationInfo().dataDir
-        Log.d("ZEZE", "data dir   ${dir}")
-
         val coroutineScope = rememberCoroutineScope()
 
         when (val state = avaloirViewModel.resultCreateFile.collectAsState().value) {
@@ -169,21 +176,17 @@ class AvaloirAddScreen(
         }
 
         val cameraLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.TakePicturePreview()
-        ) { btm: Bitmap? ->
-            MyBitmap.bitmap = btm
-
-            if (btm != null) {
-                avaloirViewModel.savePhoto(btm, context, dir)
-            }
-
+            contract = ActivityResultContracts.TakePicture()
+        ) { result: Boolean ->
+            Log.d("ZEZE", " oki camera")
         }
 
         val permissionLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                cameraLauncher.launch()
+                val uri = fileHelper.createUri(context)
+                cameraLauncher.launch(uri)
             } else {
                 Toast.makeText(context, "Permission Denied!", Toast.LENGTH_SHORT).show()
             }
@@ -207,7 +210,8 @@ class AvaloirAddScreen(
                             ContextCompat.checkSelfPermission(
                                 context, Manifest.permission.CAMERA
                             ) -> {
-                                cameraLauncher.launch()
+                                val uri = fileHelper.createUri(context)
+                                cameraLauncher.launch(uri)
                             }
                             else -> {
                                 permissionLauncher.launch(Manifest.permission.CAMERA)
@@ -246,9 +250,12 @@ class AvaloirAddScreen(
                 }
             }
         }
-
+/*
+            val bmOptions = BitmapFactory.Options()
+            val bitmap = BitmapFactory.decodeFile(it.getAbsolutePath(), bmOptions)
+ */
+        /*
         MyBitmap.bitmap?.let { btm ->
-            Log.d("ZEZE", "btm path ${btm.toString()}")
             Image(
                 bitmap = btm.asImageBitmap(),
                 contentDescription = "Image",
@@ -259,6 +266,6 @@ class AvaloirAddScreen(
                     .padding(top = 10.dp),
                 contentScale = ContentScale.Fit
             )
-        }
+        }*/
     }
 }

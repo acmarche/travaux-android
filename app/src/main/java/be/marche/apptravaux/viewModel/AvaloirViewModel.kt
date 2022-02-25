@@ -168,11 +168,15 @@ class AvaloirViewModel @Inject constructor(
             val externalFilesDir =
                 context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
             try {
-                fileHelper.bitmapToFile(image, externalFilesDir, dir)
+                val file = fileHelper.bitmapToFile(image, externalFilesDir, dir)
+                Log.d("ZEZE", " file return $file")
+                if (file != null) {
+                    Log.d("ZEZE", " file return ${file.path}")
+                }
                 _createFile.value = CreateFileState.Success("super")
-            }
-            catch (exception: Exception) {
-                _createFile.value = CreateFileState.Error("Erreur lors de le l'enregistrement de l'image: ${exception.message}")
+            } catch (exception: Exception) {
+                _createFile.value =
+                    CreateFileState.Error("Erreur lors de le l'enregistrement de l'image: ${exception.message}")
             }
         }
     }

@@ -1,10 +1,14 @@
 package be.marche.apptravaux.utils
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.net.Uri
 import android.os.Environment
 import android.util.Log
+import androidx.core.content.FileProvider
+import androidx.core.content.FileProvider.getUriForFile
 import androidx.exifinterface.media.ExifInterface
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -43,7 +47,7 @@ class FileHelper {
         return MultipartBody.Part.createFormData("image", file.name, requestBody)
     }
 
-    @Throws(IOException::class)
+    //  @Throws(IOException::class)
     fun createImageFile(file: File): File {
         val format = SimpleDateFormat(
             "yyyy-MM-dd HH:mm:ss",
@@ -52,7 +56,7 @@ class FileHelper {
         val storageDir: File =
             file
         return File.createTempFile(
-            "JPEG_${format}_", /* prefix */
+            "avaloir_", /* prefix */
             ".jpg", /* suffix */
             storageDir /* directory */
         )
@@ -67,25 +71,34 @@ class FileHelper {
     }
 
     //@Throws(IOException::class)
-    fun bitmapToFile(bitmap: Bitmap, externalFilesDir: File, dir: String): File? {
+    fun bitmapToFile(image: Bitmap, externalFilesDir: File, dir: String): File? {
         //create a file to write bitmap data
         Log.d("ZEZE", "save file $externalFilesDir")
-        Log.d("ZEZE", "save file $dir")
-        val file: File = createImageFile(File(dir))
+        Log.d("ZEZE", "save file size ${image.width} px")
+        val file: File = createImageFile(externalFilesDir)
+        Log.d("ZEZE", "save file pat ${file.path}")
 
         /*   val file = File(
                Environment.getExternalStorageDirectory().toString() + File.separator + "jf.jpg"
            )
            file.createNewFile()*/
 
+        try {
+            FileOutputStream(file).use { out ->
+                Log.d("ZEZE", "out ${out}")
+                image.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
         return try {
 
             Log.d("ZEZE", "save file name ${file.name}")
-            Log.d("ZEZE", "save file name ${Environment.getExternalStorageDirectory().toString()}")
 
             //Convert bitmap to byte array
             val bos = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 0, bos)
+            image.compress(Bitmap.CompressFormat.JPEG, 100, bos)
             val bitmapdata = bos.toByteArray()
 
             //write the bytes in file
@@ -153,5 +166,36 @@ class FileHelper {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+    fun createUri(context: Context): Uri {
+        val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val imagePath = File(context.getFilesDir(), "my_images")
+        Log.d("ZEZE", "create uri storage dir $imagePath")
+        val file = File(imagePath, "picFromCamera.jpg")
+        return getUriForFile(
+            context,
+            context.packageName.toString() + ".fileprovider",
+            file
+        )
+    }
+
+    private fun xx(context: Context) {
+        val dir = context.getApplicationInfo().dataDir
+        Log.d("ZEZE", "data dir   ${dir}")
+
+        val externalFilesDir =
+            context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+
+        val file3 = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath + "/Image",
+            "temp-image.png"
+        )
+
+        File(
+            context.getExternalCacheDir()!!
+                .getAbsolutePath() + File.separator + "TemperoryFile_" + System.currentTimeMillis() + ".png"
+        )
+
     }
 }
