@@ -23,4 +23,8 @@
         <item quantity="one">%d avaloir trouvé dans un rayon de 25m</item>
         <item quantity="other">%d avaloirs trouvés dans un rayon de 25m</item>
     </plurals>
+    <string name="photo_tip">Prenez la photo de manière \n à repérer facilement l\'endroit</string>
+    <string name="add_avaloir">Ajouter un avaloir</string>
+    <string name="confirm">Confirmer</string>
+    <string name="photo_take">Prendre une photo</string>
 </resources>

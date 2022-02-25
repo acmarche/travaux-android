@@ -4,6 +4,8 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -13,13 +15,24 @@ class PermissionUtil(val context: Context) {
 
     companion object {
         val listOfPermissions =
-            listOf(
-                Manifest.permission.ACCESS_NETWORK_STATE,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.CAMERA,
-                // android.Manifest.permission.FOREGROUND_SERVICE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                listOf(
+                    Manifest.permission.ACCESS_NETWORK_STATE,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.FOREGROUND_SERVICE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                )
+            } else {
+                listOf(
+                    Manifest.permission.ACCESS_NETWORK_STATE,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    )
+            }
 
         @OptIn(ExperimentalPermissionsApi::class)
         fun getPermissionsText(permissions: List<PermissionState>): String {

@@ -2,6 +2,8 @@ package be.marche.apptravaux.viewModel
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.os.Environment
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -10,14 +12,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.marche.apptravaux.R
-import be.marche.apptravaux.entities.Avaloir
-import be.marche.apptravaux.entities.AvaloirUiState
-import be.marche.apptravaux.entities.SearchResponseUiState
-import be.marche.apptravaux.entities.UiState
+import be.marche.apptravaux.entities.*
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.repository.AvaloirRepository
 import be.marche.apptravaux.ui.entities.SearchRequest
+import be.marche.apptravaux.utils.FileHelper
 import com.google.android.libraries.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -157,5 +157,23 @@ class AvaloirViewModel @Inject constructor(
     suspend fun main() {
         makeFlow()
             .collect { println(it) }
+    }
+
+    private val _createFile = MutableStateFlow<CreateFileState>(CreateFileState.Empty)
+    val resultCreateFile: StateFlow<CreateFileState> = _createFile
+
+    fun savePhoto(image: Bitmap, context: Context, dir: String) {
+        viewModelScope.launch {
+            val fileHelper = FileHelper()
+            val externalFilesDir =
+                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+            try {
+                fileHelper.bitmapToFile(image, externalFilesDir, dir)
+                _createFile.value = CreateFileState.Success("super")
+            }
+            catch (exception: Exception) {
+                _createFile.value = CreateFileState.Error("Erreur lors de le l'enregistrement de l'image: ${exception.message}")
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.myricseptember.countryfactcomposefinal.widgets
 
+import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
@@ -82,6 +83,17 @@ fun CardRow(
 
 @Composable
 fun ErrorDialog(message: String) {
+    Text(
+        text = message,
+        modifier = Modifier
+            .padding(start = 24.dp, top = 50.dp, end = 24.dp, bottom = 50.dp),
+        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp)
+    )
+}
+
+@Composable
+fun ToastMessage(message: String) {
+
     Text(
         text = message,
         modifier = Modifier

@@ -29,3 +29,9 @@ sealed class SearchResponseUiState {
     class Loaded(val response: SearchResponse) : SearchResponseUiState()
     class Error(val message: String) : SearchResponseUiState()
 }
+
+sealed class CreateFileState {
+    object Empty : CreateFileState()
+    class Success(val message: String) : CreateFileState()
+    class Error(val message: String) : CreateFileState()
+}
