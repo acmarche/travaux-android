@@ -172,7 +172,7 @@ class FileHelper {
         val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val imagePath = File(context.getFilesDir(), "my_images")
         Log.d("ZEZE", "create uri storage dir $imagePath")
-        val file = File(imagePath, "picFromCamera.jpg")
+        val file = File(imagePath, "picFromCamera2.jpg")
         return getUriForFile(
             context,
             context.packageName.toString() + ".fileprovider",

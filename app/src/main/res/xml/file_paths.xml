@@ -7,9 +7,9 @@
         name="my_docs"
         path="docs/" />
     <external-files-path
-        name="my_images"
+        name="my_images2"
         path="images/" />
     <external-files-path
-        name="my_images"
+        name="my_images2"
         path="/" />
 </paths>
