@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
@@ -39,7 +40,6 @@ import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.libraries.maps.model.LatLng
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 import kotlinx.coroutines.launch
-import java.io.File
 
 
 class AvaloirAddScreen(
@@ -50,14 +50,6 @@ class AvaloirAddScreen(
 
     object MyBitmap {
         var bitmap: Bitmap? = null
-    }
-
-    object MyFile {
-        var myFile: File? = null
-    }
-
-    object MyUri {
-        var myUri: Uri? = null
     }
 
     @OptIn(ExperimentalMaterialApi::class)
@@ -164,7 +156,7 @@ class AvaloirAddScreen(
         Log.d("ZEZE", "take picture")
 
         val context = LocalContext.current
-        val coroutineScope = rememberCoroutineScope()
+        val uri = fileHelper.createUri(context)
 
         when (val state = avaloirViewModel.resultCreateFile.collectAsState().value) {
             is CreateFileState.Error -> {
@@ -178,19 +170,33 @@ class AvaloirAddScreen(
         val cameraLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.TakePicture()
         ) { result: Boolean ->
-            Log.d("ZEZE", " oki camera")
+            if (result) {
+                Log.d("ZEZE", " oki camera $uri")
+            } else {
+                Log.d("ZEZE", " KO camera $uri")
+            }
         }
 
         val permissionLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                val uri = fileHelper.createUri(context)
                 cameraLauncher.launch(uri)
             } else {
                 Toast.makeText(context, "Permission Denied!", Toast.LENGTH_SHORT).show()
             }
         }
+        Content(permissionLauncher, cameraLauncher, uri)
+    }
+
+    @Composable
+    fun Content(
+        permissionLauncher: ManagedActivityResultLauncher<String, Boolean>,
+        cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
+        uri: Uri
+    ) {
+        val context = LocalContext.current
+        val coroutineScope = rememberCoroutineScope()
 
         Column(
             verticalArrangement = Arrangement.Bottom,
@@ -210,7 +216,7 @@ class AvaloirAddScreen(
                             ContextCompat.checkSelfPermission(
                                 context, Manifest.permission.CAMERA
                             ) -> {
-                                val uri = fileHelper.createUri(context)
+                                Log.e("ZEZE", "launch camera ${uri.path}")
                                 cameraLauncher.launch(uri)
                             }
                             else -> {
@@ -231,25 +237,32 @@ class AvaloirAddScreen(
                     color = Color.White
                 )
             }
-            MyBitmap.bitmap?.let { btm ->
-                Button(
-                    onClick = {
-                        navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
-                    },
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.confirm),
-                        modifier = Modifier.padding(8.dp),
-                        textAlign = TextAlign.Center,
-                        color = Color.White
-                    )
-                }
+        }
+    }
+
+    @Composable
+    fun BtnConfirm(
+        navController: NavController
+    ) {
+        MyBitmap.bitmap?.let { btm ->
+            Button(
+                onClick = {
+                    navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
+                },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.confirm),
+                    modifier = Modifier.padding(8.dp),
+                    textAlign = TextAlign.Center,
+                    color = Color.White
+                )
             }
         }
+
 /*
             val bmOptions = BitmapFactory.Options()
             val bitmap = BitmapFactory.decodeFile(it.getAbsolutePath(), bmOptions)

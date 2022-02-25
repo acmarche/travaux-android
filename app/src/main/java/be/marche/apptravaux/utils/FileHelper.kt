@@ -7,7 +7,6 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
-import androidx.core.content.FileProvider
 import androidx.core.content.FileProvider.getUriForFile
 import androidx.exifinterface.media.ExifInterface
 import okhttp3.MediaType
@@ -169,10 +168,13 @@ class FileHelper {
     }
 
     fun createUri(context: Context): Uri {
+        val fileName = "avaloir_" + System.currentTimeMillis() + ".png"
         val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val imagePath = File(context.getFilesDir(), "my_images")
-        Log.d("ZEZE", "create uri storage dir $imagePath")
-        val file = File(imagePath, "picFromCamera2.jpg")
+        Log.d("ZEZE", "files dir ${context.getFilesDir()}")
+        val dirPath = File(context.getFilesDir(), "/my_images/")
+        Log.d("ZEZE", "create uri dir path $dirPath")
+        val file = File(dirPath, fileName)
+        Log.d("ZEZE", "create uri fiile path ${file.path}")
         return getUriForFile(
             context,
             context.packageName.toString() + ".fileprovider",
@@ -194,7 +196,8 @@ class FileHelper {
 
         File(
             context.getExternalCacheDir()!!
-                .getAbsolutePath() + File.separator + "TemperoryFile_" + System.currentTimeMillis() + ".png"
+                .getAbsolutePath() + File.separator + "TemperoryFile_" + System.currentTimeMillis()
+                    + ".png"
         )
 
     }
