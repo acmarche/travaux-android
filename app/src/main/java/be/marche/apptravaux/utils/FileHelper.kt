@@ -21,17 +21,13 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
+fun galleryDir(): File {
+    val fileName = "ss"
+    val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+    return File(storageDir, fileName)
+}
 
 class FileHelper {
-
-    /**
-     * Files you save in the directories provided by getExternalFilesDir() or getFilesDir() are deleted when the user uninstalls your app.
-     */
-    fun galleryDir(): File {
-        val storageDir =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-        return File(storageDir, "StrangerCam")
-    }
 
     fun galleryOut(file: File): FileOutputStream {
         return FileOutputStream(file)
@@ -70,12 +66,8 @@ class FileHelper {
     }
 
     //@Throws(IOException::class)
-    fun bitmapToFile(image: Bitmap, externalFilesDir: File, dir: String): File? {
-        //create a file to write bitmap data
-        Log.d("ZEZE", "save file $externalFilesDir")
-        Log.d("ZEZE", "save file size ${image.width} px")
-        val file: File = createImageFile(externalFilesDir)
-        Log.d("ZEZE", "save file pat ${file.path}")
+    fun bitmapToFile(image: Bitmap, file: File): File? {
+        Log.d("ZEZE", "save file path ${file.path}")
 
         /*   val file = File(
                Environment.getExternalStorageDirectory().toString() + File.separator + "jf.jpg"
@@ -144,8 +136,8 @@ class FileHelper {
             }
         }
 
-        if (rotatedBitmap != null)
-            saveBitmap(rotatedBitmap, currentPhotoPath)
+      //  if (rotatedBitmap != null)
+        //    saveBitmap(rotatedBitmap, currentPhotoPath)
     }
 
     fun rotateImage(source: Bitmap, angle: Int): Bitmap? {
@@ -157,21 +149,26 @@ class FileHelper {
         )
     }
 
-    fun saveBitmap(image: Bitmap, filename: String) {
+    fun saveBitmap(image: Bitmap, filename: File) {
         try {
             FileOutputStream(filename).use({ out ->
-                image.compress(Bitmap.CompressFormat.PNG, 95, out)
+                image.compress(Bitmap.CompressFormat.JPEG, 95, out)
             })
         } catch (e: IOException) {
+            Log.e("ZEZE", "save image fail ${e.message}")
             e.printStackTrace()
         }
     }
 
-    fun createUri(context: Context): Uri {
-        //val fileName = "avaloir_" + System.currentTimeMillis() + ".jpg"
+    fun createImageFile(context: Context): File {
+         //val fileName = "avaloir_" + System.currentTimeMillis() + ".jpg"
         val fileName = "avaloir_zeze" + ".jpg"
         val dirPath: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val file = File(dirPath, fileName)
+        return   File(dirPath, fileName)
+
+    }
+
+    fun createUri(context: Context, file: File): Uri {
         Log.d("ZEZE", "create uri fiile path ${file.path}")
         return getUriForFile(
             context,

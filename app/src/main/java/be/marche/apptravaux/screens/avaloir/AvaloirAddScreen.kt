@@ -39,17 +39,20 @@ import be.marche.apptravaux.ui.theme.Colors.Pink500
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.utils.FileHelper
 import be.marche.apptravaux.viewModel.AvaloirViewModel
+import coil.compose.rememberImagePainter
 import com.google.android.libraries.maps.model.LatLng
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 import kotlinx.coroutines.launch
+import java.io.File
 import java.io.IOException
+import java.net.URI
 
 
 class AvaloirAddScreen(
     val avaloirViewModel: AvaloirViewModel
 ) {
-
     val fileHelper = FileHelper()
+    var fileImage: File? = null
 
     object MyBitmap {
         var bitmap: Bitmap? = null
@@ -61,6 +64,8 @@ class AvaloirAddScreen(
         avaloirViewModel: AvaloirViewModel = viewModel(),
         navController: NavController
     ) {
+        val t = File("/storage/emulated/0/Android/data/be.marche.apptravaux/files/Pictures/avaloir_zeze.jpg")
+        Log.d("ZEZE", "file size ${t.length()}")
         Log.d("ZEZE", "addScreen main")
         val location = avaloirViewModel.userCurrentLatLng.value
         Log.d("ZEZE", "addScreen location $location")
@@ -92,7 +97,11 @@ class AvaloirAddScreen(
                     )
                 }
             ) {
-                ContentMainScreen(navController, location)
+                Image(
+                    rememberImagePainter(t),
+                    contentDescription = "...",
+                )
+                //ContentMainScreen(navController, location)
             }
         }
     }
@@ -163,7 +172,37 @@ class AvaloirAddScreen(
         }
 
         val context = LocalContext.current
-        val uri = fileHelper.createUri(context)
+        try {
+            fileImage = fileHelper.createImageFile(context)
+        } catch (io: IOException) {
+
+        }
+
+        if (fileImage != null) {
+            val uri = fileHelper.createUri(context, fileImage!!)
+            val cameraLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.TakePicture()
+            ) { result: Boolean ->
+                if (result) {
+                    Log.d("ZEZE", " oki camera $uri")
+                    statePhoto.value = true
+                } else {
+                    Log.d("ZEZE", " KO camera $uri")
+                }
+            }
+
+            val permissionLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                if (isGranted) {
+                    cameraLauncher.launch(uri)
+                } else {
+                    Toast.makeText(context, "Permission Denied!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            ImageFromUri(navController, statePhoto, uri)
+            Content(permissionLauncher, cameraLauncher, uri)
+        }
 
         when (val state = avaloirViewModel.resultCreateFile.collectAsState().value) {
             is CreateFileState.Error -> {
@@ -174,34 +213,17 @@ class AvaloirAddScreen(
             }
         }
 
-        val cameraLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.TakePicture()
-        ) { result: Boolean ->
-            if (result) {
-                Log.d("ZEZE", " oki camera $uri")
-                statePhoto.value = true
-            } else {
-                Log.d("ZEZE", " KO camera $uri")
-            }
-        }
 
-        val permissionLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                cameraLauncher.launch(uri)
-            } else {
-                Toast.makeText(context, "Permission Denied!", Toast.LENGTH_SHORT).show()
-            }
-        }
-        ImageFromUri(statePhoto, uri)
-        Content(permissionLauncher, cameraLauncher, uri)
     }
 
     private @Composable
-    fun ImageFromUri(statePhoto: MutableState<Boolean>, uri: Uri) {
+    fun ImageFromUri(
+        navController: NavController, statePhoto: MutableState<Boolean>, uri: Uri
+    ) {
         val context = LocalContext.current
         if (statePhoto.value) {
+            val fileToSave = File(uri.path)
+
             Log.e("ZEZE", "load img uri $uri")
             var bitmap: Bitmap? = null
             try {
@@ -212,6 +234,10 @@ class AvaloirAddScreen(
             }
             if (bitmap != null) {
                 Log.d("ZEZE", "ok bitmap")
+                if (fileImage != null)
+                    fileHelper.bitmapToFile(bitmap, fileImage!!)
+
+                fileHelper.saveBitmap(bitmap, fileImage!!)
 
                 Image(
                     bitmap = bitmap.asImageBitmap(),
@@ -223,6 +249,7 @@ class AvaloirAddScreen(
                         .padding(top = 10.dp),
                     contentScale = ContentScale.Fit
                 )
+                BtnConfirm(navController)
             }
         }
     }

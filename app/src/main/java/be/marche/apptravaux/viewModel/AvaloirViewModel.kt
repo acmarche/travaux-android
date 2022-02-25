@@ -168,7 +168,7 @@ class AvaloirViewModel @Inject constructor(
             val externalFilesDir =
                 context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
             try {
-                val file = fileHelper.bitmapToFile(image, externalFilesDir, dir)
+                val file = fileHelper.bitmapToFile(image, externalFilesDir)
                 Log.d("ZEZE", " file return $file")
                 if (file != null) {
                     Log.d("ZEZE", " file return ${file.path}")
