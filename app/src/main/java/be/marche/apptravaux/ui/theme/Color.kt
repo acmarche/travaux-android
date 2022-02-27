@@ -11,6 +11,7 @@ val green = Color(0xff6FCF97)
 val red = Color(0xffEB5757)
 
 object Colors {
+    val White = Color(0xFFFFFFFF)
     val Gray50 = Color(0xFFFAFAFA)
     val Gray100 = Color(0xFFF5F5F5)
     val Gray200 = Color(0xFFE5E5E5)

@@ -6,6 +6,7 @@ import be.marche.apptravaux.database.AppDatabase
 import be.marche.apptravaux.database.AvaloirDao
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
+import be.marche.apptravaux.utils.FileHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,6 +42,11 @@ class AppModule {
     @Provides
     fun provideAvaloirDao(appDatabase: AppDatabase): AvaloirDao {
         return appDatabase.avaloirDao()
+    }
+
+    @Provides
+    fun provideFileHelper(): FileHelper {
+        return FileHelper()
     }
 
     @Provides

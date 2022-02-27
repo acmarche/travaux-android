@@ -24,6 +24,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,7 +35,6 @@ class AvaloirViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider
 ) : ViewModel() {
-
 
     private var _locationPermissionGranted = MutableLiveData(true)
     var locationPermissionGranted: LiveData<Boolean> = _locationPermissionGranted
@@ -162,18 +162,11 @@ class AvaloirViewModel @Inject constructor(
     private val _createFile = MutableStateFlow<CreateFileState>(CreateFileState.Empty)
     val resultCreateFile: StateFlow<CreateFileState> = _createFile
 
-    fun savePhoto(image: Bitmap, context: Context, dir: String) {
+    fun createFileForSaving() {
         viewModelScope.launch {
             val fileHelper = FileHelper()
-            val externalFilesDir =
-                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
             try {
-                val file = fileHelper.bitmapToFile(image, externalFilesDir)
-                Log.d("ZEZE", " file return $file")
-                if (file != null) {
-                    Log.d("ZEZE", " file return ${file.path}")
-                }
-                _createFile.value = CreateFileState.Success("super")
+                _createFile.value = CreateFileState.Success(fileHelper.createImageFile(applicationContext))
             } catch (exception: Exception) {
                 _createFile.value =
                     CreateFileState.Error("Erreur lors de le l'enregistrement de l'image: ${exception.message}")

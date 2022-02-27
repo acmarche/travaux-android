@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -20,7 +19,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -34,16 +32,16 @@ import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.CreateFileState
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.GoogleMapWidget
-import be.marche.apptravaux.ui.theme.AppTravaux6Theme
+import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.Colors.Pink500
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.utils.FileHelper
 import be.marche.apptravaux.viewModel.AvaloirViewModel
+import coil.compose.rememberImagePainter
 import com.google.android.libraries.maps.model.LatLng
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.IOException
 
 
 class AvaloirAddScreen(
@@ -65,36 +63,34 @@ class AvaloirAddScreen(
         Log.d("ZEZE", "addScreen main")
         val location = avaloirViewModel.userCurrentLatLng.value
         Log.d("ZEZE", "addScreen location $location")
-        AppTravaux6Theme {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = stringResource(R.string.add_avaloir),
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(
-                                onClick = {
-                                    navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
-                                }
-                            ) {
-                                Icon(
-                                    Icons.Filled.ArrowBack,
-                                    contentDescription = stringResource(R.string.back)
-                                )
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(R.string.add_avaloir),
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = {
+                                navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
                             }
-                        },
-                        backgroundColor = Pink500,
-                        elevation = AppBarDefaults.TopAppBarElevation
-                    )
-                }
-            ) {
-                ContentMainScreen(navController, location)
+                        ) {
+                            Icon(
+                                Icons.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.back)
+                            )
+                        }
+                    },
+                    backgroundColor = Pink500,
+                    elevation = AppBarDefaults.TopAppBarElevation
+                )
             }
+        ) {
+            ContentMainScreen(navController, location)
         }
     }
 
@@ -151,7 +147,6 @@ class AvaloirAddScreen(
         }
     }
 
-
     @ExperimentalMaterialApi
     @Composable
     fun TakePicureMain(
@@ -159,112 +154,109 @@ class AvaloirAddScreen(
         navController: NavController
     ) {
         Log.d("ZEZE", "take picture main")
-        val context = LocalContext.current
 
-        try {
-            // fileImage = fileHelper.createImageFile(context)
-        } catch (io: IOException) {
-
+        LaunchedEffect(true) {
+            avaloirViewModel.createFileForSaving()
         }
 
-        val fileState = remember { mutableStateOf(fileHelper.createImageFile(context)) }
-        TakePicureContent(fileState, navController)
+        val resultStateTakePhoto = remember {
+            mutableStateOf(false)
+        }
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(R.string.add_photo_avaloir),
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            color = Colors.White
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = {
+                                navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
+                            }
+                        ) {
+                            Icon(
+                                Icons.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.back)
+                            )
+                        }
+                    },
+                    backgroundColor = Pink500,
+                    elevation = AppBarDefaults.TopAppBarElevation
+                )
+            }
+        ) {
+            when (val state = avaloirViewModel.resultCreateFile.collectAsState().value) {
+                is CreateFileState.Error -> {
+                    ErrorDialog(state.message)
+                }
+                is CreateFileState.Success -> {
+                    TakePicureContent(state.file, resultStateTakePhoto, navController)
+                }
+                else -> {
+                    ErrorDialog("Erreur inconnue")
+                }
+            }
+        }
     }
 
     @ExperimentalMaterialApi
     @Composable
-    fun TakePicureContent(
-        fileImageState: MutableState<File>, navController: NavController
+    private fun TakePicureContent(
+        fileImage: File,
+        resultStateTakePhoto: MutableState<Boolean>,
+        navController: NavController
     ) {
-        Log.d("ZEZE", "take picture")
-
-        val statePhoto = remember {
-            mutableStateOf(false)
-        }
+        Log.d("ZEZE", "take picture content")
 
         val context = LocalContext.current
 
-        Log.d("ZEZE", " fileName ${fileImageState.value.path}")
+        Log.d("ZEZE", " fileName ${fileImage.path}")
 
-        if (fileImageState.value != null) {
-            val uri = fileHelper.createUri(context, fileImageState.value)
-            val cameraLauncher = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.TakePicture()
-            ) { result: Boolean ->
-                if (result) {
-                    Log.d("ZEZE", " oki camera $uri")
-                    statePhoto.value = true
-                } else {
-                    Log.d("ZEZE", " KO camera $uri")
-                }
-            }
-
-            val permissionLauncher = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.RequestPermission()
-            ) { isGranted: Boolean ->
-                if (isGranted) {
-                    cameraLauncher.launch(uri)
-                } else {
-                    Toast.makeText(context, "Permission Denied!", Toast.LENGTH_SHORT).show()
-                }
-            }
-            ImageFromUri(navController, statePhoto, uri)
-            Content(permissionLauncher, cameraLauncher, uri)
-        }
-
-        when (val state = avaloirViewModel.resultCreateFile.collectAsState().value) {
-            is CreateFileState.Error -> {
-                ErrorDialog(state.message)
-            }
-            else -> {
-
+        val uri = fileHelper.createUri(context, fileImage)
+        val cameraLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.TakePicture()
+        ) { result: Boolean ->
+            if (result) {
+                Log.d("ZEZE", " oki camera $uri")
+                resultStateTakePhoto.value = true
+            } else {
+                Log.d("ZEZE", " KO camera $uri")
             }
         }
 
-
-    }
-
-    private @Composable
-    fun ImageFromUri(
-        navController: NavController,
-        statePhoto: MutableState<Boolean>, uri: Uri
-    ) {
-        val context = LocalContext.current
-        if (statePhoto.value) {
-            val fileToSave = File(uri.path)
-
-            Log.e("ZEZE", "load img uri $uri")
-            var bitmap: Bitmap? = null
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri)
-            } catch (e: IOException) {
-                Log.d("ZEZE", "error bitmap ${e.message}")
-                e.printStackTrace();
+        val permissionLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                cameraLauncher.launch(uri)
+            } else {
+                Toast.makeText(context, "Permission Denied!", Toast.LENGTH_SHORT).show()
             }
-            if (bitmap != null) {
-                Log.d("ZEZE", "ok bitmap")
-                /*    if (fileImage != null)
-                        fileHelper.bitmapToFile(bitmap, fileImage!!)
-
-                    fileHelper.saveBitmap(bitmap, fileImage!!)*/
-
-                Image(
-                    bitmap = bitmap.asImageBitmap(),
-                    contentDescription = "Image",
-                    alignment = Alignment.TopCenter,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.45f)
-                        .padding(top = 10.dp),
-                    contentScale = ContentScale.Fit
-                )
-                BtnConfirm(navController)
-            }
+        }
+        Column(
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            ImagePreviewFromUri(resultStateTakePhoto.value, uri)
+            Text(
+                text = stringResource(R.string.photo_tip),
+                modifier = Modifier.padding(8.dp),
+                textAlign = TextAlign.Center,
+                color = Color.Gray
+            )
+            BtnTake(permissionLauncher, cameraLauncher, uri)
+            BtnConfirm(resultStateTakePhoto.value, navController)
         }
     }
 
     @Composable
-    fun Content(
+    fun BtnTake(
         permissionLauncher: ManagedActivityResultLauncher<String, Boolean>,
         cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
         uri: Uri
@@ -272,87 +264,76 @@ class AvaloirAddScreen(
         val context = LocalContext.current
         val coroutineScope = rememberCoroutineScope()
 
-        Column(
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
+        Button(
+            onClick = {
+                coroutineScope.launch {
+                    when (PackageManager.PERMISSION_GRANTED) {
+                        ContextCompat.checkSelfPermission(
+                            context, Manifest.permission.CAMERA
+                        ) -> {
+                            cameraLauncher.launch(uri)
+                        }
+                        else -> {
+                            permissionLauncher.launch(Manifest.permission.CAMERA)
+                        }
+                    }
+                }
+            },
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp)
         ) {
             Text(
-                text = stringResource(R.string.photo_tip),
+                text = stringResource(R.string.photo_take),
                 modifier = Modifier.padding(8.dp),
                 textAlign = TextAlign.Center,
                 color = Color.White
             )
-            Button(
-                onClick = {
-                    coroutineScope.launch {
-                        when (PackageManager.PERMISSION_GRANTED) {
-                            ContextCompat.checkSelfPermission(
-                                context, Manifest.permission.CAMERA
-                            ) -> {
-                                Log.e("ZEZE", "launch camera ${uri.path}")
-                                cameraLauncher.launch(uri)
-                            }
-                            else -> {
-                                permissionLauncher.launch(Manifest.permission.CAMERA)
-                            }
-                        }
-                    }
-                },
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.photo_take),
-                    modifier = Modifier.padding(8.dp),
-                    textAlign = TextAlign.Center,
-                    color = Color.White
-                )
-            }
         }
     }
 
-    @Composable
-    fun BtnConfirm(
-        navController: NavController
+    private @Composable
+    fun ImagePreviewFromUri(
+        statePhoto: Boolean,
+        uri: Uri
     ) {
-        MyBitmap.bitmap?.let { btm ->
-            Button(
-                onClick = {
-                    navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
-                },
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.confirm),
-                    modifier = Modifier.padding(8.dp),
-                    textAlign = TextAlign.Center,
-                    color = Color.White
-                )
-            }
-        }
-
-/*
-            val bmOptions = BitmapFactory.Options()
-            val bitmap = BitmapFactory.decodeFile(it.getAbsolutePath(), bmOptions)
- */
-        /*
-        MyBitmap.bitmap?.let { btm ->
+        if (statePhoto) {
+            Log.d("ZEZE", "ok bitmap")
             Image(
-                bitmap = btm.asImageBitmap(),
+                rememberImagePainter(uri),
                 contentDescription = "Image",
                 alignment = Alignment.TopCenter,
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.45f)
-                    .padding(top = 10.dp),
+                    .padding(top = 3.dp),
                 contentScale = ContentScale.Fit
             )
-        }*/
+        }
+    }
+
+    @Composable
+    private fun BtnConfirm(
+        statePhoto: Boolean,
+        navController: NavController
+    ) {
+        Button(
+            onClick = {
+                navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
+            },
+            enabled = statePhoto,
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.confirm),
+                modifier = Modifier.padding(8.dp),
+                textAlign = TextAlign.Center,
+                color = Color.White
+            )
+        }
     }
 }

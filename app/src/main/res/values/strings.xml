@@ -25,6 +25,7 @@
     </plurals>
     <string name="photo_tip">Prenez la photo de manière \n à repérer facilement l\'endroit</string>
     <string name="add_avaloir">Ajouter un avaloir</string>
+    <string name="add_photo_avaloir">Photo de l\'avaloir</string>
     <string name="confirm">Confirmer</string>
     <string name="photo_take">Prendre une photo</string>
 </resources>

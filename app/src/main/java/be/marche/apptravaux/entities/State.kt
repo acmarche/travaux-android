@@ -1,6 +1,7 @@
 package be.marche.apptravaux.entities
 
 import be.marche.apptravaux.ui.entities.SearchResponse
+import java.io.File
 
 sealed class UiState {
     object SignedOut : UiState()
@@ -32,6 +33,6 @@ sealed class SearchResponseUiState {
 
 sealed class CreateFileState {
     object Empty : CreateFileState()
-    class Success(val message: String) : CreateFileState()
+    class Success(val file: File) : CreateFileState()
     class Error(val message: String) : CreateFileState()
 }
