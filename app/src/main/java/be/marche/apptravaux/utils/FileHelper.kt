@@ -136,7 +136,7 @@ class FileHelper {
             }
         }
 
-      //  if (rotatedBitmap != null)
+        //  if (rotatedBitmap != null)
         //    saveBitmap(rotatedBitmap, currentPhotoPath)
     }
 
@@ -161,10 +161,9 @@ class FileHelper {
     }
 
     fun createImageFile(context: Context): File {
-         //val fileName = "avaloir_" + System.currentTimeMillis() + ".jpg"
-        val fileName = "avaloir_zeze" + ".jpg"
+        val fileName = "avaloir_" + System.currentTimeMillis() + ".jpg"
         val dirPath: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return   File(dirPath, fileName)
+        return File(dirPath, fileName)
 
     }
 

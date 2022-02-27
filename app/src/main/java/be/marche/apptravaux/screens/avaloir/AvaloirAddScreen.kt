@@ -39,13 +39,11 @@ import be.marche.apptravaux.ui.theme.Colors.Pink500
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.utils.FileHelper
 import be.marche.apptravaux.viewModel.AvaloirViewModel
-import coil.compose.rememberImagePainter
 import com.google.android.libraries.maps.model.LatLng
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
-import java.net.URI
 
 
 class AvaloirAddScreen(
@@ -64,8 +62,6 @@ class AvaloirAddScreen(
         avaloirViewModel: AvaloirViewModel = viewModel(),
         navController: NavController
     ) {
-        val t = File("/storage/emulated/0/Android/data/be.marche.apptravaux/files/Pictures/avaloir_zeze.jpg")
-        Log.d("ZEZE", "file size ${t.length()}")
         Log.d("ZEZE", "addScreen main")
         val location = avaloirViewModel.userCurrentLatLng.value
         Log.d("ZEZE", "addScreen location $location")
@@ -97,11 +93,7 @@ class AvaloirAddScreen(
                     )
                 }
             ) {
-                Image(
-                    rememberImagePainter(t),
-                    contentDescription = "...",
-                )
-                //ContentMainScreen(navController, location)
+                ContentMainScreen(navController, location)
             }
         }
     }
@@ -159,11 +151,30 @@ class AvaloirAddScreen(
         }
     }
 
+
     @ExperimentalMaterialApi
     @Composable
-    fun TakePicure(
+    fun TakePicureMain(
         avaloirViewModel: AvaloirViewModel = viewModel(),
         navController: NavController
+    ) {
+        Log.d("ZEZE", "take picture main")
+        val context = LocalContext.current
+
+        try {
+            // fileImage = fileHelper.createImageFile(context)
+        } catch (io: IOException) {
+
+        }
+
+        val fileState = remember { mutableStateOf(fileHelper.createImageFile(context)) }
+        TakePicureContent(fileState, navController)
+    }
+
+    @ExperimentalMaterialApi
+    @Composable
+    fun TakePicureContent(
+        fileImageState: MutableState<File>, navController: NavController
     ) {
         Log.d("ZEZE", "take picture")
 
@@ -172,14 +183,11 @@ class AvaloirAddScreen(
         }
 
         val context = LocalContext.current
-        try {
-            fileImage = fileHelper.createImageFile(context)
-        } catch (io: IOException) {
 
-        }
+        Log.d("ZEZE", " fileName ${fileImageState.value.path}")
 
-        if (fileImage != null) {
-            val uri = fileHelper.createUri(context, fileImage!!)
+        if (fileImageState.value != null) {
+            val uri = fileHelper.createUri(context, fileImageState.value)
             val cameraLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.TakePicture()
             ) { result: Boolean ->
@@ -218,7 +226,8 @@ class AvaloirAddScreen(
 
     private @Composable
     fun ImageFromUri(
-        navController: NavController, statePhoto: MutableState<Boolean>, uri: Uri
+        navController: NavController,
+        statePhoto: MutableState<Boolean>, uri: Uri
     ) {
         val context = LocalContext.current
         if (statePhoto.value) {
@@ -234,10 +243,10 @@ class AvaloirAddScreen(
             }
             if (bitmap != null) {
                 Log.d("ZEZE", "ok bitmap")
-                if (fileImage != null)
-                    fileHelper.bitmapToFile(bitmap, fileImage!!)
+                /*    if (fileImage != null)
+                        fileHelper.bitmapToFile(bitmap, fileImage!!)
 
-                fileHelper.saveBitmap(bitmap, fileImage!!)
+                    fileHelper.saveBitmap(bitmap, fileImage!!)*/
 
                 Image(
                     bitmap = bitmap.asImageBitmap(),
