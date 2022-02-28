@@ -32,13 +32,14 @@ import com.myricseptember.countryfactcomposefinal.widgets.CircularProgressIndica
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 
 class AvaloirSearchScreen(
-    val navController: NavController,
-    val avaloirViewModel: AvaloirViewModel
+    private val navController: NavController,
 ) {
     private val service = LocationService()
 
     @Composable
-    fun SearchMainScreen() {
+    fun SearchMainScreen(
+        avaloirViewModel: AvaloirViewModel = viewModel()
+    ) {
         val selectedItem = remember { mutableStateOf("home") }
         Log.d("ZEZE", "avaloir search screen")
         Scaffold(
@@ -67,7 +68,7 @@ class AvaloirSearchScreen(
                 )
             },
             content = {
-                BeginSearch(avaloirViewModel, navController)
+                BeginSearch(avaloirViewModel)
             },
             floatingActionButton = {
                 FloatingActionButton(
@@ -119,19 +120,18 @@ class AvaloirSearchScreen(
     }
 
     @Composable
-    fun BeginSearch(
-        avaloirViewModel: AvaloirViewModel = viewModel(),
-        navController: NavController
+    private fun BeginSearch(
+        avaloirViewModel: AvaloirViewModel
     ) {
         Log.d("ZEZE", "searchScreen begin")
         service.getDeviceLocation(navController.context, avaloirViewModel)
-        val location =  avaloirViewModel.userCurrentLatLng.value
-        ContentSearch(navController, location)
+        val location = avaloirViewModel.userCurrentLatLng.value
+        ContentSearch(avaloirViewModel, location)
     }
 
     @Composable
-    fun ContentSearch(
-        navController: NavController,
+    private fun ContentSearch(
+        avaloirViewModel: AvaloirViewModel,
         latLng: LatLng
     ) {
         Log.d("ZEZE", "searchScreen location {$latLng")
@@ -152,15 +152,14 @@ class AvaloirSearchScreen(
                     Log.d("ZEZE", "searchScreen searching {$latLng")
                     avaloirViewModel.search(latLng.latitude, latLng.longitude, "25m")
                 }
-                ResultSearch(avaloirViewModel, navController)
+                ResultSearch(avaloirViewModel)
             }
         }
     }
 
     @Composable
-    fun ResultSearch(
-        avaloirViewModel: AvaloirViewModel = viewModel(),
-        navController: NavController
+    private fun ResultSearch(
+        avaloirViewModel: AvaloirViewModel
     ) {
         Log.d("ZEZE", "searchScreen resultsearch")
         when (val state = avaloirViewModel.resultSearch.collectAsState().value) {
@@ -190,7 +189,7 @@ class AvaloirSearchScreen(
     }
 
     @Composable
-    fun LocationText(location: LatLng?) {
+    private fun LocationText(location: LatLng?) {
         if (location != null) {
             Text(text = "Votre localisation: ${location.latitude}, ${location.longitude}")
         } else {
@@ -199,7 +198,7 @@ class AvaloirSearchScreen(
     }
 
     @Composable
-    fun DescriptionText() {
+    private fun DescriptionText() {
         Text(
             text = "Cliquez sur un avaloir trouvé ou ajouter un autre",
             modifier = Modifier.padding(5.dp)
@@ -207,7 +206,7 @@ class AvaloirSearchScreen(
     }
 
     @Composable
-    fun LoadScreen() {
+    private fun LoadScreen() {
         Text(text = "Recherche en cours...")
         CircularProgressIndicator(progress = 0.5f)
         Log.d("ZEZE", "loading")

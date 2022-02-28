@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import be.marche.apptravaux.entities.AvaloirUiState
 import be.marche.apptravaux.entities.Avaloir
@@ -31,7 +32,7 @@ import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 @Composable
 fun AvaloirListScreen(
     navController: NavController,
-    avaloirViewModel: AvaloirViewModel
+    avaloirViewModel: AvaloirViewModel = viewModel()
 ) {
     Scaffold(
         topBar = {

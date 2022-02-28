@@ -76,7 +76,7 @@ class AvaloirDetailScreen(
     }
 
     @Composable
-    fun AvaloirDetailContentScreen(
+    private fun AvaloirDetailContentScreen(
         avaloir: Avaloir
     ) {
         Log.d("ZEZE avaloir detail", "${avaloir}")

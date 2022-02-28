@@ -10,6 +10,7 @@ sealed class TravauxRoutes(val route: String) {
     object AvaloirPhotoScreen : TravauxRoutes("avaloir_photo_screen")
     object AvaloirSearchScreen : TravauxRoutes("avaloir_search_screen")
     object AvaloirDetailScreen : TravauxRoutes("avaloir_detail_screen")
+    object AvaloirSyncScreen : TravauxRoutes("avaloir_sync_screen")
     object StockHomeScreen : TravauxRoutes("stock_home_screen")
     object StockListScreen : TravauxRoutes("stock_home_screen")
     object DemoScreen : TravauxRoutes("demo_screen")

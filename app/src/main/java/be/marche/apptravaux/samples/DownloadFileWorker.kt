@@ -1,4 +1,4 @@
-package be.marche.apptravaux.worker
+package be.marche.apptravaux.samples
 
 import android.content.Context
 import android.graphics.Bitmap

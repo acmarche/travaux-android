@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import be.marche.apptravaux.navigation.Navigation.Companion.PARAM_AVALOIR
 import be.marche.apptravaux.screens.AvaloirDetailScreen
 import be.marche.apptravaux.screens.HomeScreen
 import be.marche.apptravaux.screens.PermissionsAskScreen
@@ -16,11 +17,16 @@ import be.marche.apptravaux.screens.avaloir.AvaloirAddScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirHomeScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirListScreen
 import be.marche.apptravaux.screens.avaloir.AvaloirSearchScreen
+import be.marche.apptravaux.screens.avaloir.AvaloirSyncScreen
 import be.marche.apptravaux.screens.stock.StockHomeScreen
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 
 class Navigation {
-    //companion object PARAM_AVALOIR = ""
+
+    companion object {
+        const val PARAM_AVALOIR = "avaloirId"
+    }
+
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -54,31 +60,36 @@ fun Navigation(
          * AVALOIRS
          */
         composable(route = TravauxRoutes.AvaloirHomeScreen.route) {
-            AvaloirHomeScreen(navController = navController)
+            AvaloirHomeScreen(navController)
         }
 
         composable(route = TravauxRoutes.AvaloirListScreen.route) {
-            AvaloirListScreen(navController = navController, avaloirViewModel = avaloirViewModel)
+            AvaloirListScreen(navController, avaloirViewModel)
         }
 
         composable(route = TravauxRoutes.AvaloirAddScreen.route) {
-            val screen = AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
-            screen.AddScreenMain(avaloirViewModel, navController)
+            val screen = AvaloirAddScreen(navController)
+            screen.AddScreenMain(avaloirViewModel)
         }
 
         composable(route = TravauxRoutes.AvaloirPhotoScreen.route) {
-            val screen = AvaloirAddScreen(avaloirViewModel = avaloirViewModel)
-            screen.TakePicureMain(avaloirViewModel, navController)
+            val screen = AvaloirAddScreen(navController)
+            screen.TakePicureMain(avaloirViewModel)
         }
 
         composable(route = TravauxRoutes.AvaloirSearchScreen.route) {
-            val screen = AvaloirSearchScreen(navController, avaloirViewModel)
-            screen.SearchMainScreen()
+            val screen = AvaloirSearchScreen(navController)
+            screen.SearchMainScreen(avaloirViewModel)
+        }
+
+        composable(route = TravauxRoutes.AvaloirSyncScreen.route) {
+            val screen = AvaloirSyncScreen(navController)
+            screen.SyncContent(avaloirViewModel)
         }
 
         composable(
-            route = TravauxRoutes.AvaloirDetailScreen.route + "/{avaloirId}",
-            arguments = listOf(navArgument(name = "avaloirId") {
+            route = TravauxRoutes.AvaloirDetailScreen.route + "/{$PARAM_AVALOIR}",
+            arguments = listOf(navArgument(name = PARAM_AVALOIR) {
                 type = NavType.IntType
             })
         ) { entry ->
@@ -87,7 +98,7 @@ fun Navigation(
                 avaloirViewModel
             )
             screen.AvaloirDetailScreenMain(
-                entry.arguments?.getInt("avaloirId")
+                entry.arguments?.getInt(PARAM_AVALOIR)
             )
         }
 

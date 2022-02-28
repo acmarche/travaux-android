@@ -46,20 +46,14 @@ import java.io.File
 
 
 class AvaloirAddScreen(
-    val avaloirViewModel: AvaloirViewModel
+    val navController: NavController,
 ) {
     val fileHelper = FileHelper()
-    var fileImage: File? = null
-
-    object MyBitmap {
-        var bitmap: Bitmap? = null
-    }
 
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun AddScreenMain(
-        avaloirViewModel: AvaloirViewModel = viewModel(),
-        navController: NavController
+        avaloirViewModel: AvaloirViewModel = viewModel()
     ) {
         Log.d("ZEZE", "addScreen main")
         val location = avaloirViewModel.userCurrentLatLng.value
@@ -91,13 +85,12 @@ class AvaloirAddScreen(
                 )
             }
         ) {
-            ContentMainScreen(navController, location)
+            ContentMainScreen( location)
         }
     }
 
     @Composable
-    fun ContentMainScreen(
-        navController: NavController,
+  private  fun ContentMainScreen(
         location: LatLng
     ) {
         Column {
@@ -151,8 +144,7 @@ class AvaloirAddScreen(
     @ExperimentalMaterialApi
     @Composable
     fun TakePicureMain(
-        avaloirViewModel: AvaloirViewModel = viewModel(),
-        navController: NavController
+        avaloirViewModel: AvaloirViewModel = viewModel()
     ) {
         Log.d("ZEZE", "take picture main")
 
@@ -254,12 +246,12 @@ class AvaloirAddScreen(
                 color = Color.Gray
             )
             BtnTake(permissionLauncher, cameraLauncher, uri)
-            BtnConfirm(resultStateTakePhoto.value, navController)
+            BtnConfirm(resultStateTakePhoto.value)
         }
     }
 
     @Composable
-    fun BtnTake(
+  private   fun BtnTake(
         permissionLauncher: ManagedActivityResultLauncher<String, Boolean>,
         cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
         uri: Uri
@@ -296,8 +288,8 @@ class AvaloirAddScreen(
         }
     }
 
-    private @Composable
-    fun ImagePreviewFromUri(
+     @Composable
+ private    fun ImagePreviewFromUri(
         statePhoto: Boolean,
         uri: Uri
     ) {
@@ -318,8 +310,7 @@ class AvaloirAddScreen(
 
     @Composable
     private fun BtnConfirm(
-        statePhoto: Boolean,
-        navController: NavController
+        statePhoto: Boolean
     ) {
         Button(
             onClick = {
