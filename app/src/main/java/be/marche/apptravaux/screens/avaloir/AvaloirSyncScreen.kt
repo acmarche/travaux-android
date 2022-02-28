@@ -1,16 +1,19 @@
 package be.marche.apptravaux.screens.avaloir
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -19,6 +22,7 @@ import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import be.marche.apptravaux.R
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.viewModel.AvaloirViewModel
@@ -42,7 +46,7 @@ class AvaloirSyncScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            text = "Sync des avaloirs",
+                            text = "Synchronisation des avaloirs",
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )
@@ -66,10 +70,25 @@ class AvaloirSyncScreen(
             worker = WorkManager.getInstance(context)
             val textInput = remember { mutableStateOf("") }
 
-            val powerConstraints = Constraints.Builder().setRequiresCharging(true).build()
+            val powerConstraints = Constraints.Builder().setRequiresBatteryNotLow(true).build()
             val taskData = Data.Builder().putString(MESSAGE_STATUS, "Notification Done.").build()
             val request = OneTimeWorkRequest.Builder(AvaloirSyncWorker::class.java)
                 .setConstraints(powerConstraints).setInputData(taskData).build()
+
+            avaloirViewModel.outputWorkInfos.observe(lifeCycle) { workInfo ->
+                workInfo.let {
+                    if (it.state.isFinished) {
+                        val outputData = it.outputData
+                        val taskResult = outputData.getString(AvaloirSyncWorker.WORK_RESULT)
+                        if (taskResult != null) {
+                            textInput.value = taskResult
+                        }
+                    } else {
+                        val workStatus = workInfo.state
+                        textInput.value = workStatus.toString()
+                    }
+                }
+            }
 
             worker.getWorkInfoByIdLiveData(request.id).observe(lifeCycle) { workInfo ->
                 workInfo.let {
@@ -90,16 +109,33 @@ class AvaloirSyncScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Button(onClick = {
-                    worker.enqueue(request)
-                }) {
-                    Text(text = "Submit")
-                }
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Text(text = textInput.value)
+                Log.d("ZEZE", "sync screen")
+                Content(avaloirViewModel, taskData, worker, request, textInput)
             }
         }
+    }
+
+    @Composable
+    private fun Content(
+        avaloirViewModel: AvaloirViewModel,
+        taskData: Data,
+        worker: WorkManager,
+        request: OneTimeWorkRequest,
+        textInput: MutableState<String>
+    ) {
+        Log.d("ZEZE", "sync Content screen")
+        Text(text = stringResource(R.string.sync_intro))
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Button(onClick = {
+            avaloirViewModel.applyBlur(taskData)
+            worker.enqueue(request)
+        }) {
+            Text(text = "Synchroniser")
+        }
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Text(text = textInput.value)
     }
 }

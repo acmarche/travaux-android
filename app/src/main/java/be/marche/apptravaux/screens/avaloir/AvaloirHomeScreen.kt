@@ -26,6 +26,11 @@ fun AvaloirHomeScreen(navController: NavController) {
         "Liste des avaloirs",
         { navController.navigate(TravauxRoutes.AvaloirListScreen.route) }
     )
+    val c =
+        CardData(
+            "Synchronisation",
+            { navController.navigate(TravauxRoutes.AvaloirSyncScreen.route) })
+
     val cards: List<CardData> = listOf(a, b)
 
     MainContentAvaloirHome(navController, cards)

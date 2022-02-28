@@ -28,4 +28,5 @@
     <string name="add_photo_avaloir">Photo de l\'avaloir</string>
     <string name="confirm">Confirmer</string>
     <string name="photo_take">Prendre une photo</string>
+    <string name="sync_intro">Envoie les avaloirs vers le serveur</string>
 </resources>

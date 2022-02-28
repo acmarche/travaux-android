@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.*
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.AvaloirUiState
@@ -24,6 +25,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import be.marche.apptravaux.screens.avaloir.AvaloirSyncScreen.Companion.MESSAGE_STATUS
+import be.marche.apptravaux.worker.AvaloirSyncWorker
 import javax.inject.Inject
 
 @HiltViewModel
@@ -159,4 +162,28 @@ class AvaloirViewModel @Inject constructor(
             }
         }
     }
+
+    /**
+     * WorkManager
+     */
+    private val workManager = WorkManager.getInstance(applicationContext)
+    internal val outputWorkInfos: LiveData<WorkInfo> =
+        workManager.getWorkInfoByIdLiveData(AvaloirSyncWorker.WORK_UUID)
+
+    internal fun cancelWork() {
+        workManager.cancelUniqueWork("IMAGE_MANIPULATION_WORK_NAME")
+    }
+
+    private fun createInputDataForUri(): Data {
+        return Data.Builder().putString(MESSAGE_STATUS, "Notification Done.").build()
+    }
+
+    internal fun applyBlur(taskData: Data) {
+        val powerConstraints = Constraints.Builder().setRequiresBatteryNotLow(true).build()
+
+        val request = OneTimeWorkRequest.Builder(AvaloirSyncWorker::class.java)
+            .setConstraints(powerConstraints).setInputData(taskData).build()
+
+    }
+
 }
