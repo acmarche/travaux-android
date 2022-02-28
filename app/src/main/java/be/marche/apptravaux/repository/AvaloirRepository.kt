@@ -2,6 +2,7 @@ package be.marche.apptravaux.repository
 
 import be.marche.apptravaux.database.AvaloirDao
 import be.marche.apptravaux.entities.Avaloir
+import be.marche.apptravaux.entities.AvaloirDraft
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
 import be.marche.apptravaux.networking.AvaloirService
@@ -60,5 +61,8 @@ class AvaloirRepository @Inject constructor(
         avaloirDao.insertCommentaires(commentaires)
     }
 
+    suspend fun insertAvaloirDraft(avaloir: AvaloirDraft) {
+        avaloirDao.insertAvaloirDraft(avaloir)
+    }
 
 }

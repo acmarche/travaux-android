@@ -19,6 +19,15 @@ data class Avaloir(
 )
 
 @Entity
+data class AvaloirDraft(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int?,
+    var latitude: Double,
+    var longitude: Double,
+    var imageUrl: String? = null,
+)
+
+@Entity
 data class Commentaire(
     @PrimaryKey(autoGenerate = true)
     val id: Int?,

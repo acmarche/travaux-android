@@ -2,8 +2,6 @@ package be.marche.apptravaux.viewModel
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.os.Environment
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -12,7 +10,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.marche.apptravaux.R
-import be.marche.apptravaux.entities.*
+import be.marche.apptravaux.entities.Avaloir
+import be.marche.apptravaux.entities.AvaloirUiState
+import be.marche.apptravaux.entities.CreateFileState
+import be.marche.apptravaux.entities.SearchResponseUiState
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.repository.AvaloirRepository
@@ -21,10 +22,8 @@ import be.marche.apptravaux.utils.FileHelper
 import com.google.android.libraries.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,20 +35,17 @@ class AvaloirViewModel @Inject constructor(
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider
 ) : ViewModel() {
 
-    private var _locationPermissionGranted = MutableLiveData(true)
-    var locationPermissionGranted: LiveData<Boolean> = _locationPermissionGranted
-
+    /**
+     * Fetch from Api
+     */
     private val _uiState = MutableStateFlow<AvaloirUiState>(AvaloirUiState.Empty)
     val uiState: StateFlow<AvaloirUiState> = _uiState
 
-    var avaloir = MutableStateFlow<Avaloir?>(null)
-        private set
-
     init {
-        fetchAvaloirs()
+        fetchAvaloirsFromApi()
     }
 
-    private fun fetchAvaloirs() {
+    private fun fetchAvaloirsFromApi() {
         _uiState.value = AvaloirUiState.Loading
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             try {
@@ -65,10 +61,16 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
-    fun findByIdT(avaloirId: Int) {
-        viewModelScope.launch(coroutineDispatcherProvider.IO()) {
-            avaloir.value = avaloirRepository.findById(avaloirId)
-        }
+    private fun onQueryLimitReached() {
+        _uiState.value = AvaloirUiState.Error(
+            applicationContext.getString(R.string.query_limit_reached)
+        )
+    }
+
+    private fun onErrorOccurred() {
+        _uiState.value = AvaloirUiState.Error(
+            applicationContext.getString(R.string.something_went_wrong)
+        )
     }
 
     private val _selectedAvaloir: MutableStateFlow<Avaloir?> = MutableStateFlow(null)
@@ -82,16 +84,11 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
-    private fun onQueryLimitReached() {
-        _uiState.value = AvaloirUiState.Error(
-            applicationContext.getString(R.string.query_limit_reached)
-        )
-    }
-
-    private fun onErrorOccurred() {
-        _uiState.value = AvaloirUiState.Error(
-            applicationContext.getString(R.string.something_went_wrong)
-        )
+    val allAvaloirs: Flow<List<Avaloir>> = flow {
+        // viewModelScope.launch {
+        val latestNews = avaloirRepository.getAllAvaloirsFromApi()
+        emit(latestNews)
+        //  }
     }
 
     /*  fun getAllAvaloirsFromServer(): LiveData<List<Avaloir>> = liveData {
@@ -110,6 +107,9 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
+    /**
+     * SEARCHING
+     */
     private val _resultSearch = MutableStateFlow<SearchResponseUiState>(SearchResponseUiState.Empty)
     val resultSearch: StateFlow<SearchResponseUiState> = _resultSearch
 
@@ -132,33 +132,18 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
+    /**
+     * LOCATION
+     */
+    private var _locationPermissionGranted = MutableLiveData(true)
+    var locationPermissionGranted: LiveData<Boolean> = _locationPermissionGranted
+
     private var _userCurrentLatLng = mutableStateOf(LatLng(0.0, 0.0))
     var userCurrentLatLng: MutableState<LatLng> = _userCurrentLatLng
 
-    val allAvaloirs: Flow<List<Avaloir>> = flow {
-        // viewModelScope.launch {
-        val latestNews = avaloirRepository.getAllAvaloirsFromApi()
-        emit(latestNews)
-        //  }
-    }
-
-    private val _uiState2 = MutableLiveData<UiState>(UiState.SignedOut)
-    val uiState2: LiveData<UiState>
-        get() = _uiState2
-
-
-    fun makeFlow(): Flow<Int> = flow {
-        repeat(3) { num ->
-            delay(1000)
-            emit(num)
-        }
-    }
-
-    suspend fun main() {
-        makeFlow()
-            .collect { println(it) }
-    }
-
+    /**
+     * CREATE FILE TEMP
+     */
     private val _createFile = MutableStateFlow<CreateFileState>(CreateFileState.Empty)
     val resultCreateFile: StateFlow<CreateFileState> = _createFile
 
@@ -166,7 +151,8 @@ class AvaloirViewModel @Inject constructor(
         viewModelScope.launch {
             val fileHelper = FileHelper()
             try {
-                _createFile.value = CreateFileState.Success(fileHelper.createImageFile(applicationContext))
+                _createFile.value =
+                    CreateFileState.Success(fileHelper.createImageFile(applicationContext))
             } catch (exception: Exception) {
                 _createFile.value =
                     CreateFileState.Error("Erreur lors de le l'enregistrement de l'image: ${exception.message}")

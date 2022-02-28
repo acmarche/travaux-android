@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import be.marche.apptravaux.entities.Avaloir
+import be.marche.apptravaux.entities.AvaloirDraft
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
 import kotlinx.coroutines.flow.Flow
@@ -44,5 +45,8 @@ interface AvaloirDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(avaloir: Avaloir)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAvaloirDraft(avaloir: AvaloirDraft)
 
 }

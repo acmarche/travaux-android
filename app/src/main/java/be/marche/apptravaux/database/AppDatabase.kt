@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import be.marche.apptravaux.entities.Avaloir
+import be.marche.apptravaux.entities.AvaloirDraft
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
 import kotlinx.coroutines.CoroutineScope
@@ -15,8 +16,8 @@ import kotlinx.coroutines.launch
 const val DATABASE_NAME = "apptravaux"
 
 @Database(
-    entities = [Avaloir::class, DateNettoyage::class, Commentaire::class],
-    version = 1,
+    entities = [Avaloir::class, AvaloirDraft::class, DateNettoyage::class, Commentaire::class],
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -44,7 +45,6 @@ abstract class AppDatabase : RoomDatabase() {
             suspend fun populateDatabase(wordDao: AvaloirDao) {
                 // Delete all content here.
                 // wordDao.deleteAll()
-
                 // Add sample words.
                 var word = Avaloir(1, 1, 50.5, 5.5, "Hello")
                 wordDao.insert(word)

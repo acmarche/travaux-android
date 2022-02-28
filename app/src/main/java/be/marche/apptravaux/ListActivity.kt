@@ -8,8 +8,6 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -17,12 +15,14 @@ import androidx.compose.ui.Modifier
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
+import be.marche.apptravaux.viewModel.CardViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ListActivity : ComponentActivity() {
 
     private val avaloirViewModel: AvaloirViewModel by viewModels()
+    private val cardViewModel: CardViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,9 +30,9 @@ class ListActivity : ComponentActivity() {
         setContent {
             AppTravaux6Theme {
 
-                avaloirViewModel.findByIdT(50)
+                cardViewModel.findByIdT(50)
 
-                val avaloir: Avaloir? = avaloirViewModel.avaloir.collectAsState().value
+                val avaloir: Avaloir? = cardViewModel.avaloir.collectAsState().value
                 Log.d("ZEZE", "avaloir : ${avaloir}")
 
                 Screen(avaloir)

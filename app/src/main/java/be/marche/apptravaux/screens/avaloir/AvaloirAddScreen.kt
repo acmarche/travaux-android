@@ -16,6 +16,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -159,7 +160,7 @@ class AvaloirAddScreen(
             avaloirViewModel.createFileForSaving()
         }
 
-        val resultStateTakePhoto = remember {
+        val resultStateTakePhoto = rememberSaveable {
             mutableStateOf(false)
         }
         Scaffold(
@@ -190,7 +191,9 @@ class AvaloirAddScreen(
                 )
             }
         ) {
-            when (val state = avaloirViewModel.resultCreateFile.collectAsState().value) {
+            val state = avaloirViewModel.resultCreateFile.collectAsState().value
+
+            when (state) {
                 is CreateFileState.Error -> {
                     ErrorDialog(state.message)
                 }
