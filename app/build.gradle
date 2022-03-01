@@ -85,9 +85,10 @@ dependencies {
     implementation("io.coil-kt:coil-compose:1.4.0")
 
     /**
-     * Using hilt for DI, to ensure ease of testability and scalability
+     * Using hilt for DI
      */
     implementation "com.google.dagger:hilt-android:2.38.1"
+    implementation("androidx.hilt:hilt-work:1.0.0")
     kapt "com.google.dagger:hilt-compiler:2.38.1"
 
     /**
@@ -119,10 +120,6 @@ dependencies {
      * Tools
      */
     implementation("io.coil-kt:coil-compose:1.4.0")
-    //WorkManager
-    def work_version = "2.7.1"
-    implementation "androidx.work:work-runtime-ktx:$work_version"
-
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
@@ -150,7 +147,11 @@ dependencies {
     // Make sure to also include the latest version of the Maps SDK for Android
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
-    // work manager
+    /**
+     * work manager
+     */
+    def work_version = "2.7.1"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
     implementation "android.arch.work:work-runtime-ktx:1.0.1"
     // optional - GCMNetworkManager support
     implementation("androidx.work:work-gcm:$work_version")

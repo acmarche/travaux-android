@@ -183,7 +183,8 @@ class AvaloirViewModel @Inject constructor(
 
         val request = OneTimeWorkRequest.Builder(AvaloirSyncWorker::class.java)
             .setConstraints(powerConstraints).setInputData(taskData).build()
-
+Log.d("ZEZE", "launch request ")
+        workManager.enqueue(request)
     }
 
 }

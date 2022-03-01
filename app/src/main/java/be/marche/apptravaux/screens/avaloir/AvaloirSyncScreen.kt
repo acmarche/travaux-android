@@ -69,11 +69,11 @@ class AvaloirSyncScreen(
             val lifeCycle = LocalLifecycleOwner.current
             worker = WorkManager.getInstance(context)
             val textInput = remember { mutableStateOf("") }
-
-            val powerConstraints = Constraints.Builder().setRequiresBatteryNotLow(true).build()
+val taskData = Data.Builder().putString(MESSAGE_STATUS, "Notification Done.").build()
+       /*     val powerConstraints = Constraints.Builder().setRequiresBatteryNotLow(true).build()
             val taskData = Data.Builder().putString(MESSAGE_STATUS, "Notification Done.").build()
             val request = OneTimeWorkRequest.Builder(AvaloirSyncWorker::class.java)
-                .setConstraints(powerConstraints).setInputData(taskData).build()
+                .setConstraints(powerConstraints).setInputData(taskData).build()*/
 
             avaloirViewModel.outputWorkInfos.observe(lifeCycle) { workInfo ->
                 workInfo.let {
@@ -90,7 +90,7 @@ class AvaloirSyncScreen(
                 }
             }
 
-            worker.getWorkInfoByIdLiveData(request.id).observe(lifeCycle) { workInfo ->
+        /*    worker.getWorkInfoByIdLiveData(request.id).observe(lifeCycle) { workInfo ->
                 workInfo.let {
                     if (it.state.isFinished) {
                         val outputData = it.outputData
@@ -103,14 +103,14 @@ class AvaloirSyncScreen(
                         textInput.value = workStatus.toString()
                     }
                 }
-            }
+            }*/
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Log.d("ZEZE", "sync screen")
-                Content(avaloirViewModel, taskData, worker, request, textInput)
+                Content(avaloirViewModel, taskData, textInput)
             }
         }
     }
@@ -119,8 +119,6 @@ class AvaloirSyncScreen(
     private fun Content(
         avaloirViewModel: AvaloirViewModel,
         taskData: Data,
-        worker: WorkManager,
-        request: OneTimeWorkRequest,
         textInput: MutableState<String>
     ) {
         Log.d("ZEZE", "sync Content screen")
@@ -129,7 +127,7 @@ class AvaloirSyncScreen(
 
         Button(onClick = {
             avaloirViewModel.applyBlur(taskData)
-            worker.enqueue(request)
+           // worker.enqueue(request)
         }) {
             Text(text = "Synchroniser")
         }
