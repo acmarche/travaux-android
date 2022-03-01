@@ -26,6 +26,10 @@ class ListActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val appli = application as TravauxApplication
+        appli.workerFactory
+
         Log.d("ZEZE", "List activity create")
         setContent {
             AppTravaux6Theme {

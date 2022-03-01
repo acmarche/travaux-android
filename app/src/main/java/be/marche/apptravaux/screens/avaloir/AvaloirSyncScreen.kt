@@ -67,13 +67,15 @@ class AvaloirSyncScreen(
         ) {
             val context = LocalContext.current
             val lifeCycle = LocalLifecycleOwner.current
-            worker = WorkManager.getInstance(context)
+
+            worker = avaloirViewModel.workManager
+            //worker = WorkManager.getInstance(context)
             val textInput = remember { mutableStateOf("") }
-val taskData = Data.Builder().putString(MESSAGE_STATUS, "Notification Done.").build()
-       /*     val powerConstraints = Constraints.Builder().setRequiresBatteryNotLow(true).build()
             val taskData = Data.Builder().putString(MESSAGE_STATUS, "Notification Done.").build()
-            val request = OneTimeWorkRequest.Builder(AvaloirSyncWorker::class.java)
-                .setConstraints(powerConstraints).setInputData(taskData).build()*/
+            /*     val powerConstraints = Constraints.Builder().setRequiresBatteryNotLow(true).build()
+                 val taskData = Data.Builder().putString(MESSAGE_STATUS, "Notification Done.").build()
+                 val request = OneTimeWorkRequest.Builder(AvaloirSyncWorker::class.java)
+                     .setConstraints(powerConstraints).setInputData(taskData).build()*/
 
             avaloirViewModel.outputWorkInfos.observe(lifeCycle) { workInfo ->
                 workInfo.let {
@@ -90,20 +92,20 @@ val taskData = Data.Builder().putString(MESSAGE_STATUS, "Notification Done.").bu
                 }
             }
 
-        /*    worker.getWorkInfoByIdLiveData(request.id).observe(lifeCycle) { workInfo ->
-                workInfo.let {
-                    if (it.state.isFinished) {
-                        val outputData = it.outputData
-                        val taskResult = outputData.getString(AvaloirSyncWorker.WORK_RESULT)
-                        if (taskResult != null) {
-                            textInput.value = taskResult
+            /*    worker.getWorkInfoByIdLiveData(request.id).observe(lifeCycle) { workInfo ->
+                    workInfo.let {
+                        if (it.state.isFinished) {
+                            val outputData = it.outputData
+                            val taskResult = outputData.getString(AvaloirSyncWorker.WORK_RESULT)
+                            if (taskResult != null) {
+                                textInput.value = taskResult
+                            }
+                        } else {
+                            val workStatus = workInfo.state
+                            textInput.value = workStatus.toString()
                         }
-                    } else {
-                        val workStatus = workInfo.state
-                        textInput.value = workStatus.toString()
                     }
-                }
-            }*/
+                }*/
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -127,7 +129,7 @@ val taskData = Data.Builder().putString(MESSAGE_STATUS, "Notification Done.").bu
 
         Button(onClick = {
             avaloirViewModel.applyBlur(taskData)
-           // worker.enqueue(request)
+            // worker.enqueue(request)
         }) {
             Text(text = "Synchroniser")
         }

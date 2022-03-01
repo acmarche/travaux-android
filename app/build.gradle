@@ -88,7 +88,6 @@ dependencies {
      * Using hilt for DI
      */
     implementation "com.google.dagger:hilt-android:2.38.1"
-    implementation("androidx.hilt:hilt-work:1.0.0")
     kapt "com.google.dagger:hilt-compiler:2.38.1"
 
     /**
@@ -152,7 +151,9 @@ dependencies {
      */
     def work_version = "2.7.1"
     implementation "androidx.work:work-runtime-ktx:$work_version"
-    implementation "android.arch.work:work-runtime-ktx:1.0.1"
+    implementation 'androidx.hilt:hilt-work:1.0.0'
+    //app start up
+    implementation("androidx.startup:startup-runtime:1.1.1")
     // optional - GCMNetworkManager support
     implementation("androidx.work:work-gcm:$work_version")
 }

@@ -166,7 +166,7 @@ class AvaloirViewModel @Inject constructor(
     /**
      * WorkManager
      */
-    private val workManager = WorkManager.getInstance(applicationContext)
+    val workManager = WorkManager.getInstance(applicationContext)
     internal val outputWorkInfos: LiveData<WorkInfo> =
         workManager.getWorkInfoByIdLiveData(AvaloirSyncWorker.WORK_UUID)
 
@@ -180,10 +180,14 @@ class AvaloirViewModel @Inject constructor(
 
     internal fun applyBlur(taskData: Data) {
         val powerConstraints = Constraints.Builder().setRequiresBatteryNotLow(true).build()
+        val networkConstraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 
         val request = OneTimeWorkRequest.Builder(AvaloirSyncWorker::class.java)
-            .setConstraints(powerConstraints).setInputData(taskData).build()
-Log.d("ZEZE", "launch request ")
+            .setConstraints(powerConstraints)
+            .setConstraints(networkConstraints)
+            .setInputData(taskData).build()
+
+        Log.d("ZEZE", "launch request ")
         workManager.enqueue(request)
     }
 

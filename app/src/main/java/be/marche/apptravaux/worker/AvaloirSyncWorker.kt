@@ -11,21 +11,19 @@ import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import be.marche.apptravaux.R
-import be.marche.apptravaux.TravauxApplication
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.repository.AvaloirRepository
 import be.marche.apptravaux.screens.avaloir.AvaloirSyncScreen
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.util.UUID.randomUUID
-import javax.inject.Inject
 
 @HiltWorker
 class AvaloirSyncWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val avaloirRepository: AvaloirRepository,
-    private val avaloirService: AvaloirService,
+    val avaloirRepository: AvaloirRepository,
+    val avaloirService: AvaloirService,
 ) : Worker(context, workerParameters) {
     override fun doWork(): Result {
         val taskData = inputData
@@ -33,7 +31,7 @@ class AvaloirSyncWorker @AssistedInject constructor(
 
         Log.d("ZEZE", "do work")
         showNotification("Make it Easy", taskDataString.toString())
-        Log.d("ZEZE", "do work ${avaloirRepository.getAll()}")
+    //    Log.d("ZEZE", "do work ${avaloirRepository.getAll()}")
 
         val outputData = Data.Builder().putString(WORK_RESULT, "Task Finished").build()
 
