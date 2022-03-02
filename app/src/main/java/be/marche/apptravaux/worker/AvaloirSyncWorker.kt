@@ -22,8 +22,8 @@ import java.util.UUID.randomUUID
 class AvaloirSyncWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    val avaloirRepository: AvaloirRepository,
-    val avaloirService: AvaloirService,
+    private val avaloirRepository: AvaloirRepository,
+    private val avaloirService: AvaloirService,
 ) : Worker(context, workerParameters) {
     override fun doWork(): Result {
         val taskData = inputData
@@ -31,7 +31,7 @@ class AvaloirSyncWorker @AssistedInject constructor(
 
         Log.d("ZEZE", "do work")
         showNotification("Make it Easy", taskDataString.toString())
-    //    Log.d("ZEZE", "do work ${avaloirRepository.getAll()}")
+        Log.d("ZEZE", "do work ${avaloirRepository.getAll()}")
 
         val outputData = Data.Builder().putString(WORK_RESULT, "Task Finished").build()
 
