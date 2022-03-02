@@ -13,11 +13,7 @@ import retrofit2.http.*
 interface AvaloirService {
 
     @GET("avaloirs/api/all")
-    suspend fun fetchAvaloir(
-    ): List<Avaloir>
-
-    @GET("avaloirs/api/all")
-    suspend fun getAllAvaloirs(
+    suspend fun fetchAllAvaloirs(
     ): List<Avaloir>
 
     @POST("avaloirs/api/xx")

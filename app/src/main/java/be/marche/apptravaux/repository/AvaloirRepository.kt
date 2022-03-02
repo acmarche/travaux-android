@@ -14,9 +14,6 @@ class AvaloirRepository @Inject constructor(
     private val avaloirService: AvaloirService
 ) {
 
-    suspend fun fetchAvaloir(): List<Avaloir> =
-        avaloirService.fetchAvaloir()
-
     fun getAll(): List<Avaloir> {
         return avaloirDao.getAll()
     }
@@ -45,7 +42,7 @@ class AvaloirRepository @Inject constructor(
         return avaloirDao.getByIdFlow(avaloirId)
     }
 
-    suspend fun getAllAvaloirsFromApi() = avaloirService.getAllAvaloirs()
+    suspend fun getAllAvaloirsFromApi() = avaloirService.fetchAllAvaloirs()
     suspend fun getAllDatesFromApi() = avaloirService.getAllDates()
     suspend fun getAllCommentairesFromApi() = avaloirService.getAllCommentaires()
 
