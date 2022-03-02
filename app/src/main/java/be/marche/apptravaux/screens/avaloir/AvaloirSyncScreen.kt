@@ -18,10 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
+import androidx.work.*
 import be.marche.apptravaux.R
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.Colors
@@ -31,6 +28,7 @@ import be.marche.apptravaux.worker.AvaloirSyncWorker
 class AvaloirSyncScreen(
     val navController: NavController
 ) {
+    lateinit var worker: WorkManager
 
     companion object {
         const val MESSAGE_STATUS = "message_status"
@@ -40,7 +38,6 @@ class AvaloirSyncScreen(
     fun SyncContent(
         avaloirViewModel: AvaloirViewModel = viewModel()
     ) {
-        lateinit var worker: WorkManager
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -65,31 +62,11 @@ class AvaloirSyncScreen(
                 )
             }
         ) {
-            val context = LocalContext.current
             val lifeCycle = LocalLifecycleOwner.current
-
-            //worker = avaloirViewModel.workManager
-            worker = WorkManager.getInstance(context)
+            worker = avaloirViewModel.workManager
             val textInput = remember { mutableStateOf("") }
             val taskData = Data.Builder().putString(MESSAGE_STATUS, "Notification Done.").build()
-            val powerConstraints = Constraints.Builder().setRequiresBatteryNotLow(true).build()
-            val request = OneTimeWorkRequest.Builder(AvaloirSyncWorker::class.java)
-                .setConstraints(powerConstraints).setInputData(taskData).build()
-
-/*            avaloirViewModel.outputWorkInfos.observe(lifeCycle) { workInfo ->
-                workInfo.let {
-                    if (it.state.isFinished) {
-                        val outputData = it.outputData
-                        val taskResult = outputData.getString(AvaloirSyncWorker.WORK_RESULT)
-                        if (taskResult != null) {
-                            textInput.value = taskResult
-                        }
-                    } else {
-                        val workStatus = workInfo.state
-                        textInput.value = workStatus.toString()
-                    }
-                }
-            }*/
+            val request = avaloirViewModel.createRequest(taskData)
 
             worker.getWorkInfoByIdLiveData(request.id).observe(lifeCycle) { workInfo ->
                 workInfo.let {
@@ -105,13 +82,14 @@ class AvaloirSyncScreen(
                     }
                 }
             }
+
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Log.d("ZEZE", "sync screen")
-                Content(avaloirViewModel, taskData, textInput)
+                Content(avaloirViewModel, request, textInput)
             }
         }
     }
@@ -119,16 +97,16 @@ class AvaloirSyncScreen(
     @Composable
     private fun Content(
         avaloirViewModel: AvaloirViewModel,
-        taskData: Data,
+        request: WorkRequest,
         textInput: MutableState<String>
     ) {
         Log.d("ZEZE", "sync Content screen")
         Text(text = stringResource(R.string.sync_intro))
         Spacer(modifier = Modifier.height(30.dp))
 
+        Log.d("ZEZE", "cuuid ${avaloirViewModel.uid.value}")
         Button(onClick = {
-            avaloirViewModel.applyBlur(taskData)
-            // worker.enqueue(request)
+            avaloirViewModel.enqueueWorkRequest(request)
         }) {
             Text(text = "Synchroniser")
         }

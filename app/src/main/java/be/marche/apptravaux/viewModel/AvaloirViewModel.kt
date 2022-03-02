@@ -18,15 +18,16 @@ import be.marche.apptravaux.entities.SearchResponseUiState
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.repository.AvaloirRepository
+import be.marche.apptravaux.screens.avaloir.AvaloirSyncScreen.Companion.MESSAGE_STATUS
 import be.marche.apptravaux.ui.entities.SearchRequest
 import be.marche.apptravaux.utils.FileHelper
+import be.marche.apptravaux.worker.AvaloirSyncWorker
 import com.google.android.libraries.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import be.marche.apptravaux.screens.avaloir.AvaloirSyncScreen.Companion.MESSAGE_STATUS
-import be.marche.apptravaux.worker.AvaloirSyncWorker
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -167,8 +168,10 @@ class AvaloirViewModel @Inject constructor(
      * WorkManager
      */
     val workManager = WorkManager.getInstance(applicationContext)
+    val uid: MutableState<UUID> = mutableStateOf(AvaloirSyncWorker.WORK_UUID)
+
     internal val outputWorkInfos: LiveData<WorkInfo> =
-        workManager.getWorkInfoByIdLiveData(AvaloirSyncWorker.WORK_UUID)
+        workManager.getWorkInfoByIdLiveData(uid.value)
 
     internal fun cancelWork() {
         workManager.cancelUniqueWork("IMAGE_MANIPULATION_WORK_NAME")
@@ -178,15 +181,20 @@ class AvaloirViewModel @Inject constructor(
         return Data.Builder().putString(MESSAGE_STATUS, "Notification Done.").build()
     }
 
-    internal fun applyBlur(taskData: Data) {
+    fun createRequest(taskData: Data): OneTimeWorkRequest {
         val powerConstraints = Constraints.Builder().setRequiresBatteryNotLow(true).build()
-        val networkConstraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+        val networkConstraints =
+            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 
-        val request = OneTimeWorkRequest.Builder(AvaloirSyncWorker::class.java)
+        return OneTimeWorkRequest.Builder(AvaloirSyncWorker::class.java)
             .setConstraints(powerConstraints)
             .setConstraints(networkConstraints)
-            .setInputData(taskData).build()
+            .setInputData(taskData)
+            .build()
+    }
 
+    internal fun enqueueWorkRequest(request: WorkRequest) {
+        Log.d("ZEZE", "uid $uid")
         Log.d("ZEZE", "launch request ")
         workManager.enqueue(request)
     }
