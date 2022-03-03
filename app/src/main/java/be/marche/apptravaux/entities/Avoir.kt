@@ -43,3 +43,12 @@ data class DateNettoyage(
     val avaloirId: Int,
     val date: Date
 )
+
+@Entity
+data class Sync(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int?,
+    val createdAt: Date,
+    val content: String,
+    val result: Boolean
+)

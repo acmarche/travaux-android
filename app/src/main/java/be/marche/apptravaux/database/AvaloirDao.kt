@@ -38,6 +38,9 @@ interface AvaloirDao {
     suspend fun insertAvaloirs(avaloirs: List<Avaloir>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAvaloirsNotSuspend(avaloirs: List<Avaloir>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDates(dates: List<DateNettoyage>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

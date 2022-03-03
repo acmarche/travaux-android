@@ -3,10 +3,10 @@ package be.marche.apptravaux.networking
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
-import be.marche.apptravaux.entities.ResponseUiState
 import be.marche.apptravaux.ui.entities.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -15,6 +15,10 @@ interface AvaloirService {
     @GET("avaloirs/api/all")
     suspend fun fetchAllAvaloirs(
     ): List<Avaloir>
+
+    @GET("avaloirs/api/all")
+     fun fetchAllAvaloirsNotSuspend(
+    ): Call<List<Avaloir>>
 
     @POST("avaloirs/api/xx")
     suspend fun updateAllAvaloirs(

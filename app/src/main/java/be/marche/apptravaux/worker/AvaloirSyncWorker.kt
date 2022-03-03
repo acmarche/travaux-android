@@ -16,9 +16,6 @@ import be.marche.apptravaux.repository.AvaloirRepository
 import be.marche.apptravaux.screens.avaloir.AvaloirSyncScreen
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.UUID.randomUUID
 
 @HiltWorker
@@ -33,17 +30,18 @@ class AvaloirSyncWorker @AssistedInject constructor(
         val taskDataString = taskData.getString(AvaloirSyncScreen.MESSAGE_STATUS)
         val notificationString = taskData.getString(AvaloirSyncScreen.MESSAGE_STATUS)
 
-        Log.d("ZEZE", "do work")
-        //  syncContent()
-        showNotification("Make it Easy", taskDataString.toString())
         Log.d("ZEZE", "do work findAll ${avaloirRepository.getAll().count()}")
-        CoroutineScope(Dispatchers.IO).launch {
-            syncContent()
+        val outputData = Data.Builder().putString(WORK_RESULT, "Task Started")
+
+        if (syncContent()) {
+            outputData.putString(WORK_RESULT, "Task Finished").build()
+            showNotification("Make it Easy", taskDataString.toString())
+            return Result.success(outputData.build())
         }
 
-        val outputData = Data.Builder().putString(WORK_RESULT, "Task Finished").build()
-
-        return Result.success(outputData)
+        outputData.putString(WORK_RESULT, "Task Fail").build()
+        showNotification("Make it Easy", taskDataString.toString())
+        return Result.success(outputData.build())
     }
 
     private fun showNotification(task: String, desc: String) {
@@ -67,11 +65,23 @@ class AvaloirSyncWorker @AssistedInject constructor(
         manager.notify(1, builder.build())
     }
 
-    private suspend fun syncContent() {
-        avaloirService.fetchAllAvaloirs().forEach() {
-            Log.e("ZEZE", "sync $it")
-            avaloirRepository.insertAvaloir(it)
+    private fun syncContent(): Boolean {
+
+        try {
+            val response = avaloirService.fetchAllAvaloirsNotSuspend()
+            val res = response.execute()
+            if (res.isSuccessful) {
+                Log.d("ZEZE", "work avaloirs ${res.body()}")
+                res.body()?.let { avaloirRepository.insertAvaloirsNotSuspend(it) }
+                return true
+            } else {
+                res.code()
+            }
+            return false
+        } catch (e: Exception) {
+            Log.d("ZEZE", "work err $e")
         }
+        return false
     }
 
     companion object {

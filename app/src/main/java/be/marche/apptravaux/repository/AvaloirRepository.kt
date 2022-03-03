@@ -50,6 +50,10 @@ class AvaloirRepository @Inject constructor(
         avaloirDao.insertAvaloirs(avaloirs)
     }
 
+    fun  insertAvaloirsNotSuspend(avaloirs: List<Avaloir>) {
+        avaloirDao.insertAvaloirsNotSuspend(avaloirs)
+    }
+
     suspend fun insertDates(dates: List<DateNettoyage>) {
         avaloirDao.insertDates(dates)
     }
