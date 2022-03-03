@@ -27,6 +27,7 @@ import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.AvaloirUiState
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.Colors
+import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import coil.compose.rememberImagePainter
 import com.myricseptember.countryfactcomposefinal.widgets.CardRow
@@ -77,10 +78,13 @@ fun AvaloirListScreen(
                 Log.d("ZEZE", "vide")
                 Column {
                     ErrorDialog("La liste est vide")
-                    Spacer(modifier = Modifier.height(30.dp))
-                    CardRow("Synchroniser", {
+                    Divider(
+                        modifier = Modifier.height(MEDIUM_PADDING),
+                        color = MaterialTheme.colors.background
+                    )
+                    CardRow("Synchroniser") {
                         navController.navigate(TravauxRoutes.AvaloirSyncScreen.route)
-                    })
+                    }
                 }
             }
         }
@@ -122,7 +126,11 @@ fun ItemAvaloir(
                 .border(1.5.dp, MaterialTheme.colors.secondaryVariant, CircleShape)
                 .clip(CircleShape)
         )
-        Spacer(modifier = Modifier.width(8.dp))
+
+        Divider(
+            modifier = Modifier.height(MEDIUM_PADDING),
+            color = MaterialTheme.colors.background
+        )
 
         val surfaceColor: Color by animateColorAsState(
             MaterialTheme.colors.primary
@@ -135,7 +143,10 @@ fun ItemAvaloir(
                 style = MaterialTheme.typography.subtitle2
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Divider(
+                modifier = Modifier.height(MEDIUM_PADDING),
+                color = MaterialTheme.colors.background
+            )
 
             Surface(
                 shape = MaterialTheme.shapes.medium,

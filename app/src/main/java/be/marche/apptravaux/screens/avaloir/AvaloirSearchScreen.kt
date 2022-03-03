@@ -24,12 +24,16 @@ import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.SearchResponseUiState
 import be.marche.apptravaux.location.LocationService
 import be.marche.apptravaux.navigation.TravauxRoutes
+import be.marche.apptravaux.networking.ConnectionState
+import be.marche.apptravaux.networking.connectivityState
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.libraries.maps.model.LatLng
+import com.myricseptember.countryfactcomposefinal.widgets.CardRow
 import com.myricseptember.countryfactcomposefinal.widgets.CircularProgressIndicatorSample
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class AvaloirSearchScreen(
     private val navController: NavController,
@@ -126,33 +130,53 @@ class AvaloirSearchScreen(
         Log.d("ZEZE", "searchScreen begin")
         service.getDeviceLocation(navController.context, avaloirViewModel)
         val location = avaloirViewModel.userCurrentLatLng.value
-        ContentSearch(avaloirViewModel, location)
+        Column(modifier = Modifier.padding(15.dp)) {
+            ContentSearch1(avaloirViewModel, location)
+        }
+
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Composable
-    private fun ContentSearch(
+    private fun ContentSearch1(
         avaloirViewModel: AvaloirViewModel,
         latLng: LatLng
     ) {
-        Log.d("ZEZE", "searchScreen location {$latLng")
+        LocationText(latLng)
+        Divider(
+            modifier = Modifier.height(MEDIUM_PADDING),
+            color = MaterialTheme.colors.background
+        )
+        DescriptionText()
+        Divider(
+            modifier = Modifier.height(MEDIUM_PADDING),
+            color = MaterialTheme.colors.background
+        )
 
-        Column(modifier = Modifier.padding(15.dp)) {
-            LocationText(latLng)
-            Divider(
-                modifier = Modifier.height(MEDIUM_PADDING),
-                color = MaterialTheme.colors.background
-            )
-            DescriptionText()
-            Divider(
-                modifier = Modifier.height(MEDIUM_PADDING),
-                color = MaterialTheme.colors.background
-            )
+        val connection by connectivityState()
+        val isConnected = connection == ConnectionState.Available
+
+        ContentSearch2(avaloirViewModel, latLng, isConnected)
+    }
+
+    @Composable
+    private fun ContentSearch2(
+        avaloirViewModel: AvaloirViewModel,
+        latLng: LatLng,
+        isConnected: Boolean
+    ) {
+        Log.d("ZEZE", "searchScreen location {$latLng")
+        if (isConnected) {
             if (latLng.latitude > 0.0) {
                 LaunchedEffect(true) {
                     Log.d("ZEZE", "searchScreen searching {$latLng")
                     avaloirViewModel.search(latLng.latitude, latLng.longitude, "25m")
                 }
                 ResultSearch(avaloirViewModel)
+            }
+        } else {
+            CardRow(texte = "La recherche par géolocalisation ne peut se faire que si internet est fonctionnel") {
+
             }
         }
     }

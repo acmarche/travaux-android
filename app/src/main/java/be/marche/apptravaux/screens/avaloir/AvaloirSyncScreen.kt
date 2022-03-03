@@ -22,6 +22,7 @@ import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.networking.ConnectionState
 import be.marche.apptravaux.networking.connectivityState
 import be.marche.apptravaux.ui.theme.Colors
+import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.worker.AvaloirSyncWorker
 import com.myricseptember.countryfactcomposefinal.widgets.ConnectivityStatusBox
@@ -110,15 +111,25 @@ class AvaloirSyncScreen(
         isConnected: Boolean
     ) {
         Log.d("ZEZE", "sync Content screen")
-        Text(text = stringResource(R.string.sync_intro))
-        Spacer(modifier = Modifier.height(30.dp))
-
-        Log.d("ZEZE", "cuuid ${avaloirViewModel.uid.value}")
+        Text(text = stringResource(R.string.sync_intro1))
+        Divider(
+            modifier = Modifier.height(MEDIUM_PADDING),
+            color = MaterialTheme.colors.background
+        )
+        Text(text = stringResource(R.string.sync_intro2))
+        Divider(
+            modifier = Modifier.height(MEDIUM_PADDING),
+            color = MaterialTheme.colors.background
+        )
+        Divider(
+            modifier = Modifier.height(MEDIUM_PADDING),
+            color = MaterialTheme.colors.background
+        )
         Button(
             onClick = { avaloirViewModel.enqueueWorkRequest(request) },
             enabled = isConnected
         ) {
-            Text(text = "Synchroniser")
+            Text(text = "Synchroniser les données")
         }
 
         Spacer(modifier = Modifier.height(30.dp))
