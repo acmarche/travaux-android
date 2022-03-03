@@ -16,6 +16,9 @@ import be.marche.apptravaux.repository.AvaloirRepository
 import be.marche.apptravaux.screens.avaloir.AvaloirSyncScreen
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.UUID.randomUUID
 
 @HiltWorker
@@ -28,10 +31,15 @@ class AvaloirSyncWorker @AssistedInject constructor(
     override fun doWork(): Result {
         val taskData = inputData
         val taskDataString = taskData.getString(AvaloirSyncScreen.MESSAGE_STATUS)
+        val notificationString = taskData.getString(AvaloirSyncScreen.MESSAGE_STATUS)
 
         Log.d("ZEZE", "do work")
+        //  syncContent()
         showNotification("Make it Easy", taskDataString.toString())
-        Log.d("ZEZE", "do work ${avaloirRepository.getAll()}")
+        Log.d("ZEZE", "do work findAll ${avaloirRepository.getAll().count()}")
+        CoroutineScope(Dispatchers.IO).launch {
+            syncContent()
+        }
 
         val outputData = Data.Builder().putString(WORK_RESULT, "Task Finished").build()
 
@@ -57,6 +65,13 @@ class AvaloirSyncWorker @AssistedInject constructor(
             .setSmallIcon(R.drawable.ic_outline_notifications_active_24)
 
         manager.notify(1, builder.build())
+    }
+
+    private suspend fun syncContent() {
+        avaloirService.fetchAllAvaloirs().forEach() {
+            Log.e("ZEZE", "sync $it")
+            avaloirRepository.insertAvaloir(it)
+        }
     }
 
     companion object {

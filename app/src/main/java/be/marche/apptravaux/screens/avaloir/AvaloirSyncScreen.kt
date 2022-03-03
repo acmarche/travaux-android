@@ -5,25 +5,27 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.work.*
+import androidx.work.Data
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import be.marche.apptravaux.R
 import be.marche.apptravaux.navigation.TravauxRoutes
+import be.marche.apptravaux.networking.ConnectionState
+import be.marche.apptravaux.networking.connectivityState
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.worker.AvaloirSyncWorker
+import com.myricseptember.countryfactcomposefinal.widgets.ConnectivityStatusBox
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class AvaloirSyncScreen(
     val navController: NavController
@@ -32,8 +34,10 @@ class AvaloirSyncScreen(
 
     companion object {
         const val MESSAGE_STATUS = "message_status"
+        const val NOTIFICATION_MESSAGE = "message notif"
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Composable
     fun SyncContent(
         avaloirViewModel: AvaloirViewModel = viewModel()
@@ -83,13 +87,17 @@ class AvaloirSyncScreen(
                 }
             }
 
+            val connection by connectivityState()
+            val isConnected = connection == ConnectionState.Available
+
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Log.d("ZEZE", "sync screen")
-                Content(avaloirViewModel, request, textInput)
+                ConnectivityStatusBox(isConnected)
+                Content(avaloirViewModel, request, textInput, isConnected)
             }
         }
     }
@@ -98,16 +106,18 @@ class AvaloirSyncScreen(
     private fun Content(
         avaloirViewModel: AvaloirViewModel,
         request: WorkRequest,
-        textInput: MutableState<String>
+        textInput: MutableState<String>,
+        isConnected: Boolean
     ) {
         Log.d("ZEZE", "sync Content screen")
         Text(text = stringResource(R.string.sync_intro))
         Spacer(modifier = Modifier.height(30.dp))
 
         Log.d("ZEZE", "cuuid ${avaloirViewModel.uid.value}")
-        Button(onClick = {
-            avaloirViewModel.enqueueWorkRequest(request)
-        }) {
+        Button(
+            onClick = { avaloirViewModel.enqueueWorkRequest(request) },
+            enabled = isConnected
+        ) {
             Text(text = "Synchroniser")
         }
 

@@ -62,4 +62,8 @@ class AvaloirRepository @Inject constructor(
         avaloirDao.insertAvaloirDraft(avaloir)
     }
 
+    suspend fun insertAvaloir(avaloir: Avaloir) {
+        avaloirDao.insertAvaloir(avaloir)
+    }
+
 }

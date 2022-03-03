@@ -13,7 +13,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -21,12 +23,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import be.marche.apptravaux.entities.AvaloirUiState
 import be.marche.apptravaux.entities.Avaloir
+import be.marche.apptravaux.entities.AvaloirUiState
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import coil.compose.rememberImagePainter
+import com.myricseptember.countryfactcomposefinal.widgets.CardRow
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 
 @Composable
@@ -70,8 +73,15 @@ fun AvaloirListScreen(
                 Log.d("ZEZE", "loaded")
                 LoadAvaloirs(state.data, navController)
             }
-            else -> {
-
+            is AvaloirUiState.Empty -> {
+                Log.d("ZEZE", "vide")
+                Column {
+                    ErrorDialog("La liste est vide")
+                    Spacer(modifier = Modifier.height(30.dp))
+                    CardRow("Synchroniser", {
+                        navController.navigate(TravauxRoutes.AvaloirSyncScreen.route)
+                    })
+                }
             }
         }
     }

@@ -31,7 +31,7 @@ fun AvaloirHomeScreen(navController: NavController) {
             "Synchronisation",
             { navController.navigate(TravauxRoutes.AvaloirSyncScreen.route) })
 
-    val cards: List<CardData> = listOf(a, b)
+    val cards: List<CardData> = listOf(a, b, c)
 
     MainContentAvaloirHome(navController, cards)
 }
@@ -67,7 +67,7 @@ fun MainContentAvaloirHome(
         Column(modifier = Modifier.padding(12.dp)) {
             LazyColumn {
                 items(datas) { data ->
-                    CardRow(data, data.action)
+                    CardRow(data.texte, data.action)
                 }
             }
         }

@@ -32,7 +32,7 @@ interface AvaloirDao {
     fun getById(avaloirId: Int): Avaloir
 
     @Query("SELECT * FROM avaloir WHERE idReferent = :avaloirId")
-    fun getByIdFlow(avaloirId: Int):  Flow<Avaloir>
+    fun getByIdFlow(avaloirId: Int): Flow<Avaloir>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAvaloirs(avaloirs: List<Avaloir>)
@@ -44,7 +44,7 @@ interface AvaloirDao {
     suspend fun insertCommentaires(commentaires: List<Commentaire>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(avaloir: Avaloir)
+    suspend fun insertAvaloir(avaloir: Avaloir)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAvaloirDraft(avaloir: AvaloirDraft)

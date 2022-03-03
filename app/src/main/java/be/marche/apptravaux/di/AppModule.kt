@@ -36,7 +36,7 @@ class AppModule {
     @Singleton
     fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
         val applicationScope = CoroutineScope(SupervisorJob())
-        return AppDatabase.getDatabase(context = appContext, applicationScope)
+        return AppDatabase.getDatabase(context = appContext)
     }
 
     @Provides

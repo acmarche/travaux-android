@@ -58,8 +58,8 @@ fun AvaloirRow(
 
 @Composable
 fun CardRow(
-    data: CardData,
-    onItemCLick: () ->    Unit
+    texte: String,
+    onItemCLick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -76,7 +76,7 @@ fun CardRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = data.texte)
+            Text(text = texte)
         }
     }
 }
@@ -137,33 +137,35 @@ fun ConnectivityStatusBox(
     isConnected: Boolean
 ) {
     val backgroundColor by animateColorAsState(targetValue = if (isConnected) green else red)
-    val message = if (isConnected) "Back Online!" else "No Internet Connection!"
+    val message = if (isConnected) "Connexion Internet ok" else "Pas de connexion Internet"
     val iconResource = if (isConnected) {
         R.drawable.ic_connectivity_available
     } else {
         R.drawable.ic_connectivity_unavailable
     }
-    Box(
-        modifier = Modifier
-            .background(backgroundColor)
-            .fillMaxWidth()
-            .padding(8.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
+    if (!isConnected) {
+        Box(
+            modifier = Modifier
+                .background(backgroundColor)
+                .fillMaxWidth()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Icon(
-                painter = painterResource(id = iconResource),
-                contentDescription = "Connection Image",
-                tint = Color.White
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Text(
-                text = message,
-                color = Color.White,
-                fontSize = 15.sp
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = iconResource),
+                    contentDescription = "Connection Image",
+                    tint = Color.White
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    text = message,
+                    color = Color.White,
+                    fontSize = 15.sp
+                )
+            }
         }
     }
 }
@@ -228,9 +230,9 @@ fun MyAppTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
         navigationIcon = {
             IconButton(onClick = onBackPressed) {
                 Icon(
-                        Icons.Filled.ArrowBack,
-                        contentDescription = "rrrrr"
-                    )
+                    Icons.Filled.ArrowBack,
+                    contentDescription = "rrrrr"
+                )
             }
         },
         // ...

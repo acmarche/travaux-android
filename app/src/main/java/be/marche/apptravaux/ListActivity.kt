@@ -18,6 +18,7 @@ import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.viewModel.CardViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+@Deprecated(message = "sert a rien")
 @AndroidEntryPoint
 class ListActivity : ComponentActivity() {
 

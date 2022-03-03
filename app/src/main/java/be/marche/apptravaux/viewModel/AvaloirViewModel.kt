@@ -46,17 +46,38 @@ class AvaloirViewModel @Inject constructor(
     val uiState: StateFlow<AvaloirUiState> = _uiState
 
     init {
-        fetchAvaloirsFromApi()
+        fetchAvaloirsFromDb()
     }
 
     private fun fetchAvaloirsFromApi() {
         _uiState.value = AvaloirUiState.Loading
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             try {
-                val response = avaloirRepository.fetchAvaloir();
+                val response = avaloirRepository.getAllAvaloirsFromApi()
                 Log.d("ZEZE", "init viewmodel response api: ${response.toString()}")
 
                 _uiState.value = AvaloirUiState.Loaded(response)
+
+            } catch (ex: Exception) {
+                Log.d("ZEZE", "error: ${ex.message}")
+                onErrorOccurred()
+            }
+        }
+    }
+
+    private fun fetchAvaloirsFromDb() {
+        _uiState.value = AvaloirUiState.Loading
+        viewModelScope.launch(coroutineDispatcherProvider.IO()) {
+            try {
+                val response = avaloirRepository.getAll()
+                Log.d("ZEZE", "init viewmodel response api: ${response.count()}")
+
+                if(response.count() == 0){
+                    _uiState.value = AvaloirUiState.Empty
+                }
+                else {
+                    _uiState.value = AvaloirUiState.Loaded(response)
+                }
 
             } catch (ex: Exception) {
                 Log.d("ZEZE", "error: ${ex.message}")

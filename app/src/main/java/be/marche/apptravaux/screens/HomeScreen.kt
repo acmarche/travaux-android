@@ -1,6 +1,5 @@
 package be.marche.apptravaux.screens
 
-import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,9 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import be.marche.apptravaux.ListActivity
 import be.marche.apptravaux.navigation.TravauxRoutes
 import com.myricseptember.countryfactcomposefinal.widgets.CardRow
 
@@ -24,7 +21,6 @@ data class CardData(val texte: String, val action: () -> Unit)
 @Composable
 fun HomeScreen(navController: NavController) {
 
-    val intent = Intent(navController.context, ListActivity::class.java)
     val c = CardData(
         "Gestion des avaloirs",
         { navController.navigate(TravauxRoutes.AvaloirHomeScreen.route) }
@@ -60,7 +56,7 @@ fun MainContentHome(
         Column(modifier = Modifier.padding(12.dp)) {
             LazyColumn {
                 items(datas) { data ->
-                    CardRow(data, data.action)
+                    CardRow(data.texte, data.action)
                 }
             }
         }

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import be.marche.apptravaux.navigation.Navigation
+import be.marche.apptravaux.networking.NetworkUtils
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,8 +23,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        lifecycleScope.launch {
-        //    syncContent()
+        NetworkUtils.getNetworkLiveData(applicationContext).observe(this) {
+            if (it) {
+                lifecycleScope.launch {
+            //        syncContent()
+                }
+            }
         }
 
         setContent {

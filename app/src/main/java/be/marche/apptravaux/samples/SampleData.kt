@@ -1,4 +1,4 @@
-package be.marche.apptravaux
+package be.marche.apptravaux.samples
 
 data class Message(val author: String, val body: String)
 

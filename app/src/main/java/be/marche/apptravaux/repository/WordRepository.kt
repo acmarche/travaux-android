@@ -20,6 +20,6 @@ class WordRepository(private val wordDao: AvaloirDao) {
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun insert(avaloir: Avaloir) {
-        wordDao.insert(avaloir)
+        wordDao.insertAvaloir(avaloir)
     }
 }
