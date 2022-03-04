@@ -1,5 +1,7 @@
 package be.marche.apptravaux.screens.avaloir
 
+import android.content.Intent
+import android.provider.Settings
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,8 +17,8 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -38,7 +40,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class AvaloirSearchScreen(
     private val navController: NavController,
 ) {
-    private val service = LocationService()
+    private val locationService = LocationService()
 
     @Composable
     fun SearchMainScreen(
@@ -72,7 +74,16 @@ class AvaloirSearchScreen(
                 )
             },
             content = {
-                BeginSearch(avaloirViewModel)
+                val context = LocalContext.current
+                val locationEnabled = remember {
+                    mutableStateOf(locationService.locationEnabled(context))
+                }
+
+                if (locationEnabled.value)
+                    BeginSearch(avaloirViewModel)
+                else
+                    context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+
             },
             floatingActionButton = {
                 FloatingActionButton(
@@ -128,7 +139,7 @@ class AvaloirSearchScreen(
         avaloirViewModel: AvaloirViewModel
     ) {
         Log.d("ZEZE", "searchScreen begin")
-        service.getDeviceLocation(navController.context, avaloirViewModel)
+        locationService.getDeviceLocation(navController.context, avaloirViewModel)
         val location = avaloirViewModel.userCurrentLatLng.value
         Column(modifier = Modifier.padding(15.dp)) {
             ContentSearch1(avaloirViewModel, location)

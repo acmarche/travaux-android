@@ -13,11 +13,7 @@ import be.marche.apptravaux.screens.AvaloirDetailScreen
 import be.marche.apptravaux.screens.HomeScreen
 import be.marche.apptravaux.screens.PermissionsAskScreen
 import be.marche.apptravaux.screens.PermissionsScreen
-import be.marche.apptravaux.screens.avaloir.AvaloirAddScreen
-import be.marche.apptravaux.screens.avaloir.AvaloirHomeScreen
-import be.marche.apptravaux.screens.avaloir.AvaloirListScreen
-import be.marche.apptravaux.screens.avaloir.AvaloirSearchScreen
-import be.marche.apptravaux.screens.avaloir.AvaloirSyncScreen
+import be.marche.apptravaux.screens.avaloir.*
 import be.marche.apptravaux.screens.stock.StockHomeScreen
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 
@@ -60,11 +56,17 @@ fun Navigation(
          * AVALOIRS
          */
         composable(route = TravauxRoutes.AvaloirHomeScreen.route) {
-            AvaloirHomeScreen(navController)
+            val screen = AvaloirHomeScreen(navController)
+            screen.HomeScreen(avaloirViewModel)
         }
 
         composable(route = TravauxRoutes.AvaloirListScreen.route) {
             AvaloirListScreen(navController, avaloirViewModel)
+        }
+
+        composable(route = TravauxRoutes.AvaloirDraftsScreen.route) {
+            val screen = AvaloirDraftsScreen(navController)
+            screen.ListScreen(avaloirViewModel)
         }
 
         composable(route = TravauxRoutes.AvaloirAddScreen.route) {

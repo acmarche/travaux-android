@@ -14,7 +14,7 @@ const val DATABASE_NAME = "apptravaux"
 
 @Database(
     entities = [Avaloir::class, AvaloirDraft::class, DateNettoyage::class, Commentaire::class, Sync::class],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

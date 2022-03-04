@@ -30,6 +30,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import be.marche.apptravaux.R
+import be.marche.apptravaux.entities.Avaloir
+import be.marche.apptravaux.entities.AvaloirDraft
 import be.marche.apptravaux.entities.CreateFileState
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.GoogleMapWidget
@@ -85,12 +87,12 @@ class AvaloirAddScreen(
                 )
             }
         ) {
-            ContentMainScreen( location)
+            ContentMainScreen(location)
         }
     }
 
     @Composable
-  private  fun ContentMainScreen(
+    private fun ContentMainScreen(
         location: LatLng
     ) {
         Column {
@@ -190,7 +192,7 @@ class AvaloirAddScreen(
                     ErrorDialog(state.message)
                 }
                 is CreateFileState.Success -> {
-                    TakePicureContent(state.file, resultStateTakePhoto, navController)
+                    TakePicureContent(state.file, resultStateTakePhoto, avaloirViewModel)
                 }
                 else -> {
                     ErrorDialog("Erreur inconnue")
@@ -204,7 +206,7 @@ class AvaloirAddScreen(
     private fun TakePicureContent(
         fileImage: File,
         resultStateTakePhoto: MutableState<Boolean>,
-        navController: NavController
+        avaloirViewModel: AvaloirViewModel
     ) {
         Log.d("ZEZE", "take picture content")
 
@@ -212,15 +214,15 @@ class AvaloirAddScreen(
 
         Log.d("ZEZE", " fileName ${fileImage.path}")
 
-        val uri = fileHelper.createUri(context, fileImage)
+        val fileUri = fileHelper.createUri(context, fileImage)
         val cameraLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.TakePicture()
         ) { result: Boolean ->
             if (result) {
-                Log.d("ZEZE", " oki camera $uri")
+                Log.d("ZEZE", " oki camera $fileUri")
                 resultStateTakePhoto.value = true
             } else {
-                Log.d("ZEZE", " KO camera $uri")
+                Log.d("ZEZE", " KO camera $fileUri")
             }
         }
 
@@ -228,7 +230,7 @@ class AvaloirAddScreen(
             contract = ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                cameraLauncher.launch(uri)
+                cameraLauncher.launch(fileUri)
             } else {
                 Toast.makeText(context, "Permission Denied!", Toast.LENGTH_SHORT).show()
             }
@@ -238,23 +240,23 @@ class AvaloirAddScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
-            ImagePreviewFromUri(resultStateTakePhoto.value, uri)
+            ImagePreviewFromUri(resultStateTakePhoto.value, fileUri)
             Text(
                 text = stringResource(R.string.photo_tip),
                 modifier = Modifier.padding(8.dp),
                 textAlign = TextAlign.Center,
                 color = Color.Gray
             )
-            BtnTake(permissionLauncher, cameraLauncher, uri)
-            BtnConfirm(resultStateTakePhoto.value)
+            BtnTake(permissionLauncher, cameraLauncher, fileUri)
+            BtnConfirm(resultStateTakePhoto.value, fileUri, avaloirViewModel)
         }
     }
 
     @Composable
-  private   fun BtnTake(
+    private fun BtnTake(
         permissionLauncher: ManagedActivityResultLauncher<String, Boolean>,
         cameraLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
-        uri: Uri
+        fileUri: Uri
     ) {
         val context = LocalContext.current
         val coroutineScope = rememberCoroutineScope()
@@ -266,7 +268,7 @@ class AvaloirAddScreen(
                         ContextCompat.checkSelfPermission(
                             context, Manifest.permission.CAMERA
                         ) -> {
-                            cameraLauncher.launch(uri)
+                            cameraLauncher.launch(fileUri)
                         }
                         else -> {
                             permissionLauncher.launch(Manifest.permission.CAMERA)
@@ -288,8 +290,8 @@ class AvaloirAddScreen(
         }
     }
 
-     @Composable
- private    fun ImagePreviewFromUri(
+    @Composable
+    private fun ImagePreviewFromUri(
         statePhoto: Boolean,
         uri: Uri
     ) {
@@ -310,11 +312,20 @@ class AvaloirAddScreen(
 
     @Composable
     private fun BtnConfirm(
-        statePhoto: Boolean
+        statePhoto: Boolean,
+        fileUri: Uri,
+        avaloirViewModel: AvaloirViewModel
     ) {
         Button(
             onClick = {
-                navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
+                val location = avaloirViewModel.userCurrentLatLng.value
+                fileUri.path?.let {
+                    val avaloir = AvaloirDraft(null, location.latitude, location.longitude, it)
+                    Log.d("ZEZE", "insert draft $avaloir")
+
+                    avaloirViewModel.insertAvaloirDraft(avaloir)
+                }
+                navController.navigate(TravauxRoutes.AvaloirDraftsScreen.route)
             },
             enabled = statePhoto,
             modifier = Modifier

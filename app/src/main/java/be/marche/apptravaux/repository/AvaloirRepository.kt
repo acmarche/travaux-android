@@ -1,5 +1,6 @@
 package be.marche.apptravaux.repository
 
+import androidx.lifecycle.LiveData
 import be.marche.apptravaux.database.AvaloirDao
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.AvaloirDraft
@@ -18,7 +19,11 @@ class AvaloirRepository @Inject constructor(
         return avaloirDao.getAll()
     }
 
-    fun getFlowList(): Flow<List<Avaloir>> {
+    fun getAllDraftsList(): List<AvaloirDraft> {
+        return avaloirDao.getAllDraftsList()
+    }
+
+    fun getAllDraftsFlow(): Flow<List<Avaloir>> {
         return avaloirDao.getFlowList()
     }
 
@@ -50,7 +55,7 @@ class AvaloirRepository @Inject constructor(
         avaloirDao.insertAvaloirs(avaloirs)
     }
 
-    fun  insertAvaloirsNotSuspend(avaloirs: List<Avaloir>) {
+    fun insertAvaloirsNotSuspend(avaloirs: List<Avaloir>) {
         avaloirDao.insertAvaloirsNotSuspend(avaloirs)
     }
 

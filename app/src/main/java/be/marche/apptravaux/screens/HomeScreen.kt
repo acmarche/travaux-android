@@ -29,7 +29,7 @@ fun HomeScreen(navController: NavController) {
         CardData("Gestion des stocks",
             { navController.navigate(TravauxRoutes.StockHomeScreen.route) })
 
-    val e = CardData("Demo", { navController.navigate(TravauxRoutes.AvaloirSyncScreen.route) })
+    val e = CardData("Demo", { navController.navigate(TravauxRoutes.AvaloirDraftsScreen.route) })
 
     val cards: List<CardData> = listOf(c, d, e)
 

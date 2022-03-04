@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import be.marche.apptravaux.viewModel.AvaloirViewModel
@@ -73,5 +74,10 @@ class LocationService {
         } catch (e: SecurityException) {
             Log.d("Exception", "Exception:  $e.message.toString()")
         }
+    }
+
+    fun locationEnabled(context: Context): Boolean {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 }

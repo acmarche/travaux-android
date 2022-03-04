@@ -1,5 +1,6 @@
 package be.marche.apptravaux.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -13,8 +14,14 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AvaloirDao {
 
+    @Query("SELECT * FROM avaloirdraft")
+    fun getAllDraftsList(): List<AvaloirDraft>
+
     @Query("SELECT * FROM avaloir")
     fun getAll(): List<Avaloir>
+
+    @Query("SELECT * FROM avaloirdraft")
+    fun getAllDraftsFlow(): Flow<List<AvaloirDraft>>
 
     @Query("SELECT * FROM avaloir")
     fun getFlowList(): Flow<List<Avaloir>>

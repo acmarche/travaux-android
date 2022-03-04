@@ -24,6 +24,15 @@ interface AvaloirService {
     suspend fun updateAllAvaloirs(
     ): List<Avaloir>
 
+
+    @Multipart
+    @POST("avaloirs/api/insert")
+    fun insertAvaloirNotSuspend(
+        @Part("coordinates") coordinates: Coordinates,
+        @Part file: MultipartBody.Part,
+        @Part("image") requestBody: RequestBody
+    ): Response<DataResponse>
+
     @Multipart
     @POST("avaloirs/api/insert")
     suspend fun insertAvaloir(

@@ -11,10 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import be.marche.apptravaux.R
-import be.marche.apptravaux.entities.Avaloir
-import be.marche.apptravaux.entities.AvaloirUiState
-import be.marche.apptravaux.entities.CreateFileState
-import be.marche.apptravaux.entities.SearchResponseUiState
+import be.marche.apptravaux.entities.*
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.repository.AvaloirRepository
@@ -25,7 +22,10 @@ import be.marche.apptravaux.worker.AvaloirSyncWorker
 import com.google.android.libraries.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -70,12 +70,11 @@ class AvaloirViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             try {
                 val response = avaloirRepository.getAll()
-                Log.d("ZEZE", "init viewmodel response api: ${response.count()}")
+                Log.d("ZEZE", "init viewmodel db: ${response.count()}")
 
-                if(response.count() == 0){
+                if (response.count() == 0) {
                     _uiState.value = AvaloirUiState.Empty
-                }
-                else {
+                } else {
                     _uiState.value = AvaloirUiState.Loaded(response)
                 }
 
@@ -110,10 +109,13 @@ class AvaloirViewModel @Inject constructor(
     }
 
     val allAvaloirs: Flow<List<Avaloir>> = flow {
-        // viewModelScope.launch {
-        val latestNews = avaloirRepository.getAllAvaloirsFromApi()
-        emit(latestNews)
-        //  }
+        viewModelScope.launch {
+            emit(avaloirRepository.getAllAvaloirsFromApi())
+        }
+    }
+
+    val allAvaloirsDraftFlow: Flow<List<AvaloirDraft>> = flow {
+        avaloirRepository.getAllDraftsFlow()
     }
 
     /*  fun getAllAvaloirsFromServer(): LiveData<List<Avaloir>> = liveData {
@@ -123,6 +125,12 @@ class AvaloirViewModel @Inject constructor(
     fun insertAvaloir(avaloir: Avaloir) {
         viewModelScope.launch {
             avaloirRepository.insertAvaloirs(listOf(avaloir))
+        }
+    }
+
+    fun insertAvaloirDraft(avaloir: AvaloirDraft) {
+        viewModelScope.launch {
+            avaloirRepository.insertAvaloirDraft(avaloir)
         }
     }
 

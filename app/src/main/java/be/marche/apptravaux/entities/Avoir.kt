@@ -24,7 +24,7 @@ data class AvaloirDraft(
     val id: Int?,
     var latitude: Double,
     var longitude: Double,
-    var imageUrl: String? = null,
+    var imageUrl: String,
 )
 
 @Entity
