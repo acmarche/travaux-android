@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.AvaloirUiState
 import be.marche.apptravaux.navigation.TravauxRoutes
+import be.marche.apptravaux.screens.widgets.AvaloirWidget
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
@@ -33,137 +34,64 @@ import coil.compose.rememberImagePainter
 import com.myricseptember.countryfactcomposefinal.widgets.CardRow
 import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 
-@Composable
-fun AvaloirListScreen(
-    navController: NavController,
-    avaloirViewModel: AvaloirViewModel = viewModel()
-) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Liste des avaloirs",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
-                        }
-                    ) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Retour")
-                    }
-                },
-                backgroundColor = Colors.Pink500,
-                elevation = AppBarDefaults.TopAppBarElevation
-            )
-        }
+class AvaloirListScreen(val navController: NavController) {
+
+    @Composable
+    fun ListScreen(
+        avaloirViewModel: AvaloirViewModel = viewModel()
     ) {
-        when (val state = avaloirViewModel.uiState.collectAsState().value) {
-            is AvaloirUiState.Loading -> {
-                Log.d("ZEZE", "loading")
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Liste des avaloirs",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = {
+                                navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
+                            }
+                        ) {
+                            Icon(Icons.Filled.ArrowBack, contentDescription = "Retour")
+                        }
+                    },
+                    backgroundColor = Colors.Pink500,
+                    elevation = AppBarDefaults.TopAppBarElevation
+                )
             }
-            is AvaloirUiState.Error -> {
-                Log.d("ZEZE", "error")
-                ErrorDialog(state.message)
-            }
-            is AvaloirUiState.Loaded -> {
-                Log.d("ZEZE", "loaded")
-                LoadAvaloirs(state.data, navController)
-            }
-            is AvaloirUiState.Empty -> {
-                Log.d("ZEZE", "vide")
-                Column {
-                    ErrorDialog("La liste est vide")
-                    Divider(
-                        modifier = Modifier.height(MEDIUM_PADDING),
-                        color = MaterialTheme.colors.background
-                    )
-                    CardRow("Synchroniser") {
-                        navController.navigate(TravauxRoutes.AvaloirSyncScreen.route)
+        ) {
+            when (val state = avaloirViewModel.uiState.collectAsState().value) {
+                is AvaloirUiState.Loading -> {
+                    Log.d("ZEZE", "loading")
+                }
+                is AvaloirUiState.Error -> {
+                    Log.d("ZEZE", "error")
+                    ErrorDialog(state.message)
+                }
+                is AvaloirUiState.Loaded -> {
+                    val widget = AvaloirWidget()
+                    widget.LoadAvaloirs(state.data, navController)
+                }
+                is AvaloirUiState.Empty -> {
+                    Log.d("ZEZE", "vide")
+                    Column {
+                        ErrorDialog("La liste est vide")
+                        Divider(
+                            modifier = Modifier.height(MEDIUM_PADDING),
+                            color = MaterialTheme.colors.background
+                        )
+                        CardRow("Synchroniser") {
+                            navController.navigate(TravauxRoutes.AvaloirSyncScreen.route)
+                        }
                     }
                 }
             }
         }
     }
-}
 
-@Composable
-fun LoadAvaloirs(
-    avaloirs: List<Avaloir>,
-    navController: NavController
-) {
-    LazyColumn {
-        items(items = avaloirs) { avaloir ->
-            ItemAvaloir(avaloir) { avoirId ->
-                navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/${avaloir.idReferent}")
-            }
-        }
-    }
-}
 
-@Composable
-fun ItemAvaloir(
-    avaloir: Avaloir,
-    onItemCLick: (Int) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .padding(all = 8.dp)
-            .clickable {
-                Log.e("ZEZE", "id ${avaloir.idReferent}")
-                onItemCLick(avaloir.idReferent)
-            },
-    ) {
-        Image(
-            painter = rememberImagePainter(avaloir.imageUrl),
-            contentDescription = null,
-            modifier = Modifier
-                .size(128.dp)
-                .border(1.5.dp, MaterialTheme.colors.secondaryVariant, CircleShape)
-                .clip(CircleShape)
-        )
-
-        Divider(
-            modifier = Modifier.height(MEDIUM_PADDING),
-            color = MaterialTheme.colors.background
-        )
-
-        val surfaceColor: Color by animateColorAsState(
-            MaterialTheme.colors.primary
-        )
-
-        Column() {
-            Text(
-                text = "Rue: ${avaloir.rue}",
-                color = MaterialTheme.colors.secondaryVariant,
-                style = MaterialTheme.typography.subtitle2
-            )
-
-            Divider(
-                modifier = Modifier.height(MEDIUM_PADDING),
-                color = MaterialTheme.colors.background
-            )
-
-            Surface(
-                shape = MaterialTheme.shapes.medium,
-                elevation = 1.dp,
-                // surfaceColor color will be changing gradually from primary to surface
-                color = surfaceColor,
-                // animateContentSize will change the Surface size gradually
-                modifier = Modifier
-                    .animateContentSize()
-                    .padding(1.dp)
-            ) {
-                Text(
-                    text = "Localité: ${avaloir.localite}",
-                    modifier = Modifier.padding(all = 4.dp),
-                    style = MaterialTheme.typography.body2
-                )
-            }
-        }
-    }
 }

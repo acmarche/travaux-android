@@ -28,6 +28,7 @@ import be.marche.apptravaux.location.LocationService
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.networking.ConnectionState
 import be.marche.apptravaux.networking.connectivityState
+import be.marche.apptravaux.screens.widgets.AvaloirWidget
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
@@ -215,7 +216,8 @@ class AvaloirSearchScreen(
                     modifier = Modifier.height(MEDIUM_PADDING),
                     color = MaterialTheme.colors.background
                 )
-                LoadAvaloirs(state.response.avaloirs, navController)
+                val widget = AvaloirWidget()
+                widget.LoadAvaloirs(state.response.avaloirs, navController)
             }
             else -> {
 

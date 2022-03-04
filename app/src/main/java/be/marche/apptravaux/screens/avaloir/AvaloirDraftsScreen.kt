@@ -23,16 +23,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.AvaloirDraft
-import be.marche.apptravaux.entities.AvaloirUiState
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import coil.compose.rememberImagePainter
 import com.myricseptember.countryfactcomposefinal.widgets.CardRow
-import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 
 class AvaloirDraftsScreen(
     val navController: NavController,
@@ -66,17 +63,20 @@ class AvaloirDraftsScreen(
                 )
             }
         ) {
-
+            avaloirViewModel.refreshDrafts()
             val avaloirs =
-                avaloirViewModel.allAvaloirsDraftFlow.collectAsState(initial = emptyList())
-            CardRow(texte = "${avaloirs.value.count()} avaloirs brouillons") {
-
+                avaloirViewModel.allAvaloirsDraftsFlow.collectAsState()
+            Column {
+                Text(
+                    text = "${avaloirs.value.count()} avaloirs brouillons",
+                    style = MaterialTheme.typography.subtitle2
+                )
+                Divider(
+                    modifier = Modifier.height(MEDIUM_PADDING),
+                    color = MaterialTheme.colors.background
+                )
+                LoadAvaloirs(avaloirs.value, navController)
             }
-            Divider(
-                modifier = Modifier.height(MEDIUM_PADDING),
-                color = MaterialTheme.colors.background
-            )
-            LoadAvaloirs(avaloirs.value, navController)
         }
     }
 
@@ -87,73 +87,10 @@ class AvaloirDraftsScreen(
     ) {
         LazyColumn {
             items(items = avaloirs) { avaloir ->
-                ItemAvaloirDraft(avaloir) { avoirId ->
-
-                }
+                CardRow(avaloir.latitude.toString(), {})
             }
         }
     }
 
-    @Composable
-    fun ItemAvaloirDraft(
-        avaloir: AvaloirDraft,
-        onItemCLick: (Int) -> Unit
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(all = 8.dp)
-                .clickable {
-                    Log.e("ZEZE", "id ${avaloir.id}")
-                    onItemCLick(123)
-                },
-        ) {
-            Image(
-                painter = rememberImagePainter(avaloir.imageUrl),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(128.dp)
-                    .border(1.5.dp, MaterialTheme.colors.secondaryVariant, CircleShape)
-                    .clip(CircleShape)
-            )
 
-            Divider(
-                modifier = Modifier.height(MEDIUM_PADDING),
-                color = MaterialTheme.colors.background
-            )
-
-            val surfaceColor: Color by animateColorAsState(
-                MaterialTheme.colors.primary
-            )
-
-            Column() {
-                Text(
-                    text = "Rue",
-                    color = MaterialTheme.colors.secondaryVariant,
-                    style = MaterialTheme.typography.subtitle2
-                )
-
-                Divider(
-                    modifier = Modifier.height(MEDIUM_PADDING),
-                    color = MaterialTheme.colors.background
-                )
-
-                Surface(
-                    shape = MaterialTheme.shapes.medium,
-                    elevation = 1.dp,
-                    // surfaceColor color will be changing gradually from primary to surface
-                    color = surfaceColor,
-                    // animateContentSize will change the Surface size gradually
-                    modifier = Modifier
-                        .animateContentSize()
-                        .padding(1.dp)
-                ) {
-                    Text(
-                        text = "Localité: ${avaloir}",
-                        modifier = Modifier.padding(all = 4.dp),
-                        style = MaterialTheme.typography.body2
-                    )
-                }
-            }
-        }
-    }
 }

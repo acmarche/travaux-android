@@ -45,8 +45,17 @@ class AvaloirViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<AvaloirUiState>(AvaloirUiState.Empty)
     val uiState: StateFlow<AvaloirUiState> = _uiState
 
+    private val _allAvaloirsDraftsFlow = MutableStateFlow<List<AvaloirDraft>>(emptyList())
+    val allAvaloirsDraftsFlow: StateFlow<List<AvaloirDraft>> = _allAvaloirsDraftsFlow
+
     init {
         fetchAvaloirsFromDb()
+    }
+
+    fun refreshDrafts() {
+        viewModelScope.launch(coroutineDispatcherProvider.IO()) {
+            _allAvaloirsDraftsFlow.value = avaloirRepository.getAllDraftsList()
+        }
     }
 
     private fun fetchAvaloirsFromApi() {
@@ -223,8 +232,6 @@ class AvaloirViewModel @Inject constructor(
     }
 
     internal fun enqueueWorkRequest(request: WorkRequest) {
-        Log.d("ZEZE", "uid $uid")
-        Log.d("ZEZE", "launch request ")
         workManager.enqueue(request)
     }
 

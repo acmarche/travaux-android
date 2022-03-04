@@ -93,7 +93,6 @@ fun ErrorDialog(message: String) {
 
 @Composable
 fun ToastMessage(message: String) {
-
     Text(
         text = message,
         modifier = Modifier
