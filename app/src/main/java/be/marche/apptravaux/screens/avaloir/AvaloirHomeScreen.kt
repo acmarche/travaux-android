@@ -23,7 +23,7 @@ class AvaloirHomeScreen(val navController: NavController) {
     fun HomeScreen() {
         val a =
             CardData(
-                "Rechercher",
+                "Rechercher et ajouter",
                 { navController.navigate(TravauxRoutes.AvaloirSearchScreen.route) })
         val b = CardData(
             "Liste des avaloirs",
