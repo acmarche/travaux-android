@@ -1,6 +1,5 @@
 package be.marche.apptravaux.screens.avaloir
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,22 +9,18 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import be.marche.apptravaux.entities.AvaloirDraft
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.CardData
 import be.marche.apptravaux.ui.theme.Colors
-import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.myricseptember.countryfactcomposefinal.widgets.CardRow
 
 class AvaloirHomeScreen(val navController: NavController) {
 
     @Composable
-    fun HomeScreen(avaloirViewModel: AvaloirViewModel = viewModel()) {
+    fun HomeScreen() {
         val a =
             CardData(
                 "Rechercher",
@@ -41,12 +36,11 @@ class AvaloirHomeScreen(val navController: NavController) {
 
         val cards: List<CardData> = listOf(a, b, c)
 
-        MainContentAvaloirHome(avaloirViewModel, navController, cards)
+        MainContentAvaloirHome(navController, cards)
     }
 
     @Composable
     fun MainContentAvaloirHome(
-        avaloirViewModel: AvaloirViewModel,
         navController: NavController,
         datas: List<CardData>
     ) {
@@ -73,14 +67,10 @@ class AvaloirHomeScreen(val navController: NavController) {
                 )
             }
         ) {
-
-            val state = avaloirViewModel.allAvaloirsDraftFlow.collectAsState(initial = emptyList())
-            Log.d("ZEZE", "drafts count " + state.value.count())
-
             Column(modifier = Modifier.padding(12.dp)) {
                 LazyColumn {
-                    items(state.value) { data ->
-                        CardRow(data.latitude.toString(), {})
+                    items(datas) { data ->
+                        CardRow(data.texte, data.action)
                     }
                 }
             }
