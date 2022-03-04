@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import be.marche.apptravaux.navigation.TravauxRoutes
-import com.myricseptember.countryfactcomposefinal.widgets.CardRow
+import be.marche.apptravaux.screens.widgets.CardRow
 
 data class CardData(val texte: String, val action: () -> Unit)
 

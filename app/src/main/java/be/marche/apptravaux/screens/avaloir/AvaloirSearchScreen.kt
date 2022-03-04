@@ -29,13 +29,13 @@ import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.networking.ConnectionState
 import be.marche.apptravaux.networking.connectivityState
 import be.marche.apptravaux.screens.widgets.AvaloirWidget
+import be.marche.apptravaux.screens.widgets.CardRow
+import be.marche.apptravaux.screens.widgets.CircularProgressIndicatorSample
+import be.marche.apptravaux.screens.widgets.ErrorDialog
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.libraries.maps.model.LatLng
-import com.myricseptember.countryfactcomposefinal.widgets.CardRow
-import com.myricseptember.countryfactcomposefinal.widgets.CircularProgressIndicatorSample
-import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class AvaloirSearchScreen(

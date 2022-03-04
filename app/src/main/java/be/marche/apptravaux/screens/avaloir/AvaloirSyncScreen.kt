@@ -21,11 +21,11 @@ import be.marche.apptravaux.R
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.networking.ConnectionState
 import be.marche.apptravaux.networking.connectivityState
+import be.marche.apptravaux.screens.widgets.ConnectivityStatusBox
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.worker.AvaloirSyncWorker
-import com.myricseptember.countryfactcomposefinal.widgets.ConnectivityStatusBox
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class AvaloirSyncScreen(

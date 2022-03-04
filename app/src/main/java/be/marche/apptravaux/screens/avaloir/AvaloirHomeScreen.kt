@@ -14,8 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.CardData
+import be.marche.apptravaux.screens.widgets.CardRow
 import be.marche.apptravaux.ui.theme.Colors
-import com.myricseptember.countryfactcomposefinal.widgets.CardRow
 
 class AvaloirHomeScreen(val navController: NavController) {
 

@@ -1,4 +1,4 @@
-package com.myricseptember.countryfactcomposefinal.widgets
+package be.marche.apptravaux.screens.widgets
 
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
@@ -16,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -25,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
-import be.marche.apptravaux.screens.CardData
 import be.marche.apptravaux.ui.theme.green
 import be.marche.apptravaux.ui.theme.red
 import coil.compose.ImagePainter
@@ -93,12 +93,12 @@ fun ErrorDialog(message: String) {
 
 @Composable
 fun ToastMessage(message: String) {
-    Text(
-        text = message,
-        modifier = Modifier
-            .padding(start = 24.dp, top = 50.dp, end = 24.dp, bottom = 50.dp),
-        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp)
-    )
+    val context = LocalContext.current
+    Toast.makeText(
+        context,
+        message,
+        Toast.LENGTH_LONG
+    ).show()
 }
 
 //call  onClick = {

@@ -30,4 +30,5 @@
     <string name="photo_take">Prendre une photo</string>
     <string name="sync_intro1">Télécharge la liste des avaloirs</string>
     <string name="sync_intro2">Envoie les avaloirs ajoutés vers le serveur</string>
+    <string name="toast_draft">Cet avaloir n\'est pas encore publier sur le serveur</string>
 </resources>

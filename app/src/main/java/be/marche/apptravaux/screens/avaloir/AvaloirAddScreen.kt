@@ -34,6 +34,7 @@ import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.AvaloirDraft
 import be.marche.apptravaux.entities.CreateFileState
 import be.marche.apptravaux.navigation.TravauxRoutes
+import be.marche.apptravaux.screens.widgets.ErrorDialog
 import be.marche.apptravaux.screens.widgets.GoogleMapWidget
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.Colors.Pink500
@@ -42,7 +43,6 @@ import be.marche.apptravaux.utils.FileHelper
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import coil.compose.rememberImagePainter
 import com.google.android.libraries.maps.model.LatLng
-import com.myricseptember.countryfactcomposefinal.widgets.ErrorDialog
 import kotlinx.coroutines.launch
 import java.io.File
 

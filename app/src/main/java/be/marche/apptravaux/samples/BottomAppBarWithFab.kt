@@ -23,10 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import be.marche.apptravaux.screens.widgets.FloatAlertDialog
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.ui.theme.Purple500
 import be.marche.apptravaux.ui.theme.Teal200
-import com.myricseptember.countryfactcomposefinal.widgets.FloatAlertDialog
 
 class BottomAppBarWithFab : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

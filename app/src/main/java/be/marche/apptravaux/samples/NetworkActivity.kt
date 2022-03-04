@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.marche.apptravaux.networking.ConnectionState
 import be.marche.apptravaux.networking.connectivityState
+import be.marche.apptravaux.screens.widgets.ConnectivityStatusBox
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
-import com.myricseptember.countryfactcomposefinal.widgets.ConnectivityStatusBox
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 
