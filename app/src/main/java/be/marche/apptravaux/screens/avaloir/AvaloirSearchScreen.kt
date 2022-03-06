@@ -74,22 +74,6 @@ class AvaloirSearchScreen(
                     elevation = AppBarDefaults.TopAppBarElevation
                 )
             },
-            content = {
-                val context = LocalContext.current
-                val locationEnabled = remember {
-                    mutableStateOf(locationService.locationEnabled(context))
-                }
-                Log.d("ZEZE", "location enabled $locationEnabled")
-                if (locationEnabled.value)
-                    BeginSearch(avaloirViewModel)
-                else {
-                    Button(
-                        onClick = { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) },
-                    ) {
-                        Text(text = "Activer ma géolocalisation")
-                    }
-                }
-            },
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
@@ -134,7 +118,23 @@ class AvaloirSearchScreen(
                         }
                     }
                 )
-            }
+            },
+            content = {
+                val context = LocalContext.current
+                val locationEnabled = remember {
+                    mutableStateOf(locationService.locationEnabled(context))
+                }
+                Log.d("ZEZE", "location enabled $locationEnabled")
+                if (locationEnabled.value)
+                    BeginSearch(avaloirViewModel)
+                else {
+                    Button(
+                        onClick = { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) },
+                    ) {
+                        Text(text = "Activer ma géolocalisation") //todo how change value result
+                    }
+                }
+            },
         )
     }
 
