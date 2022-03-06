@@ -12,14 +12,16 @@ import android.os.Binder
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
-import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.gms.location.*
 import com.google.android.libraries.maps.model.LatLng
 
 class LocationService : Service() {
 
-    var locations: Location? = null
+    var currentLocationState: MutableState<LatLng> = mutableStateOf(LatLng(00.00, 0.00))
+
     private val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
     private val UPDATE_INTERVAL = 10 * 1000 /* 10 secs */.toLong()
     private val FASTEST_INTERVAL: Long = 25000 /* 25 sec */
@@ -55,9 +57,9 @@ class LocationService : Service() {
     }
 
     fun getDeviceLocation(
-        context: Context,
-        viewModel: AvaloirViewModel
+        context: Context
     ) {
+        Log.d("ZEZE", "start get device")
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
         locationRequest = LocationRequest.create().apply {
             interval = UPDATE_INTERVAL
@@ -68,10 +70,8 @@ class LocationService : Service() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 for (location in locationResult.locations) {
-                    viewModel.userCurrentLatLng.value = LatLng(
-                        location.latitude,
-                        location.longitude
-                    )
+                    currentLocationState.value = convertLocationToLng(location)
+                    Log.d("ZEZE", "on result $currentLocationState")
                 }
             }
         }
@@ -95,32 +95,35 @@ class LocationService : Service() {
         )
 
         try {
-            if (viewModel.locationPermissionGranted.value == true) {
-                val locationResult = fusedLocationProviderClient.lastLocation
-
-                locationResult.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val lastKnownLocation = task.result
-
-                        if (lastKnownLocation != null && lastKnownLocation.latitude > 0.0) {
-                            Log.e("ZEZE", "location service ${lastKnownLocation.latitude}")
-                            viewModel.userCurrentLatLng.value =
-                                LatLng(
-                                    lastKnownLocation.latitude,
-                                    lastKnownLocation.longitude
-                                )
-                        }
-                    } else {
-                        Log.d("ZEZE", " Current User location is null")
-                    }
-                }
-            } else {
-                Log.d("ZEZE", "location permission refused")
+            val locationResult = fusedLocationProviderClient.lastLocation
+            locationResult.addOnSuccessListener() {
+                currentLocationState.value = convertLocationToLng(it)
+                Log.e("ZEZE", "location service success ${currentLocationState}")
             }
-
+            locationResult.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val lastKnownLocation = task.result
+                    if (lastKnownLocation != null && lastKnownLocation.latitude > 0.0) {
+                        currentLocationState.value = convertLocationToLng(lastKnownLocation)
+                        Log.e(
+                            "ZEZE",
+                            "location service on complete ${currentLocationState}"
+                        )
+                    }
+                } else {
+                    Log.d("ZEZE", " Current User location is null")
+                }
+            }
         } catch (e: SecurityException) {
             Log.d("Exception", "Exception:  $e.message.toString()")
         }
+    }
+
+    private fun convertLocationToLng(location: Location?): LatLng {
+        if (location != null)
+            return LatLng(location.latitude, location.longitude)
+        else
+            return LatLng(0.0, 0.0)
     }
 
     fun stopLocation() {
@@ -142,11 +145,18 @@ class LocationService : Service() {
     }
 
     override fun onBind(p0: Intent?): IBinder? {
-        stopForeground(true)
+        //   stopForeground(true)
         return localBinder
     }
 
     inner class LocalBinder : Binder() {
         internal val service: LocationService get() = this@LocationService
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("ZEZE", "destroy service")
+    }
+
+
 }

@@ -81,6 +81,10 @@ class AvaloirSearchScreen(
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
+                        locationService.stopLocation()
+                        avaloirViewModel.userCurrentLatLng.value =
+                            locationService.currentLocationState.value
+
                         navController.navigate(TravauxRoutes.AvaloirAddScreen.route)
                     },
                     shape = RoundedCornerShape(50),
@@ -111,9 +115,10 @@ class AvaloirSearchScreen(
                             BottomNavigationItem(
                                 selected = selectedItem.value == "Search",
                                 onClick =
-                                { locationService.stopLocation() }
-                                //      navController.navigate(TravauxRoutes.AvaloirListScreen.route)
-                                ,
+                                {
+                                    locationService.stopLocation()
+                                    navController.navigate(TravauxRoutes.AvaloirListScreen.route)
+                                },
                                 icon = {
                                     Icon(Icons.Filled.Search, contentDescription = "search")
                                 },
@@ -143,22 +148,22 @@ class AvaloirSearchScreen(
     private fun BeginSearch(
         avaloirViewModel: AvaloirViewModel
     ) {
-        Log.d("ZEZE", "searchScreen begin")
-        locationService.getDeviceLocation(navController.context, avaloirViewModel)
-        val location = avaloirViewModel.userCurrentLatLng.value
-        Log.d("ZEZE", "location $location")
+        Log.d(
+            "ZEZE",
+            "searchScreen begin current loc ${locationService.currentLocationState.value}"
+        )
+        locationService.getDeviceLocation(navController.context)
         Column(modifier = Modifier.padding(15.dp)) {
-            ContentSearch1(avaloirViewModel, location)
+            ContentSearch1(avaloirViewModel)
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Composable
     private fun ContentSearch1(
-        avaloirViewModel: AvaloirViewModel,
-        latLng: LatLng
+        avaloirViewModel: AvaloirViewModel
     ) {
-        LocationText(latLng)
+        LocationText(locationService.currentLocationState.value)
         Divider(
             modifier = Modifier.height(MEDIUM_PADDING),
             color = MaterialTheme.colors.background
@@ -168,40 +173,38 @@ class AvaloirSearchScreen(
             modifier = Modifier.height(MEDIUM_PADDING),
             color = MaterialTheme.colors.background
         )
-
         val connection by connectivityState()
         val isConnected = connection == ConnectionState.Available
 
-        ContentSearch2(avaloirViewModel, latLng, isConnected)
+        ContentSearch2(avaloirViewModel, isConnected, locationService.currentLocationState.value)
     }
 
     @Composable
     private fun ContentSearch2(
         avaloirViewModel: AvaloirViewModel,
-        latLng: LatLng,
-        isConnected: Boolean
+        isConnected: Boolean,
+        location: LatLng
     ) {
-        Log.d("ZEZE", "searchScreen ContentSearch2 location {$latLng")
+        Log.d("ZEZE", "searchScreen ContentSearch2 location")
         if (isConnected) {
-            if (latLng.latitude > 0.0) {
+            if (location.latitude > 0.0) {
                 LaunchedEffect(true) {
-                    Log.d("ZEZE", "searchScreen searching {$latLng")
-                    avaloirViewModel.search(latLng.latitude, latLng.longitude, "25m")
+                    Log.d("ZEZE", "searchScreen searching {$location")
+                    avaloirViewModel.search(location.latitude, location.longitude, "25m")
                 }
                 ResultSearch(avaloirViewModel)
-            } else {
-                Text(text = "Pas de géolocalisation !!")
-                Button(
-                    onClick = {
-                        locationService.getDeviceLocation(navController.context, avaloirViewModel)
-                    },
-                ) {
-                    Text(text = "Rafraichir ma géolocalisation")
-                }
             }
         } else {
             CardRow(texte = "La recherche par géolocalisation ne peut se faire que si internet est fonctionnel") {
 
+            }
+            Text(text = "Pas de géolocalisation !!")
+            Button(
+                onClick = {
+                    locationService.getDeviceLocation(navController.context)
+                },
+            ) {
+                Text(text = "Rafraichir ma géolocalisation")
             }
         }
     }
@@ -239,7 +242,7 @@ class AvaloirSearchScreen(
     }
 
     @Composable
-    private fun LocationText(location: LatLng?) {
+    private fun LocationText(location: LatLng) {
         if (location != null) {
             Text(text = "Votre localisation: ${location.latitude}, ${location.longitude}")
         } else {
