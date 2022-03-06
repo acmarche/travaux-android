@@ -79,12 +79,16 @@ class AvaloirSearchScreen(
                 val locationEnabled = remember {
                     mutableStateOf(locationService.locationEnabled(context))
                 }
-
+                Log.d("ZEZE", "location enabled $locationEnabled")
                 if (locationEnabled.value)
                     BeginSearch(avaloirViewModel)
-                else
-                    context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-
+                else {
+                    Button(
+                        onClick = { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) },
+                    ) {
+                        Text(text = "Activer ma géolocalisation")
+                    }
+                }
             },
             floatingActionButton = {
                 FloatingActionButton(
@@ -117,10 +121,9 @@ class AvaloirSearchScreen(
                                 alwaysShowLabel = false
                             )
                             BottomNavigationItem(
-                                selected = selectedItem.value == "Setting",
+                                selected = selectedItem.value == "Search",
                                 onClick = {
-                                    //    content.value = "Setting Screen"
-                                    selectedItem.value = "setting"
+                                         navController.navigate(TravauxRoutes.AvaloirListScreen.route)
                                 },
                                 icon = {
                                     Icon(Icons.Filled.Search, contentDescription = "search")
@@ -142,10 +145,10 @@ class AvaloirSearchScreen(
         Log.d("ZEZE", "searchScreen begin")
         locationService.getDeviceLocation(navController.context, avaloirViewModel)
         val location = avaloirViewModel.userCurrentLatLng.value
+        Log.d("ZEZE", "location $location")
         Column(modifier = Modifier.padding(15.dp)) {
             ContentSearch1(avaloirViewModel, location)
         }
-
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -177,7 +180,7 @@ class AvaloirSearchScreen(
         latLng: LatLng,
         isConnected: Boolean
     ) {
-        Log.d("ZEZE", "searchScreen location {$latLng")
+        Log.d("ZEZE", "searchScreen ContentSearch2 location {$latLng")
         if (isConnected) {
             if (latLng.latitude > 0.0) {
                 LaunchedEffect(true) {
@@ -185,6 +188,15 @@ class AvaloirSearchScreen(
                     avaloirViewModel.search(latLng.latitude, latLng.longitude, "25m")
                 }
                 ResultSearch(avaloirViewModel)
+            } else {
+                Text(text = "Pas de géolocalisation !!")
+                Button(
+                    onClick = {
+                        locationService.getDeviceLocation(navController.context, avaloirViewModel)
+                    },
+                ) {
+                    Text(text = "Rafraichir ma géolocalisation")
+                }
             }
         } else {
             CardRow(texte = "La recherche par géolocalisation ne peut se faire que si internet est fonctionnel") {

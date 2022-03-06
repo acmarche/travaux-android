@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.os.SystemClock.sleep
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
@@ -21,7 +22,6 @@ import com.google.firebase.ktx.Firebase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.io.File
-import java.lang.Thread.sleep
 import java.util.UUID.randomUUID
 
 @HiltWorker
@@ -42,9 +42,9 @@ class AvaloirSyncWorker @AssistedInject constructor(
         val taskDataString = taskData.getString(AvaloirSyncScreen.MESSAGE_STATUS)
         Log.d("ZEZE", "do work taskdata ${taskDataString}")
         val notificationString = taskData.getString(AvaloirSyncScreen.MESSAGE_STATUS)
-
-        Log.d("ZEZE", "do work findAll ${avaloirRepository.getAll().count()}")
         val outputData = Data.Builder().putString(WORK_RESULT, "Task Started")
+
+        sleep(30)
 
         if (syncContent(taskData)) {
             outputData.putString(WORK_RESULT, "Task Finished").build()
@@ -79,8 +79,6 @@ class AvaloirSyncWorker @AssistedInject constructor(
     }
 
     private fun syncContent(taskData: Data): Boolean {
-
-
         try {
             val response = avaloirService.fetchAllAvaloirsNotSuspend()
             val res = response.execute()

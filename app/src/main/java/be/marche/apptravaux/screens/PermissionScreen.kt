@@ -93,7 +93,7 @@ fun RequestPermissionUi(
                             multiplePermissionsState.launchMultiplePermissionRequest()
                         }
                     ) {
-                        Text("Demander les permissions")
+                        Text("Accepter les permissions")
                     }
                 }
             }
