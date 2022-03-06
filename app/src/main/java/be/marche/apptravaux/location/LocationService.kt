@@ -2,28 +2,32 @@ package be.marche.apptravaux.location
 
 import android.Manifest
 import android.app.Activity
+import android.app.Service
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.os.Binder
+import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import be.marche.apptravaux.viewModel.AvaloirViewModel
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.android.libraries.maps.model.LatLng
 
-class LocationService {
+class LocationService : Service() {
 
     var locations: Location? = null
     private val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
     private val UPDATE_INTERVAL = 10 * 1000 /* 10 secs */.toLong()
     private val FASTEST_INTERVAL: Long = 25000 /* 25 sec */
-    lateinit var locationRequest: LocationRequest
+    private val localBinder = LocalBinder()
+
     private lateinit var locationCallback: LocationCallback
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     fun foregroundPermissionApproved(context: Context): Boolean {
         return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
@@ -54,7 +58,7 @@ class LocationService {
         context: Context,
         viewModel: AvaloirViewModel
     ) {
-        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
         locationRequest = LocationRequest.create().apply {
             interval = UPDATE_INTERVAL
             fastestInterval = FASTEST_INTERVAL
@@ -68,7 +72,6 @@ class LocationService {
                         location.latitude,
                         location.longitude
                     )
-                    Log.d("ZEZE", "location latitude ${location.latitude}")
                 }
             }
         }
@@ -120,8 +123,30 @@ class LocationService {
         }
     }
 
+    fun stopLocation() {
+        val removeTask = fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        removeTask.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d("TAG", "ok to remove Location callback")
+                stopSelf()
+            } else {
+                Log.d("TAG", "Failed to remove Location callback")
+            }
+        }
+        Log.d("ZEZE", "location stoped")
+    }
+
     fun locationEnabled(context: Context): Boolean {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    }
+
+    override fun onBind(p0: Intent?): IBinder? {
+        stopForeground(true)
+        return localBinder
+    }
+
+    inner class LocalBinder : Binder() {
+        internal val service: LocationService get() = this@LocationService
     }
 }

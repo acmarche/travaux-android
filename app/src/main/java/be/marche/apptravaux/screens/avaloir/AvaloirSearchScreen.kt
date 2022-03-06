@@ -48,6 +48,10 @@ class AvaloirSearchScreen(
         avaloirViewModel: AvaloirViewModel = viewModel()
     ) {
         val selectedItem = remember { mutableStateOf("home") }
+        val context = LocalContext.current
+        val locationEnabled = remember {
+            mutableStateOf(locationService.locationEnabled(context))
+        }
         Log.d("ZEZE", "avaloir search screen")
         Scaffold(
             topBar = {
@@ -106,9 +110,10 @@ class AvaloirSearchScreen(
                             )
                             BottomNavigationItem(
                                 selected = selectedItem.value == "Search",
-                                onClick = {
-                                         navController.navigate(TravauxRoutes.AvaloirListScreen.route)
-                                },
+                                onClick =
+                                { locationService.stopLocation() }
+                                //      navController.navigate(TravauxRoutes.AvaloirListScreen.route)
+                                ,
                                 icon = {
                                     Icon(Icons.Filled.Search, contentDescription = "search")
                                 },
@@ -120,10 +125,6 @@ class AvaloirSearchScreen(
                 )
             },
             content = {
-                val context = LocalContext.current
-                val locationEnabled = remember {
-                    mutableStateOf(locationService.locationEnabled(context))
-                }
                 Log.d("ZEZE", "location enabled $locationEnabled")
                 if (locationEnabled.value)
                     BeginSearch(avaloirViewModel)

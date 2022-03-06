@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.TravauxRoutes
-import be.marche.apptravaux.screens.widgets.GoogleMapWidget
+import be.marche.apptravaux.screens.widgets.MapJf
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
@@ -104,7 +104,9 @@ class AvaloirDetailScreen(
                 modifier = Modifier.height(MEDIUM_PADDING),
                 color = MaterialTheme.colors.background
             )
-            GoogleMapWidget(
+               val map = MapJf(avaloirViewModel)
+
+            map.GoogleMapWidget(
                 avaloir.latitude,
                 avaloir.longitude,
                 avaloir.rue,

@@ -2,7 +2,6 @@ package be.marche.apptravaux.screens.avaloir
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -30,12 +29,11 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import be.marche.apptravaux.R
-import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.AvaloirDraft
 import be.marche.apptravaux.entities.CreateFileState
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.ErrorDialog
-import be.marche.apptravaux.screens.widgets.GoogleMapWidget
+import be.marche.apptravaux.screens.widgets.MapJf
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.Colors.Pink500
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
@@ -45,7 +43,6 @@ import coil.compose.rememberImagePainter
 import com.google.android.libraries.maps.model.LatLng
 import kotlinx.coroutines.launch
 import java.io.File
-
 
 class AvaloirAddScreen(
     val navController: NavController,
@@ -87,13 +84,14 @@ class AvaloirAddScreen(
                 )
             }
         ) {
-            ContentMainScreen(location)
+            ContentMainScreen(location, avaloirViewModel)
         }
     }
 
     @Composable
     private fun ContentMainScreen(
-        location: LatLng
+        location: LatLng,
+        avaloirViewModel: AvaloirViewModel
     ) {
         Column {
             Row(
@@ -120,6 +118,11 @@ class AvaloirAddScreen(
                     .padding(vertical = 25.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                LocationText(location = location)
+                Divider(
+                    modifier = Modifier.height(MEDIUM_PADDING),
+                    color = MaterialTheme.colors.background
+                )
                 Button(onClick = { navController.navigate(TravauxRoutes.AvaloirPhotoScreen.route) }) {
                     Text("Valider et prendre une photo")
                 }
@@ -134,7 +137,8 @@ class AvaloirAddScreen(
                 modifier = Modifier.height(MEDIUM_PADDING),
                 color = MaterialTheme.colors.background
             )
-            GoogleMapWidget(
+            val map = MapJf(avaloirViewModel)
+            map.GoogleMapWidget(
                 location.latitude,
                 location.longitude,
                 null,
@@ -339,6 +343,15 @@ class AvaloirAddScreen(
                 textAlign = TextAlign.Center,
                 color = Color.White
             )
+        }
+    }
+
+    @Composable
+    private fun LocationText(location: LatLng?) {
+        if (location != null) {
+            Text(text = "Votre localisation: ${location.latitude}, ${location.longitude}")
+        } else {
+            Text(text = "Pas de localisation")
         }
     }
 }
