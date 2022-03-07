@@ -151,7 +151,9 @@ class AvaloirSearchScreen(
             "searchScreen begin current loc ${locationService.currentLocationState.value}"
         )
         val context = LocalContext.current
-        locationService.getDeviceLocation(context)
+        SideEffect {
+            locationService.getDeviceLocation(context)
+        }
         val location = remember {
             locationService.currentLocationState
         }
