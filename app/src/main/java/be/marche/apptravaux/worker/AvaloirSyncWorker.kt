@@ -125,7 +125,6 @@ class AvaloirSyncWorker @AssistedInject constructor(
                 Timber.d("avaloir failed ${response}")
                 //{"type":"https:\/\/tools.ietf.org\/html\/rfc2616#section-10","title":"An error occurred","status":500,"detail":"Internal Server Error"}
             }
-
         }
 
         return true
