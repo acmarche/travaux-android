@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import com.google.android.libraries.maps.model.LatLng
+import timber.log.Timber
 
 class LocationService : Service() {
 
@@ -59,7 +60,8 @@ class LocationService : Service() {
     fun getDeviceLocation(
         context: Context
     ) {
-        Log.d("ZEZE", "start get device")
+        Timber.d("start get device ${context.applicationContext}")
+
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
         locationRequest = LocationRequest.create().apply {
             interval = UPDATE_INTERVAL
@@ -71,7 +73,7 @@ class LocationService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 for (location in locationResult.locations) {
                     currentLocationState.value = convertLocationToLng(location)
-                    Log.d("ZEZE", "on result $currentLocationState")
+                    Timber.d("on result $currentLocationState")
                 }
             }
         }
@@ -96,26 +98,25 @@ class LocationService : Service() {
 
         try {
             val locationResult = fusedLocationProviderClient.lastLocation
-            locationResult.addOnSuccessListener() {
+            locationResult.addOnSuccessListener {
                 currentLocationState.value = convertLocationToLng(it)
-                Log.e("ZEZE", "location service success ${currentLocationState}")
+                Timber.d("location service success ${currentLocationState}")
             }
             locationResult.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val lastKnownLocation = task.result
                     if (lastKnownLocation != null && lastKnownLocation.latitude > 0.0) {
                         currentLocationState.value = convertLocationToLng(lastKnownLocation)
-                        Log.e(
-                            "ZEZE",
+                        Timber.d(
                             "location service on complete ${currentLocationState}"
                         )
                     }
                 } else {
-                    Log.d("ZEZE", " Current User location is null")
+                    Timber.d(" Current User location is null")
                 }
             }
         } catch (e: SecurityException) {
-            Log.d("Exception", "Exception:  $e.message.toString()")
+            Timber.d("Exception:  $e.message.toString()")
         }
     }
 
@@ -127,16 +128,20 @@ class LocationService : Service() {
     }
 
     fun stopLocation() {
-        val removeTask = fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-        removeTask.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Log.d("TAG", "ok to remove Location callback")
-                stopSelf()
-            } else {
-                Log.d("TAG", "Failed to remove Location callback")
+        try {
+            val removeTask = fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+            removeTask.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Timber.d("ok to remove Location callback")
+                    stopSelf()
+                } else {
+                    Timber.d("Failed to remove Location callback")
+                }
             }
+            Timber.d("location stoped")
+        } catch (e: Exception) {
+            Timber.d("Failed to remove Location callback ${e.message}")
         }
-        Log.d("ZEZE", "location stoped")
     }
 
     fun locationEnabled(context: Context): Boolean {
@@ -144,8 +149,8 @@ class LocationService : Service() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
-    override fun onBind(p0: Intent?): IBinder? {
-        //   stopForeground(true)
+    override fun onBind(p0: Intent?): IBinder {
+        stopForeground(true)
         return localBinder
     }
 
@@ -155,7 +160,7 @@ class LocationService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("ZEZE", "destroy service")
+        Timber.d("destroy service")
     }
 
 

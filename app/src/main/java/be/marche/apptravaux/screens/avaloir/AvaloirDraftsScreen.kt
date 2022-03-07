@@ -30,7 +30,6 @@ import be.marche.apptravaux.viewModel.AvaloirViewModel
 class AvaloirDraftsScreen(
     val navController: NavController,
 ) {
-
     @Composable
     fun ListScreen(
         avaloirViewModel: AvaloirViewModel = viewModel()
@@ -40,7 +39,7 @@ class AvaloirDraftsScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            text = "Liste des avaloirs sur le mobile",
+                            text = "Avaloirs sur le mobile",
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )
@@ -109,6 +108,5 @@ class AvaloirDraftsScreen(
             }
         }
     }
-
 
 }

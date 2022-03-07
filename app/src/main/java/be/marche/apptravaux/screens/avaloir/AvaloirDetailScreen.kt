@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -79,6 +76,9 @@ class AvaloirDetailScreen(
     private fun AvaloirDetailContentScreen(
         avaloir: Avaloir
     ) {
+        val locationState = remember {
+           mutableStateOf(avaloirViewModel.userCurrentStateLatLng.value)
+        }
         Log.d("ZEZE avaloir detail", "${avaloir}")
 
         Column {
@@ -104,7 +104,7 @@ class AvaloirDetailScreen(
                 modifier = Modifier.height(MEDIUM_PADDING),
                 color = MaterialTheme.colors.background
             )
-               val map = MapJf(avaloirViewModel)
+               val map = MapJf(locationState)
 
             map.GoogleMapWidget(
                 avaloir.latitude,

@@ -1,9 +1,9 @@
 package be.marche.apptravaux.screens.avaloir
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -31,128 +30,31 @@ import androidx.navigation.NavController
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.AvaloirDraft
 import be.marche.apptravaux.entities.CreateFileState
+import be.marche.apptravaux.location.LocationService
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.ErrorDialog
-import be.marche.apptravaux.screens.widgets.MapJf
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.Colors.Pink500
-import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.utils.FileHelper
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import coil.compose.rememberImagePainter
 import com.google.android.libraries.maps.model.LatLng
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 
-class AvaloirAddScreen(
+class AvaloirPhotoScreen(
     val navController: NavController,
 ) {
     val fileHelper = FileHelper()
-
-    @OptIn(ExperimentalMaterialApi::class)
-    @Composable
-    fun AddScreenMain(
-        avaloirViewModel: AvaloirViewModel = viewModel()
-    ) {
-        Log.d("ZEZE", "addScreen main")
-        val location = avaloirViewModel.userCurrentLatLng.value
-        Log.d("ZEZE", "addScreen location $location")
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = stringResource(R.string.add_avaloir),
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
-                            }
-                        ) {
-                            Icon(
-                                Icons.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.back)
-                            )
-                        }
-                    },
-                    backgroundColor = Pink500,
-                    elevation = AppBarDefaults.TopAppBarElevation
-                )
-            }
-        ) {
-            ContentMainScreen(location, avaloirViewModel)
-        }
-    }
-
-    @Composable
-    private fun ContentMainScreen(
-        location: LatLng,
-        avaloirViewModel: AvaloirViewModel
-    ) {
-        Column {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(vertical = 25.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Déplacer la carte pour corriger la localisation",
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            Divider(
-                modifier = Modifier.height(MEDIUM_PADDING),
-                color = MaterialTheme.colors.background
-            )
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(vertical = 25.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                LocationText(location = location)
-                Divider(
-                    modifier = Modifier.height(MEDIUM_PADDING),
-                    color = MaterialTheme.colors.background
-                )
-                Button(onClick = { navController.navigate(TravauxRoutes.AvaloirPhotoScreen.route) }) {
-                    Text("Valider et prendre une photo")
-                }
-                Button(onClick = {
-                    navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
-                }
-                ) {
-                    Text("Annuler")
-                }
-            }
-            Divider(
-                modifier = Modifier.height(MEDIUM_PADDING),
-                color = MaterialTheme.colors.background
-            )
-            val map = MapJf(avaloirViewModel)
-            map.GoogleMapWidget(
-                location.latitude,
-                location.longitude,
-                null,
-                true
-            )
-        }
-    }
+    private val locationService = LocationService()
 
     @ExperimentalMaterialApi
     @Composable
     fun TakePicureMain(
         avaloirViewModel: AvaloirViewModel = viewModel()
     ) {
-        Log.d("ZEZE", "take picture main")
+        Timber.d("take picture main")
 
         LaunchedEffect(true) {
             avaloirViewModel.createFileForSaving()
@@ -196,6 +98,7 @@ class AvaloirAddScreen(
                     ErrorDialog(state.message)
                 }
                 is CreateFileState.Success -> {
+                    locationService.stopLocation()
                     TakePicureContent(state.file, resultStateTakePhoto, avaloirViewModel)
                 }
                 else -> {
@@ -212,21 +115,21 @@ class AvaloirAddScreen(
         resultStateTakePhoto: MutableState<Boolean>,
         avaloirViewModel: AvaloirViewModel
     ) {
-        Log.d("ZEZE", "take picture content")
+        Timber.d("take picture content")
 
         val context = LocalContext.current
 
-        Log.d("ZEZE", " fileName ${fileImage.path}")
+        Timber.d(" fileName ${fileImage.path}")
 
         val fileUri = fileHelper.createUri(context, fileImage)
         val cameraLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.TakePicture()
         ) { result: Boolean ->
             if (result) {
-                Log.d("ZEZE", " oki camera $fileUri")
+                Timber.d(" oki camera $fileUri")
                 resultStateTakePhoto.value = true
             } else {
-                Log.d("ZEZE", " KO camera $fileUri")
+                Timber.d(" KO camera $fileUri")
             }
         }
 
@@ -239,12 +142,16 @@ class AvaloirAddScreen(
                 Toast.makeText(context, "Permission Denied!", Toast.LENGTH_SHORT).show()
             }
         }
+
+        val location = rememberSaveable { avaloirViewModel.currentLatLng }
+
         Column(
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
             ImagePreviewFromUri(resultStateTakePhoto.value, fileUri)
+            LocationText(location)
             Text(
                 text = stringResource(R.string.photo_tip),
                 modifier = Modifier.padding(8.dp),
@@ -252,7 +159,7 @@ class AvaloirAddScreen(
                 color = Color.Gray
             )
             BtnTake(permissionLauncher, cameraLauncher, fileUri)
-            BtnConfirm(resultStateTakePhoto.value, fileUri, avaloirViewModel)
+            BtnConfirm(resultStateTakePhoto.value, fileUri, avaloirViewModel, location, context)
         }
     }
 
@@ -300,7 +207,7 @@ class AvaloirAddScreen(
         uri: Uri
     ) {
         if (statePhoto) {
-            Log.d("ZEZE", "ok bitmap")
+            Timber.d("ok bitmap")
             Image(
                 rememberImagePainter(uri),
                 contentDescription = "Image",
@@ -318,17 +225,20 @@ class AvaloirAddScreen(
     private fun BtnConfirm(
         statePhoto: Boolean,
         fileUri: Uri,
-        avaloirViewModel: AvaloirViewModel
+        avaloirViewModel: AvaloirViewModel,
+        location: LatLng,
+        context: Context
     ) {
         Button(
             onClick = {
-                val location = avaloirViewModel.userCurrentLatLng.value
+
                 fileUri.path?.let {
                     val avaloir = AvaloirDraft(null, location.latitude, location.longitude, it)
-                    Log.d("ZEZE", "insert draft $avaloir")
-
+                    Timber.d("insert draft $avaloir")
                     avaloirViewModel.insertAvaloirDraft(avaloir)
+                    Toast.makeText(context, "Avaloir ajouté", Toast.LENGTH_SHORT).show()
                 }
+
                 navController.navigate(TravauxRoutes.AvaloirDraftsScreen.route)
             },
             enabled = statePhoto,

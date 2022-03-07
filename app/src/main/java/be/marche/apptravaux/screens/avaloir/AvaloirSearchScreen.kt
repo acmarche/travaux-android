@@ -1,8 +1,9 @@
 package be.marche.apptravaux.screens.avaloir
 
+import android.content.Context
 import android.content.Intent
 import android.provider.Settings
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,6 +38,7 @@ import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.libraries.maps.model.LatLng
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import timber.log.Timber
 
 class AvaloirSearchScreen(
     private val navController: NavController,
@@ -52,7 +54,7 @@ class AvaloirSearchScreen(
         val locationEnabled = remember {
             mutableStateOf(locationService.locationEnabled(context))
         }
-        Log.d("ZEZE", "avaloir search screen")
+        Timber.d("avaloir search screen")
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -81,11 +83,7 @@ class AvaloirSearchScreen(
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
-                        locationService.stopLocation()
-                        avaloirViewModel.userCurrentLatLng.value =
-                            locationService.currentLocationState.value
-
-                        navController.navigate(TravauxRoutes.AvaloirAddScreen.route)
+                        onClickAddButton(avaloirViewModel, context)
                     },
                     shape = RoundedCornerShape(50),
                     backgroundColor = Colors.Gray900
@@ -104,6 +102,7 @@ class AvaloirSearchScreen(
                             BottomNavigationItem(
                                 selected = selectedItem.value == "home",
                                 onClick = {
+                                    locationService.stopLocation()
                                     navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
                                 },
                                 icon = {
@@ -130,14 +129,14 @@ class AvaloirSearchScreen(
                 )
             },
             content = {
-                Log.d("ZEZE", "location enabled $locationEnabled")
+                Timber.d("location enabled $locationEnabled")
                 if (locationEnabled.value)
                     BeginSearch(avaloirViewModel)
                 else {
                     Button(
                         onClick = { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) },
                     ) {
-                        Text(text = "Activer ma géolocalisation") //todo how change value result
+                        Text(text = "Activer ma géolocalisation") //todo how on change value result
                     }
                 }
             },
@@ -148,22 +147,26 @@ class AvaloirSearchScreen(
     private fun BeginSearch(
         avaloirViewModel: AvaloirViewModel
     ) {
-        Log.d(
-            "ZEZE",
+        Timber.d(
             "searchScreen begin current loc ${locationService.currentLocationState.value}"
         )
-        locationService.getDeviceLocation(navController.context)
+        val context = LocalContext.current
+        locationService.getDeviceLocation(context)
+        val location = remember {
+            locationService.currentLocationState
+        }
         Column(modifier = Modifier.padding(15.dp)) {
-            ContentSearch1(avaloirViewModel)
+            ContentSearch1(avaloirViewModel, location.value)
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Composable
     private fun ContentSearch1(
-        avaloirViewModel: AvaloirViewModel
+        avaloirViewModel: AvaloirViewModel,
+        location: LatLng
     ) {
-        LocationText(locationService.currentLocationState.value)
+        LocationText(location)
         Divider(
             modifier = Modifier.height(MEDIUM_PADDING),
             color = MaterialTheme.colors.background
@@ -176,7 +179,7 @@ class AvaloirSearchScreen(
         val connection by connectivityState()
         val isConnected = connection == ConnectionState.Available
 
-        ContentSearch2(avaloirViewModel, isConnected, locationService.currentLocationState.value)
+        ContentSearch2(avaloirViewModel, isConnected, location)
     }
 
     @Composable
@@ -185,11 +188,12 @@ class AvaloirSearchScreen(
         isConnected: Boolean,
         location: LatLng
     ) {
-        Log.d("ZEZE", "searchScreen ContentSearch2 location")
+        Timber.d("searchScreen ContentSearch2 location")
+        val context = LocalContext.current
         if (isConnected) {
             if (location.latitude > 0.0) {
                 LaunchedEffect(true) {
-                    Log.d("ZEZE", "searchScreen searching {$location")
+                    Timber.d("searchScreen searching {$location")
                     avaloirViewModel.search(location.latitude, location.longitude, "25m")
                 }
                 ResultSearch(avaloirViewModel)
@@ -201,7 +205,7 @@ class AvaloirSearchScreen(
             Text(text = "Pas de géolocalisation !!")
             Button(
                 onClick = {
-                    locationService.getDeviceLocation(navController.context)
+                    locationService.getDeviceLocation(context)
                 },
             ) {
                 Text(text = "Rafraichir ma géolocalisation")
@@ -213,7 +217,7 @@ class AvaloirSearchScreen(
     private fun ResultSearch(
         avaloirViewModel: AvaloirViewModel
     ) {
-        Log.d("ZEZE", "searchScreen resultsearch")
+        Timber.d("searchScreen resultsearch")
         when (val state = avaloirViewModel.resultSearch.collectAsState().value) {
             is SearchResponseUiState.Loading -> {
                 //LoadScreen()
@@ -221,12 +225,12 @@ class AvaloirSearchScreen(
                 CircularProgressIndicatorSample()
             }
             is SearchResponseUiState.Error -> {
-                Log.d("ZEZE", "error")
+                Timber.d("error")
                 ErrorDialog(state.message)
             }
             is SearchResponseUiState.Loaded -> {
-                Log.d("ZEZE", "loaded")
-                Log.d("ZEZE", "search avaloirs ${state.response}")
+                Timber.d("loaded")
+                Timber.d("search avaloirs ${state.response}")
                 Text("${state.response.avaloirs.count()} avaloir(s) trouvé(s) dans un rayon de 25m")
                 Divider(
                     modifier = Modifier.height(MEDIUM_PADDING),
@@ -243,11 +247,7 @@ class AvaloirSearchScreen(
 
     @Composable
     private fun LocationText(location: LatLng) {
-        if (location != null) {
-            Text(text = "Votre localisation: ${location.latitude}, ${location.longitude}")
-        } else {
-            Text(text = "Pas de localisation")
-        }
+        Text(text = "Votre localisation: ${location.latitude}, ${location.longitude}")
     }
 
     @Composable
@@ -262,6 +262,26 @@ class AvaloirSearchScreen(
     private fun LoadScreen() {
         Text(text = "Recherche en cours...")
         CircularProgressIndicator(progress = 0.5f)
-        Log.d("ZEZE", "loading")
+    }
+
+    private fun onClickAddButton(
+        avaloirViewModel: AvaloirViewModel,
+        context: Context
+    ) {
+        locationService.stopLocation()
+        avaloirViewModel.currentLatLng =
+            locationService.currentLocationState.value
+
+        val location = avaloirViewModel.currentLatLng
+        Timber.d("ici finish location $location")
+        if (location.latitude > 0.0) {
+            navController.navigate(TravauxRoutes.AvaloirPhotoScreen.route)
+        } else {
+            Toast.makeText(
+                context,
+                "Géolocalisation invalide",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 }

@@ -9,6 +9,7 @@ import be.marche.apptravaux.worker.AvaloirWorkerFactory
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -43,6 +44,10 @@ class TravauxApplication : Application(), Configuration.Provider {
     //val avaloirRepository by lazy { AvaloirRepository(database.avaloirDao()) }
     override fun onCreate() {
         super.onCreate()
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
 
         if (!galleryDir.exists()) {
             galleryDir.mkdirs()

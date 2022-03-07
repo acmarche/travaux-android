@@ -61,7 +61,6 @@ fun Navigation(
         }
 
         composable(route = TravauxRoutes.AvaloirListScreen.route) {
-            AvaloirListScreen(navController)
             val screen = AvaloirListScreen(navController)
             screen.ListScreen(avaloirViewModel)
         }
@@ -71,13 +70,13 @@ fun Navigation(
             screen.ListScreen(avaloirViewModel)
         }
 
-        composable(route = TravauxRoutes.AvaloirAddScreen.route) {
-            val screen = AvaloirAddScreen(navController)
-            screen.AddScreenMain(avaloirViewModel)
+        composable(route = TravauxRoutes.AvaloirMapScreen.route) {
+            val screen = AvaloirMapScreen(navController)
+            screen.ScreenMain(avaloirViewModel)
         }
 
         composable(route = TravauxRoutes.AvaloirPhotoScreen.route) {
-            val screen = AvaloirAddScreen(navController)
+            val screen = AvaloirPhotoScreen(navController)
             screen.TakePicureMain(avaloirViewModel)
         }
 

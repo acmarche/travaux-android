@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -63,12 +64,12 @@ class AvaloirViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             try {
                 val response = avaloirRepository.getAllAvaloirsFromApi()
-                Log.d("ZEZE", "init viewmodel response api: ${response.toString()}")
+                Timber.d("init viewmodel response api: ${response.toString()}")
 
                 _uiState.value = AvaloirUiState.Loaded(response)
 
             } catch (ex: Exception) {
-                Log.d("ZEZE", "error: ${ex.message}")
+                Timber.d("error: ${ex.message}")
                 onErrorOccurred()
             }
         }
@@ -79,7 +80,7 @@ class AvaloirViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             try {
                 val response = avaloirRepository.getAll()
-                Log.d("ZEZE", "init viewmodel db: ${response.count()}")
+                Timber.d("init viewmodel db: ${response.count()}")
 
                 if (response.count() == 0) {
                     _uiState.value = AvaloirUiState.Empty
@@ -88,7 +89,7 @@ class AvaloirViewModel @Inject constructor(
                 }
 
             } catch (ex: Exception) {
-                Log.d("ZEZE", "error: ${ex.message}")
+                Timber.d("error: ${ex.message}")
                 onErrorOccurred()
             }
         }
@@ -164,7 +165,7 @@ class AvaloirViewModel @Inject constructor(
                 avaloirService.searchAvaloir(SearchRequest(latitude, longitude, distance))
             if (response.isSuccessful) {
                 response.body()?.let { searchResponse ->
-                    Log.d("ZEZE", "response search $searchResponse")
+                    Timber.d("response search $searchResponse")
                     _resultSearch.value = SearchResponseUiState.Loaded(searchResponse)
                 }
             } else {
@@ -180,8 +181,10 @@ class AvaloirViewModel @Inject constructor(
     private var _locationPermissionGranted = MutableLiveData(true)
     var locationPermissionGranted: LiveData<Boolean> = _locationPermissionGranted
 
-    private var _userCurrentLatLng = mutableStateOf(LatLng(0.0, 0.0))
-    var userCurrentLatLng: MutableState<LatLng> = _userCurrentLatLng
+    private var _userCurrentStateLatLng = mutableStateOf(LatLng(0.0, 0.0))
+    var userCurrentStateLatLng: MutableState<LatLng> = _userCurrentStateLatLng
+
+    var currentLatLng: LatLng = LatLng(0.0, 0.0)
 
     /**
      * CREATE FILE TEMP
