@@ -27,6 +27,7 @@ import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.worker.AvaloirSyncWorker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import timber.log.Timber
 
 class AvaloirSyncScreen(
     val navController: NavController
@@ -96,7 +97,7 @@ class AvaloirSyncScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Log.d("ZEZE", "sync screen")
+                Timber.d("sync screen")
                 ConnectivityStatusBox(isConnected)
                 Content(avaloirViewModel, request, textInput, isConnected)
             }
@@ -110,7 +111,7 @@ class AvaloirSyncScreen(
         textInput: MutableState<String>,
         isConnected: Boolean
     ) {
-        Log.d("ZEZE", "sync Content screen")
+        Timber.d("sync Content screen")
         Text(text = stringResource(R.string.sync_intro1))
         Divider(
             modifier = Modifier.height(MEDIUM_PADDING),

@@ -159,7 +159,7 @@ class AvaloirPhotoScreen(
                 color = Color.Gray
             )
             BtnTake(permissionLauncher, cameraLauncher, fileUri)
-            BtnConfirm(resultStateTakePhoto.value, fileUri, avaloirViewModel, location, context)
+            BtnConfirm(resultStateTakePhoto.value, fileImage, avaloirViewModel, location, context)
         }
     }
 
@@ -224,20 +224,19 @@ class AvaloirPhotoScreen(
     @Composable
     private fun BtnConfirm(
         statePhoto: Boolean,
-        fileUri: Uri,
+        fileImage: File,
         avaloirViewModel: AvaloirViewModel,
         location: LatLng,
         context: Context
     ) {
         Button(
             onClick = {
-
-                fileUri.path?.let {
-                    val avaloir = AvaloirDraft(null, location.latitude, location.longitude, it)
-                    Timber.d("insert draft $avaloir")
-                    avaloirViewModel.insertAvaloirDraft(avaloir)
-                    Toast.makeText(context, "Avaloir ajouté", Toast.LENGTH_SHORT).show()
-                }
+                Timber.d("insert path2 ${fileImage.path}")
+                val avaloir =
+                    AvaloirDraft(null, location.latitude, location.longitude, fileImage.path)
+                Timber.d("insert draft $avaloir")
+                avaloirViewModel.insertAvaloirDraft(avaloir)
+                Toast.makeText(context, "Avaloir ajouté", Toast.LENGTH_SHORT).show()
 
                 navController.navigate(TravauxRoutes.AvaloirDraftsScreen.route)
             },

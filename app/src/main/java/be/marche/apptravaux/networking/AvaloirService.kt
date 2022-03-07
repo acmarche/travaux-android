@@ -31,7 +31,7 @@ interface AvaloirService {
         @Part("coordinates") coordinates: Coordinates,
         @Part file: MultipartBody.Part,
         @Part("image") requestBody: RequestBody
-    ): Response<DataResponse>
+    ): Call<DataResponse>
 
     @Multipart
     @POST("avaloirs/api/insert")

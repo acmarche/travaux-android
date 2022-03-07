@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.os.SystemClock.sleep
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.Data
@@ -21,6 +20,7 @@ import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import timber.log.Timber
 import java.io.File
 import java.util.UUID.randomUUID
 
@@ -40,11 +40,13 @@ class AvaloirSyncWorker @AssistedInject constructor(
     override fun doWork(): Result {
         val taskData = inputData
         val taskDataString = taskData.getString(AvaloirSyncScreen.MESSAGE_STATUS)
-        Log.d("ZEZE", "do work taskdata ${taskDataString}")
+        Timber.d("do work taskdata ${taskDataString}")
         val notificationString = taskData.getString(AvaloirSyncScreen.MESSAGE_STATUS)
         val outputData = Data.Builder().putString(WORK_RESULT, "Task Started")
 
         sleep(30)
+
+        upload()
 
         if (syncContent(taskData)) {
             outputData.putString(WORK_RESULT, "Task Finished").build()
@@ -58,7 +60,7 @@ class AvaloirSyncWorker @AssistedInject constructor(
     }
 
     private fun showNotification(task: String, desc: String) {
-        Log.d("ZEZE", "show notif")
+        Timber.d("show notif")
         val manager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "message_channel"
@@ -83,7 +85,7 @@ class AvaloirSyncWorker @AssistedInject constructor(
             val response = avaloirService.fetchAllAvaloirsNotSuspend()
             val res = response.execute()
             if (res.isSuccessful) {
-                Log.d("ZEZE", "work avaloirs ${res.body()}")
+                Timber.d("work avaloirs ${res.body()}")
                 res.body()?.let { avaloirRepository.insertAvaloirsNotSuspend(it) }
                 return true
             } else {
@@ -92,34 +94,39 @@ class AvaloirSyncWorker @AssistedInject constructor(
             return false
         } catch (e: Exception) {
             Firebase.crashlytics.recordException(e)
-            Log.d("ZEZE", "work err $e")
+            Timber.d("work err $e")
         }
         return false
     }
 
-    private fun uplolad(): Boolean {
+    private fun upload(): Boolean {
 
         val fileHelper = FileHelper()
 
-        avaloirRepository.getAllDraftsList().forEach() { avaloirDraft ->
+        avaloirRepository.getAllDraftsList().forEach { avaloirDraft ->
+
+            Timber.d("avaloir draft try ${avaloirDraft}")
+
             val imgFile = File(avaloirDraft.imageUrl)
             val requestBody = fileHelper.createRequestBody(imgFile)
             val part = fileHelper.createPart(imgFile, requestBody)
 
             val coordinates = Coordinates(avaloirDraft.latitude, avaloirDraft.longitude)
-
             val response = avaloirService.insertAvaloirNotSuspend(coordinates, part, requestBody)
-            if (response.isSuccessful) {
-                response.body()?.let { dataMessage ->
+
+            val res = response.execute()
+            if (res.isSuccessful) {
+                res.body()?.let { dataMessage ->
                     val avaloir = dataMessage.avaloir
+                    Timber.d("avaloir added ${avaloir}")
+                    avaloirRepository.deleteAvaloirDraft(avaloirDraft)
                 }
             } else {
+                Timber.d("avaloir failed ${response}")
                 //{"type":"https:\/\/tools.ietf.org\/html\/rfc2616#section-10","title":"An error occurred","status":500,"detail":"Internal Server Error"}
-
             }
 
         }
-
 
         return true
     }
