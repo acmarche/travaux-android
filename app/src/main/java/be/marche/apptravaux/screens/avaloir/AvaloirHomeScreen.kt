@@ -34,7 +34,12 @@ class AvaloirHomeScreen(val navController: NavController) {
                 "Synchronisation",
                 { navController.navigate(TravauxRoutes.AvaloirSyncScreen.route) })
 
-        val cards: List<CardData> = listOf(a, b, c)
+        val d =
+            CardData(
+                "Mes brouillons",
+                { navController.navigate(TravauxRoutes.AvaloirDraftsScreen.route) })
+
+        val cards: List<CardData> = listOf(a, b, c, d)
 
         MainContentAvaloirHome(navController, cards)
     }

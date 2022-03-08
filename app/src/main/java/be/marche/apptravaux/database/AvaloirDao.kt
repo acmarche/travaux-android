@@ -57,6 +57,6 @@ interface AvaloirDao {
     suspend fun insertAvaloirDraft(avaloir: AvaloirDraft)
 
     @Delete()
-    fun deleteAvaloirDraft(avaloirDraft: AvaloirDraft)
+  suspend  fun deleteAvaloirDraft(avaloirDraft: AvaloirDraft)
 
 }

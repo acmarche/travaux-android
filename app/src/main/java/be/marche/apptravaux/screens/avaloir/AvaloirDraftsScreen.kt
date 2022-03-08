@@ -4,22 +4,37 @@ import android.content.Context
 import android.icu.text.DateFormat
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -43,6 +58,7 @@ class AvaloirDraftsScreen(
 
     val fileHelper = FileHelper()
 
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     fun ListScreen(
         avaloirViewModel: AvaloirViewModel = viewModel()
@@ -96,11 +112,14 @@ class AvaloirDraftsScreen(
                     modifier = Modifier.height(MEDIUM_PADDING),
                     color = MaterialTheme.colors.background
                 )
-                LoadAvaloirs(avaloirs.value, navController)
+                //LoadAvaloirs(avaloirs.value, navController)
+                val context = LocalContext.current
+                FruitListAnimation(avaloirs.value, context, avaloirViewModel)
             }
         }
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     fun LoadAvaloirs(
         avaloirs: List<AvaloirDraft>,
@@ -108,7 +127,6 @@ class AvaloirDraftsScreen(
     ) {
         val context = LocalContext.current
         val message = stringResource(R.string.toast_draft)
-
         LazyColumn {
             items(avaloirs) { avaloir ->
                 ItemAvaloirDraft(avaloir, context) {
@@ -176,11 +194,11 @@ class AvaloirDraftsScreen(
         } catch (e: Exception) {
 
         }
-
         if (fileUri != null) {
             Image(
                 rememberImagePainter(fileUri),
                 contentDescription = "Image",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .width(70.dp)
                     .height(70.dp)
@@ -190,6 +208,7 @@ class AvaloirDraftsScreen(
             Image(
                 painterResource(R.drawable.profile_picture),
                 contentDescription = "Image",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .width(70.dp)
                     .height(70.dp)
@@ -202,4 +221,84 @@ class AvaloirDraftsScreen(
         return DateFormat.getPatternInstance(DateFormat.YEAR_ABBR_MONTH_DAY).format(createdAt)
     }
 
+
+    @ExperimentalAnimationApi
+    @Composable
+    fun FruitListAnimation(
+        avaloirList: List<AvaloirDraft>,
+        context: Context,
+        avaloirViewModel: AvaloirViewModel
+    ) {
+        val deletedFruitList = remember { mutableStateListOf<AvaloirDraft>() }
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Column {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    itemsIndexed(
+                        items = avaloirList,
+                        itemContent = { _, avaloir ->
+                            AnimatedVisibility(
+                                visible = !deletedFruitList.contains(avaloir),
+                                enter = expandVertically(),
+                                exit = shrinkVertically(
+                                    animationSpec = tween(
+                                        durationMillis = 1000
+                                    )
+                                )
+                            ) {
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(100.dp)
+                                        .padding(10.dp, 5.dp, 10.dp, 5.dp)
+                                        .background(Color.White),
+                                    elevation = 10.dp,
+                                    shape = RoundedCornerShape(5.dp)
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(10.dp)
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            ImageCache(avaloir, context)
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Text(
+                                                    text = "Location: ${avaloir.latitude} ${avaloir.longitude}",
+                                                    style = TextStyle(
+                                                        color = Color.Black,
+                                                        fontSize = 18.sp,
+                                                        textAlign = TextAlign.Center
+                                                    ),
+                                                    modifier = Modifier.padding(16.dp)
+                                                )
+                                                IconButton(
+                                                    onClick = {
+                                                        avaloirViewModel.deleteAvaloirDraft(avaloir)
+                                                        deletedFruitList.add(avaloir)
+                                                    }
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Filled.Delete,
+                                                        contentDescription = "Deletion"
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }
 }

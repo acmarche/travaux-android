@@ -75,7 +75,7 @@ class AvaloirRepository @Inject constructor(
         avaloirDao.insertAvaloir(avaloir)
     }
 
-    fun deleteAvaloirDraft(avaloirDraft: AvaloirDraft) {
+  suspend  fun deleteAvaloirDraft(avaloirDraft: AvaloirDraft) {
         avaloirDao.deleteAvaloirDraft(avaloirDraft)
     }
 

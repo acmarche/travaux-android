@@ -144,6 +144,12 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
+    fun deleteAvaloirDraft(avaloir: AvaloirDraft) {
+        viewModelScope.launch {
+            avaloirRepository.deleteAvaloirDraft(avaloir)
+        }
+    }
+
     fun insertAvaloirs(avaloirs: List<Avaloir>) {
         viewModelScope.launch {
             avaloirRepository.insertAvaloirs(avaloirs)
