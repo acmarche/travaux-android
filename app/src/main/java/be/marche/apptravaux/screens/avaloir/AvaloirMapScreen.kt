@@ -74,7 +74,7 @@ class AvaloirMapScreen(
         avaloirViewModel: AvaloirViewModel
     ) {
         val location = remember {
-            mutableStateOf(avaloirViewModel.userCurrentStateLatLng.value)
+            mutableStateOf(avaloirViewModel.currentLatLng)
         }
         Column {
             Row(

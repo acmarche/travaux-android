@@ -77,7 +77,7 @@ class AvaloirDetailScreen(
         avaloir: Avaloir
     ) {
         val locationState = remember {
-           mutableStateOf(avaloirViewModel.userCurrentStateLatLng.value)
+           mutableStateOf(avaloirViewModel.currentLatLng)
         }
         Log.d("ZEZE avaloir detail", "${avaloir}")
 

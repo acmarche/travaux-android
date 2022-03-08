@@ -130,6 +130,7 @@ class AvaloirSearchScreen(
             },
             content = {
                 Timber.d("location enabled $locationEnabled")
+
                 if (locationEnabled.value)
                     BeginSearch(avaloirViewModel)
                 else {
@@ -188,7 +189,6 @@ class AvaloirSearchScreen(
         location: LatLng
     ) {
         Timber.d("searchScreen ContentSearch2 location")
-        val context = LocalContext.current
         if (isConnected) {
             if (location.latitude > 0.0) {
                 LaunchedEffect(true) {

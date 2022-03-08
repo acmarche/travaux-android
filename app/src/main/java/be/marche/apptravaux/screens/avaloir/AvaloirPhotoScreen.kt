@@ -41,6 +41,7 @@ import com.google.android.libraries.maps.model.LatLng
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
+import java.util.*
 
 class AvaloirPhotoScreen(
     val navController: NavController,
@@ -157,6 +158,7 @@ class AvaloirPhotoScreen(
             )
             BtnTake(permissionLauncher, cameraLauncher, fileUri)
             BtnConfirm(resultStateTakePhoto.value, fileImage, avaloirViewModel, location, context)
+            BtnCancel()
         }
     }
 
@@ -228,14 +230,15 @@ class AvaloirPhotoScreen(
     ) {
         Button(
             onClick = {
-                Timber.d("insert path2 ${fileImage.path}")
+                val today = Date()
                 val avaloir =
-                    AvaloirDraft(null, location.latitude, location.longitude, fileImage.path)
+                    AvaloirDraft(null, location.latitude, location.longitude, fileImage.path, today)
                 Timber.d("insert draft $avaloir")
                 avaloirViewModel.insertAvaloirDraft(avaloir)
                 Toast.makeText(context, "Avaloir ajouté", Toast.LENGTH_SHORT).show()
-
-                navController.navigate(TravauxRoutes.AvaloirDraftsScreen.route)
+                navController.navigate(TravauxRoutes.AvaloirDraftsScreen.route){
+                    popUpTo(TravauxRoutes.AvaloirHomeScreen.route)
+                }
             },
             enabled = statePhoto,
             modifier = Modifier
@@ -245,6 +248,26 @@ class AvaloirPhotoScreen(
         ) {
             Text(
                 text = stringResource(R.string.confirm),
+                modifier = Modifier.padding(8.dp),
+                textAlign = TextAlign.Center,
+                color = Color.White
+            )
+        }
+    }
+    @Composable
+    private fun BtnCancel(
+    ) {
+        Button(
+            onClick = {
+                navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
+            },
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.cancel),
                 modifier = Modifier.padding(8.dp),
                 textAlign = TextAlign.Center,
                 color = Color.White

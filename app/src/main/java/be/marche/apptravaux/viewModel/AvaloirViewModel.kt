@@ -178,12 +178,6 @@ class AvaloirViewModel @Inject constructor(
     /**
      * LOCATION
      */
-    private var _locationPermissionGranted = MutableLiveData(true)
-    var locationPermissionGranted: LiveData<Boolean> = _locationPermissionGranted
-
-    private var _userCurrentStateLatLng = mutableStateOf(LatLng(0.0, 0.0))
-    var userCurrentStateLatLng: MutableState<LatLng> = _userCurrentStateLatLng
-
     var currentLatLng: LatLng = LatLng(0.0, 0.0)
 
     /**

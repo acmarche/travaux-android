@@ -26,7 +26,8 @@
     <string name="photo_tip">Prenez la photo de manière \n à repérer facilement l\'endroit</string>
     <string name="add_avaloir">Ajouter un avaloir</string>
     <string name="add_photo_avaloir">Photo de l\'avaloir</string>
-    <string name="confirm">Confirmer</string>
+    <string name="confirm">Confirmer l\'ajout</string>
+    <string name="cancel">Annuler</string>
     <string name="photo_take">Prendre une photo</string>
     <string name="sync_intro1">Télécharge la liste des avaloirs</string>
     <string name="sync_intro2">Envoie les avaloirs ajoutés vers le serveur</string>

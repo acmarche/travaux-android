@@ -25,6 +25,7 @@ data class AvaloirDraft(
     var latitude: Double,
     var longitude: Double,
     var imageUrl: String,
+    val createdAt: Date
 )
 
 @Entity
