@@ -162,6 +162,4 @@ class LocationService : Service() {
         super.onDestroy()
         Timber.d("destroy service")
     }
-
-
 }

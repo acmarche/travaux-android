@@ -30,7 +30,6 @@ import androidx.navigation.NavController
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.AvaloirDraft
 import be.marche.apptravaux.entities.CreateFileState
-import be.marche.apptravaux.location.LocationService
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.ErrorDialog
 import be.marche.apptravaux.ui.theme.Colors
@@ -47,7 +46,6 @@ class AvaloirPhotoScreen(
     val navController: NavController,
 ) {
     val fileHelper = FileHelper()
-    private val locationService = LocationService()
 
     @ExperimentalMaterialApi
     @Composable
@@ -98,7 +96,6 @@ class AvaloirPhotoScreen(
                     ErrorDialog(state.message)
                 }
                 is CreateFileState.Success -> {
-                    locationService.stopLocation()
                     TakePicureContent(state.file, resultStateTakePhoto, avaloirViewModel)
                 }
                 else -> {
