@@ -16,6 +16,7 @@ import be.marche.apptravaux.screens.PermissionsScreen
 import be.marche.apptravaux.screens.avaloir.*
 import be.marche.apptravaux.screens.stock.StockHomeScreen
 import be.marche.apptravaux.viewModel.AvaloirViewModel
+import be.marche.apptravaux.viewModel.LocationViewModel
 
 class Navigation {
 
@@ -28,7 +29,8 @@ class Navigation {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Navigation(
-    avaloirViewModel: AvaloirViewModel = viewModel()
+    avaloirViewModel: AvaloirViewModel = viewModel(),
+    locationViewModel: LocationViewModel = viewModel()
 ) {
     val navController = rememberNavController()
 
@@ -76,12 +78,14 @@ fun Navigation(
         }
 
         composable(route = TravauxRoutes.AvaloirPhotoScreen.route) {
+            locationViewModel.stopLocation()
             val screen = AvaloirPhotoScreen(navController)
             screen.TakePicureMain(avaloirViewModel)
         }
 
         composable(route = TravauxRoutes.AvaloirSearchScreen.route) {
-            val screen = AvaloirSearchScreen(navController)
+            locationViewModel.start()
+            val screen = AvaloirSearchScreen(navController, locationViewModel)
             screen.SearchMainScreen(avaloirViewModel)
         }
 

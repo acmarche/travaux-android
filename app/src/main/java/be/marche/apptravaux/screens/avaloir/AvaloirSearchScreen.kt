@@ -36,14 +36,15 @@ import be.marche.apptravaux.screens.widgets.ErrorDialog
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
+import be.marche.apptravaux.viewModel.LocationViewModel
 import com.google.android.libraries.maps.model.LatLng
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
 
 class AvaloirSearchScreen(
     private val navController: NavController,
+    private val locationViewModel: LocationViewModel
 ) {
-    private val locationService = LocationService()
 
     @Composable
     fun SearchMainScreen(
@@ -52,7 +53,7 @@ class AvaloirSearchScreen(
         val selectedItem = remember { mutableStateOf("home") }
         val context = LocalContext.current
         val locationEnabled = remember {
-            mutableStateOf(locationService.locationEnabled(context))
+            mutableStateOf(locationViewModel.locationEnabled())
         }
         Timber.d("avaloir search screen")
         Scaffold(
@@ -102,7 +103,7 @@ class AvaloirSearchScreen(
                             BottomNavigationItem(
                                 selected = selectedItem.value == "home",
                                 onClick = {
-                                    locationService.stopLocation()
+                                    locationViewModel.stopLocation()
                                     navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
                                 },
                                 icon = {
@@ -115,7 +116,7 @@ class AvaloirSearchScreen(
                                 selected = selectedItem.value == "Search",
                                 onClick =
                                 {
-                                    locationService.stopLocation()
+                                    locationViewModel.stopLocation()
                                     navController.navigate(TravauxRoutes.AvaloirListScreen.route)
                                 },
                                 icon = {
@@ -145,17 +146,14 @@ class AvaloirSearchScreen(
 
     @Composable
     private fun BeginSearch(
-        avaloirViewModel: AvaloirViewModel
+        avaloirViewModel: AvaloirViewModel,
     ) {
-        Timber.d(
-            "searchScreen begin current loc ${locationService.currentLocationState.value}"
-        )
         val context = LocalContext.current
         SideEffect {
-            locationService.getDeviceLocation(context)
+            //locationService.getDeviceLocation(context)
         }
         val location = remember {
-            locationService.currentLocationState
+            locationViewModel.userCurrentStateLatLng
         }
         Column(modifier = Modifier.padding(15.dp)) {
             ContentSearch1(avaloirViewModel, location.value)
@@ -207,7 +205,7 @@ class AvaloirSearchScreen(
             Text(text = "Pas de géolocalisation !!")
             Button(
                 onClick = {
-                    locationService.getDeviceLocation(context)
+                    locationViewModel.start()
                 },
             ) {
                 Text(text = "Rafraichir ma géolocalisation")
@@ -270,9 +268,9 @@ class AvaloirSearchScreen(
         avaloirViewModel: AvaloirViewModel,
         context: Context
     ) {
-        locationService.stopLocation()
+        locationViewModel.stopLocation()
         avaloirViewModel.currentLatLng =
-            locationService.currentLocationState.value
+            locationViewModel.userCurrentStateLatLng.value
 
         val location = avaloirViewModel.currentLatLng
         Timber.d("ici finish location $location")

@@ -11,6 +11,7 @@ import be.marche.apptravaux.navigation.Navigation
 import be.marche.apptravaux.networking.NetworkUtils
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
+import be.marche.apptravaux.viewModel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
 
     private val avaloirViewModel: AvaloirViewModel by viewModels()
+    private val locationViewModel: LocationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +35,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AppTravaux6Theme {
-                Navigation(avaloirViewModel)
+                Navigation(avaloirViewModel, locationViewModel)
             }
         }
     }

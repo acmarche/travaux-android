@@ -1,7 +1,6 @@
 package be.marche.apptravaux.di
 
 import android.content.Context
-import androidx.room.Room
 import be.marche.apptravaux.database.AppDatabase
 import be.marche.apptravaux.database.AvaloirDao
 import be.marche.apptravaux.networking.AvaloirService

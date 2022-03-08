@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationManager
 import android.os.Looper
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -28,7 +29,6 @@ import javax.inject.Inject
 @HiltViewModel
 @SuppressLint("StaticFieldLeak")
 class LocationViewModel @Inject constructor(
-    private val locationService: LocationService,
     @ApplicationContext private val applicationContext: Context,
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider
 ) : ViewModel() {
@@ -45,6 +45,10 @@ class LocationViewModel @Inject constructor(
 
     init {
         Timber.d("init locationViewModel")
+    }
+
+    fun start() {
+        Timber.d("start locationViewModel")
         if (locationEnabled()) {
             getLast()
             startLocationUpdates()
@@ -137,13 +141,29 @@ class LocationViewModel @Inject constructor(
         Timber.d("onCleared")
     }
 
-    fun launch() {
-        locationService.getDeviceLocation(applicationContext)
+    fun locationEnabled(): Boolean {
+        val locationManager =
+            applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
-    fun locationEnabled(): Boolean {
-        return locationService.locationEnabled(applicationContext)
+    fun stopLocation() {
+        try {
+            val removeTask = fusedLocationClient.removeLocationUpdates(locationCallback)
+            removeTask.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Timber.d("ok to remove Location callback")
+
+                } else {
+                    Timber.d("Failed to remove Location callback")
+                }
+            }
+            Timber.d("location stoped")
+        } catch (e: Exception) {
+            Timber.d("Failed to remove Location callback ${e.message}")
+        }
     }
+
 
     /**
      * LOCATION
