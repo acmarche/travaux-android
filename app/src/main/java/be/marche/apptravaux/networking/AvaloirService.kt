@@ -24,7 +24,6 @@ interface AvaloirService {
     suspend fun updateAllAvaloirs(
     ): List<Avaloir>
 
-
     @Multipart
     @POST("avaloirs/api/insert")
     fun insertAvaloirNotSuspend(
@@ -64,6 +63,14 @@ interface AvaloirService {
     @GET("avaloirs/api/dates")
     suspend fun getAllDates(
     ): List<DateNettoyage>
+
+    @GET("avaloirs/api/dates")
+    fun fetchAllDatesNotSuspend(
+    ): Call<List<DateNettoyage>>
+
+    @GET("avaloirs/api/commentaires")
+    fun fetchAllCommentairesNotSuspend(
+    ): Call<List<Commentaire>>
 
     @GET("avaloirs/api/commentaires")
     suspend fun getAllCommentaires(

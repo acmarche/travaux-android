@@ -1,6 +1,5 @@
 package be.marche.apptravaux.repository
 
-import androidx.lifecycle.LiveData
 import be.marche.apptravaux.database.AvaloirDao
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.AvaloirDraft
@@ -27,18 +26,6 @@ class AvaloirRepository @Inject constructor(
         return avaloirDao.getFlowList()
     }
 
-    fun getFlowOne(avaloirId: Int): Flow<Avaloir> {
-        return avaloirDao.getByIdFlow(avaloirId)
-    }
-
-    fun getDatesByAvaloirId(avaloirId: Int): List<DateNettoyage> {
-        return avaloirDao.getDatesByAvaloirId(avaloirId)
-    }
-
-    fun getCommentairesByAvaloirId(avaloirId: Int): List<Commentaire> {
-        return avaloirDao.getCommentairesByAvaloirId(avaloirId)
-    }
-
     fun findById(avaloirId: Int): Avaloir {
         return avaloirDao.getById(avaloirId)
     }
@@ -47,9 +34,11 @@ class AvaloirRepository @Inject constructor(
         return avaloirDao.getByIdFlow(avaloirId)
     }
 
+    fun findDatesByIdFlow(avaloirId: Int): Flow<List<DateNettoyage>> {
+        return avaloirDao.getDatesByAvaloirIdFlow(avaloirId)
+    }
+
     suspend fun getAllAvaloirsFromApi() = avaloirService.fetchAllAvaloirs()
-    suspend fun getAllDatesFromApi() = avaloirService.getAllDates()
-    suspend fun getAllCommentairesFromApi() = avaloirService.getAllCommentaires()
 
     suspend fun insertAvaloirs(avaloirs: List<Avaloir>) {
         avaloirDao.insertAvaloirs(avaloirs)
@@ -57,6 +46,14 @@ class AvaloirRepository @Inject constructor(
 
     fun insertAvaloirsNotSuspend(avaloirs: List<Avaloir>) {
         avaloirDao.insertAvaloirsNotSuspend(avaloirs)
+    }
+
+    fun insertDatesNotSuspend(dates: List<DateNettoyage>) {
+        avaloirDao.insertDatesNotSuspend(dates)
+    }
+
+    fun insertCommentairesNotSuspend(commentaires: List<Commentaire>) {
+        avaloirDao.insertCommentairesNotSuspend(commentaires)
     }
 
     suspend fun insertDates(dates: List<DateNettoyage>) {
@@ -69,10 +66,6 @@ class AvaloirRepository @Inject constructor(
 
     suspend fun insertAvaloirDraft(avaloir: AvaloirDraft) {
         avaloirDao.insertAvaloirDraft(avaloir)
-    }
-
-    suspend fun insertAvaloir(avaloir: Avaloir) {
-        avaloirDao.insertAvaloir(avaloir)
     }
 
     suspend fun deleteAvaloirDraft(avaloirDraft: AvaloirDraft) {

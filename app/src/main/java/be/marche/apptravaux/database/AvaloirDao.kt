@@ -27,7 +27,7 @@ interface AvaloirDao {
     fun getFlowById(avaloirId: Int): Flow<Avaloir>
 
     @Query("SELECT * FROM datenettoyage WHERE avaloirId = :avaloirId")
-    fun getDatesByAvaloirId(avaloirId: Int): List<DateNettoyage>
+    fun getDatesByAvaloirIdFlow(avaloirId: Int): Flow<List<DateNettoyage>>
 
     @Query("SELECT * FROM commentaire WHERE avaloirId = :avaloirId")
     fun getCommentairesByAvaloirId(avaloirId: Int): List<Commentaire>
@@ -43,6 +43,12 @@ interface AvaloirDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAvaloirsNotSuspend(avaloirs: List<Avaloir>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertDatesNotSuspend(dates: List<DateNettoyage>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCommentairesNotSuspend(commentaires: List<Commentaire>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDates(dates: List<DateNettoyage>)

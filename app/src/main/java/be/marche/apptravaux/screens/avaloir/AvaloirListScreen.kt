@@ -27,7 +27,6 @@ class AvaloirListScreen(val navController: NavController) {
     fun ListScreen(
         avaloirViewModel: AvaloirViewModel = viewModel()
     ) {
-        avaloirViewModel.fetchAvaloirsFromDb()
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -35,7 +34,7 @@ class AvaloirListScreen(val navController: NavController) {
                         Text(
                             text = "Liste des avaloirs",
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Left
                         )
                     },
                     navigationIcon = {

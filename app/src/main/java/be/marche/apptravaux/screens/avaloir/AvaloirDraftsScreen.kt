@@ -271,7 +271,7 @@ class AvaloirDraftsScreen(
                                                 verticalAlignment = Alignment.CenterVertically
                                             ) {
                                                 Text(
-                                                    text = "Location: ${avaloir.latitude} ${avaloir.longitude}",
+                                                    text = "Localisation: ${avaloir.latitude} ${avaloir.longitude}",
                                                     style = TextStyle(
                                                         color = Color.Black,
                                                         fontSize = 18.sp,

@@ -46,11 +46,13 @@ class AvaloirSyncWorker @AssistedInject constructor(
 
         sleep(30)
 
-        upload()
 
-        if (syncContent(taskData)) {
-            outputData.putString(WORK_RESULT, "Task Finished").build()
+        if (upload()) {
             showNotification("AppTravaux", taskDataString.toString())
+        }
+
+        if (syncContent()) {
+            outputData.putString(WORK_RESULT, "Task Finished").build()
             return Result.success(outputData.build())
         }
 
@@ -80,13 +82,65 @@ class AvaloirSyncWorker @AssistedInject constructor(
         manager.notify(1, builder.build())
     }
 
-    private fun syncContent(taskData: Data): Boolean {
+    private fun syncContent(): Boolean {
+
+        syncAvaloirs()
+        showNotification("AppTravaux", "Avaloirs synchronisés")
+
+        syncDates()
+        showNotification("AppTravaux", "Dates synchronisés")
+
+        syncCommentaires()
+        showNotification("AppTravaux", "Commentaires synchronisés")
+
+        return true
+    }
+
+    private fun syncAvaloirs(): Boolean {
         try {
             val response = avaloirService.fetchAllAvaloirsNotSuspend()
             val res = response.execute()
             if (res.isSuccessful) {
                 Timber.d("work avaloirs ${res.body()}")
                 res.body()?.let { avaloirRepository.insertAvaloirsNotSuspend(it) }
+                return true
+            } else {
+                Firebase.crashlytics.log("error sync ${res.code()} ${res.body()}")
+            }
+            return false
+        } catch (e: Exception) {
+            Firebase.crashlytics.recordException(e)
+            Timber.d("work err $e")
+        }
+        return false
+    }
+
+    private fun syncDates(): Boolean {
+        try {
+            val response = avaloirService.fetchAllDatesNotSuspend()
+            val res = response.execute()
+            if (res.isSuccessful) {
+                Timber.d("work dates ${res.body()}")
+                res.body()?.let { avaloirRepository.insertDatesNotSuspend(it) }
+                return true
+            } else {
+                Firebase.crashlytics.log("error sync ${res.code()} ${res.body()}")
+            }
+            return false
+        } catch (e: Exception) {
+            Firebase.crashlytics.recordException(e)
+            Timber.d("work err $e")
+        }
+        return false
+    }
+
+    private fun syncCommentaires(): Boolean {
+        try {
+            val response = avaloirService.fetchAllCommentairesNotSuspend()
+            val res = response.execute()
+            if (res.isSuccessful) {
+                Timber.d("work commentaires ${res.body()}")
+                res.body()?.let { avaloirRepository.insertCommentairesNotSuspend(it) }
                 return true
             } else {
                 Firebase.crashlytics.log("error sync ${res.code()} ${res.body()}")

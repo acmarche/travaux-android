@@ -21,8 +21,6 @@ import com.google.maps.android.compose.*
 
 class MapNew {
 
-    val singapore2 = LatLng(50.22, 5.34)
-
     @Composable
     fun GoogleMapView(
         modifier: Modifier,
@@ -63,19 +61,23 @@ class MapNew {
 
             val dragState: MarkerDragState = MarkerDragState()
 
-            val marker =
-                Marker(
-                    position = singapore2,
-                    title = "Marker in Sydney",
-                    onClick = markerClick,
-                    draggable = true,
-                    markerDragState = dragState
-                )
+            val position = LatLng(
+                cameraPositionState.position.target.latitude,
+                cameraPositionState.position.target.longitude
+            )
+
+            Marker(
+                position = position,
+                title = "Marker in Sydney",
+                onClick = markerClick,
+                draggable = true,
+                markerDragState = dragState
+            )
         }
 
         Column {
             val coroutineScope = rememberCoroutineScope()
-            DebugView(cameraPositionState)
+            //DebugView(cameraPositionState)
         }
     }
 

@@ -110,6 +110,18 @@ class AvaloirViewModel @Inject constructor(
     private val _selectedAvaloir: MutableStateFlow<Avaloir?> = MutableStateFlow(null)
     val selectedAvaloir: StateFlow<Avaloir?> = _selectedAvaloir
 
+
+    private val _datesAvaloir: MutableStateFlow<List<DateNettoyage>> = MutableStateFlow(emptyList())
+    val datesAvaloir: StateFlow<List<DateNettoyage>> = _datesAvaloir
+
+    fun getDatesAvaloir(avaloirId: Int) {
+        viewModelScope.launch {
+            avaloirRepository.findDatesByIdFlow(avaloirId).collect { dates ->
+                _datesAvaloir.value = dates
+            }
+        }
+    }
+
     fun getSelectedAvaloir(avaloirId: Int) {
         viewModelScope.launch {
             avaloirRepository.findByIdFlow(avaloirId).collect { task ->
@@ -153,6 +165,28 @@ class AvaloirViewModel @Inject constructor(
     fun insertAvaloirs(avaloirs: List<Avaloir>) {
         viewModelScope.launch {
             avaloirRepository.insertAvaloirs(avaloirs)
+        }
+    }
+
+    fun addCleaningDateAsync(avaloir: Avaloir, date: String) {
+        viewModelScope.launch {
+            val response = avaloirService.cleanAvaloir(avaloir.idReferent, date, avaloir)
+            if (response.isSuccessful) {
+                response.body()?.let { dataMessage ->
+                    if (dataMessage.error == 1) {
+
+                    } else {
+                        insertDates(listOf(dataMessage.date))
+                        getDatesAvaloir(avaloir.idReferent)
+                    }
+                }
+            }
+        }
+    }
+
+    fun insertDates(dates: List<DateNettoyage>) {
+        viewModelScope.launch {
+            avaloirRepository.insertDates(dates)
         }
     }
 
