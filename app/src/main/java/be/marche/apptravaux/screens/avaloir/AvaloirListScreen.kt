@@ -27,6 +27,7 @@ class AvaloirListScreen(val navController: NavController) {
     fun ListScreen(
         avaloirViewModel: AvaloirViewModel = viewModel()
     ) {
+        avaloirViewModel.fetchAvaloirsFromDb()
         Scaffold(
             topBar = {
                 TopAppBar(

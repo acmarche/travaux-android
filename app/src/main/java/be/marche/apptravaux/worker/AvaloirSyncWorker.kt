@@ -50,12 +50,12 @@ class AvaloirSyncWorker @AssistedInject constructor(
 
         if (syncContent(taskData)) {
             outputData.putString(WORK_RESULT, "Task Finished").build()
-            showNotification("Make it Easy", taskDataString.toString())
+            showNotification("AppTravaux", taskDataString.toString())
             return Result.success(outputData.build())
         }
 
         outputData.putString(WORK_RESULT, "Task Fail").build()
-        showNotification("Make it Easy", taskDataString.toString())
+        showNotification("AppTravaux", taskDataString.toString())
         return Result.success(outputData.build())
     }
 
@@ -119,7 +119,7 @@ class AvaloirSyncWorker @AssistedInject constructor(
                 res.body()?.let { dataMessage ->
                     val avaloir = dataMessage.avaloir
                     Timber.d("avaloir added ${avaloir}")
-                    avaloirRepository.deleteAvaloirDraft(avaloirDraft)
+                    avaloirRepository.deleteAvaloirDraftNotSuspend(avaloirDraft)
                 }
             } else {
                 Timber.d("avaloir failed ${response}")

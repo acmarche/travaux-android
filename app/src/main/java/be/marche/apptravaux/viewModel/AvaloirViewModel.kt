@@ -75,7 +75,7 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
-    private fun fetchAvaloirsFromDb() {
+    fun fetchAvaloirsFromDb() {
         _uiState.value = AvaloirUiState.Loading
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             try {
