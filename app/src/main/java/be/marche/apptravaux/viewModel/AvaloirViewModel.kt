@@ -122,6 +122,17 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
+    private val _commentaireAvaloir: MutableStateFlow<List<Commentaire>> = MutableStateFlow(emptyList())
+    val commentairesAvaloir: StateFlow<List<Commentaire>> = _commentaireAvaloir
+
+    fun getCommentaireAvaloir(avaloirId: Int) {
+        viewModelScope.launch {
+            avaloirRepository.findCommentairesByIdFlow(avaloirId).collect { commentaire ->
+                _commentaireAvaloir.value = commentaire
+            }
+        }
+    }
+
     fun getSelectedAvaloir(avaloirId: Int) {
         viewModelScope.launch {
             avaloirRepository.findByIdFlow(avaloirId).collect { task ->

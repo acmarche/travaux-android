@@ -30,6 +30,9 @@ interface AvaloirDao {
     fun getDatesByAvaloirIdFlow(avaloirId: Int): Flow<List<DateNettoyage>>
 
     @Query("SELECT * FROM commentaire WHERE avaloirId = :avaloirId")
+    fun getCommentairesByAvaloirIdFlow(avaloirId: Int): Flow<List<Commentaire>>
+
+    @Query("SELECT * FROM commentaire WHERE avaloirId = :avaloirId")
     fun getCommentairesByAvaloirId(avaloirId: Int): List<Commentaire>
 
     @Query("SELECT * FROM avaloir WHERE idReferent = :avaloirId")

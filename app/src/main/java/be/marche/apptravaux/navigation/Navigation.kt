@@ -9,10 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import be.marche.apptravaux.navigation.Navigation.Companion.PARAM_AVALOIR
-import be.marche.apptravaux.screens.AvaloirDetailScreen
-import be.marche.apptravaux.screens.HomeScreen
-import be.marche.apptravaux.screens.PermissionsAskScreen
-import be.marche.apptravaux.screens.PermissionsScreen
+import be.marche.apptravaux.screens.*
 import be.marche.apptravaux.screens.avaloir.*
 import be.marche.apptravaux.screens.stock.StockHomeScreen
 import be.marche.apptravaux.viewModel.AvaloirViewModel
@@ -105,6 +102,21 @@ fun Navigation(
                 avaloirViewModel
             )
             screen.AvaloirDetailScreenMain(
+                entry.arguments?.getInt(PARAM_AVALOIR)
+            )
+        }
+
+        composable(
+            route = TravauxRoutes.AvaloirCommentaireScreen.route + "/{$PARAM_AVALOIR}",
+            arguments = listOf(navArgument(name = PARAM_AVALOIR) {
+                type = NavType.IntType
+            })
+        ) { entry ->
+            val screen = AvaloirCommentaireScreen(
+                navController,
+                avaloirViewModel
+            )
+            screen.Main(
                 entry.arguments?.getInt(PARAM_AVALOIR)
             )
         }

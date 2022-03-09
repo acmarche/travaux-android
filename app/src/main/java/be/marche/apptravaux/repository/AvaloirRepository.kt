@@ -38,6 +38,10 @@ class AvaloirRepository @Inject constructor(
         return avaloirDao.getDatesByAvaloirIdFlow(avaloirId)
     }
 
+    fun findCommentairesByIdFlow(avaloirId: Int): Flow<List<Commentaire>> {
+        return avaloirDao.getCommentairesByAvaloirIdFlow(avaloirId)
+    }
+
     suspend fun getAllAvaloirsFromApi() = avaloirService.fetchAllAvaloirs()
 
     suspend fun insertAvaloirs(avaloirs: List<Avaloir>) {

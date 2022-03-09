@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -250,4 +251,20 @@ fun CircularProgressIndicatorSample() {
         Spacer(Modifier.height(30.dp))
         CircularProgressIndicator()
     }
+}
+
+@Composable
+fun OutlinedTextFieldJf(textStateThree: MutableState<TextFieldValue>) {
+    OutlinedTextField(
+        value = textStateThree.value,
+        onValueChange = { textStateThree.value = it },
+        label = { Text(text = "Comment") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp),
+        maxLines = 5,
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.Transparent
+        )
+    )
 }

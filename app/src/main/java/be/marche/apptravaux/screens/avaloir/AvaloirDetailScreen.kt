@@ -1,26 +1,35 @@
 package be.marche.apptravaux.screens
 
+import android.icu.text.DateFormat
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.*
 import androidx.navigation.NavController
 import be.marche.apptravaux.entities.Avaloir
+import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.MapNew
 import be.marche.apptravaux.ui.theme.Colors
@@ -33,6 +42,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 class AvaloirDetailScreen(
     val navController: NavController,
@@ -52,7 +62,6 @@ class AvaloirDetailScreen(
         }
 
         val selectedAvaloir by avaloirViewModel.selectedAvaloir.collectAsState()
-        val scrollableState = rememberScrollState()
 
         Scaffold(
             topBar = {
@@ -91,18 +100,21 @@ class AvaloirDetailScreen(
     private fun AvaloirDetailContentScreen(
         avaloir: Avaloir
     ) {
-        val locationState = remember {
-            mutableStateOf(avaloirViewModel.currentLatLng)
-        }
         val singapore = LatLng(avaloir.latitude, avaloir.longitude)
         var isMapLoaded by remember { mutableStateOf(false) }
         val cameraPositionState = rememberCameraPositionState {
             position = CameraPosition.fromLatLngZoom(singapore, 18f)
         }
         avaloirViewModel.getDatesAvaloir(avaloir.idReferent)
+        avaloirViewModel.getCommentaireAvaloir(avaloir.idReferent)
+
         val map = MapNew()
 
-        LazyColumn()
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 25.dp)
+        )
         {
             item {
                 Row(
@@ -142,17 +154,43 @@ class AvaloirDetailScreen(
             }
 
             item {
-                DatesContent(avaloir)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.Top,
+                ) {
+                    Button(
+                        onClick = { updateClean(avaloir) },
+                    ) {
+                        Text(text = "C'est nettoyé")
+                    }
+                    Button(
+                        onClick = {
+                            navController.navigate(TravauxRoutes.AvaloirCommentaireScreen.route + "/${avaloir.idReferent}")
+                        },
+                    ) {
+                        Text(text = "Ajouter un commentaire")
+                    }
+                }
+            }
+            item {
+                Divider(
+                    modifier = Modifier.height(MEDIUM_PADDING),
+                    color = MaterialTheme.colors.background
+                )
+            }
+            item {
+                DatesContent()
             }
 
             item {
-                DatesContent(avaloir)
+                CommentairesContent()
             }
 
             item {
-                Box(Modifier.fillMaxSize()) {
+                Box(Modifier.height(350.dp)) {
                     map.GoogleMapView(
-                        modifier = Modifier.matchParentSize(),
+                        modifier = Modifier,
                         cameraPositionState = cameraPositionState,
                         onMapLoaded = {
                             isMapLoaded = true
@@ -161,8 +199,7 @@ class AvaloirDetailScreen(
 
                     if (!isMapLoaded) {
                         AnimatedVisibility(
-                            modifier = Modifier
-                                .matchParentSize(),
+                            modifier = Modifier.matchParentSize(),
                             visible = !isMapLoaded,
                             enter = EnterTransition.None,
                             exit = fadeOut()
@@ -176,15 +213,18 @@ class AvaloirDetailScreen(
                     }
                 }
             }
+            item {
+                Divider(
+                    modifier = Modifier.height(MEDIUM_PADDING),
+                    color = MaterialTheme.colors.background
+                )
+            }
         }
     }
 
     @Composable
-    private fun DatesContent(
-        avaloir: Avaloir
-    ) {
+    private fun DatesContent() {
         val dates = avaloirViewModel.datesAvaloir.collectAsState().value
-        Timber.d("dates $dates")
         val builder = StringBuilder()
         val format = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
 
@@ -195,27 +235,107 @@ class AvaloirDetailScreen(
         Text(
             text = "Dates de nettoyages",
             style = TextStyle(
-                color = Color.LightGray,
+                textDecoration = TextDecoration.Underline,
+                color = Color.Green,
                 fontSize = 18.sp
             )
         )
         Text(text = builder.toString())
-        Divider(
-            modifier = Modifier.height(MEDIUM_PADDING),
-            color = MaterialTheme.colors.background
-        )
-        Button(
-            onClick = { updateClean(avaloir) },
-        ) {
-            Text(text = "C'est nettoyé")
-        }
+        Spacer(modifier = Modifier.height(10.dp))
+    }
 
-        Spacer(modifier = Modifier.height(30.dp))
+    @Composable
+    private fun CommentairesContent() {
+        val commentaires = avaloirViewModel.commentairesAvaloir.collectAsState().value
+        Text(
+            text = "Commentaires",
+            style = TextStyle(
+                textDecoration = TextDecoration.Underline,
+                color = Color.Green,
+                fontSize = 18.sp
+            )
+        )
+
+        Column {
+            commentaires.forEach() { commentaire ->
+                ItemCommentaire(commentaire) {
+
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+    }
+
+    @Composable
+    fun ItemCommentaire(
+        commentaire: Commentaire,
+        onItemCLick: (Int) -> Unit
+    ) {
+        Card(
+            modifier = Modifier
+                .clickable {
+                    commentaire.id?.let { onItemCLick(it) }
+                }
+                .padding(10.dp)
+                .fillMaxSize(),
+            elevation = 5.dp,
+            shape = RoundedCornerShape(5.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(10.dp)
+                ) {
+                    Text(
+                        text = commentaire.content,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(modifier = Modifier.padding(5.dp))
+
+                    Text(
+                        text = "Ajouté le: ${formatDate(commentaire.createdAt)}",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
+            }
+        }
+    }
+
+    private data class DottedShape(
+        val step: Dp
+    ) : Shape {
+        override fun createOutline(
+            size: Size,
+            layoutDirection: LayoutDirection,
+            density: Density
+        ) = Outline.Generic(Path().apply {
+            val stepPx = with(density) { step.toPx() }
+            val stepCount = (size.width / stepPx).roundToInt()
+            val actualStep = size.width / stepCount
+            val dotSize = Size(width = actualStep / 2, height = size.height)
+            for (i in 0 until stepCount) {
+                addRect(
+                    Rect(
+                        offset = Offset(x = i * actualStep, y = 0f),
+                        size = dotSize
+                    )
+                )
+            }
+            close()
+        })
     }
 
     private fun updateClean(avaloir: Avaloir) {
         val timeStamp = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         avaloirViewModel.addCleaningDateAsync(avaloir, timeStamp)
+    }
+
+    fun formatDate(createdAt: Date): String {
+        return DateFormat.getPatternInstance(DateFormat.YEAR_ABBR_MONTH_DAY).format(createdAt)
     }
 
 }

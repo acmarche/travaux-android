@@ -166,4 +166,7 @@ dependencies {
     implementation("androidx.work:work-gcm:$work_version")
     //app start up
     implementation("androidx.startup:startup-runtime:1.1.1")
+
+    //FlowLayout
+    implementation "com.google.accompanist:accompanist-flowlayout:0.20.0"
 }

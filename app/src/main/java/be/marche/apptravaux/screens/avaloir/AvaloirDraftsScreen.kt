@@ -221,7 +221,6 @@ class AvaloirDraftsScreen(
         return DateFormat.getPatternInstance(DateFormat.YEAR_ABBR_MONTH_DAY).format(createdAt)
     }
 
-
     @ExperimentalAnimationApi
     @Composable
     fun FruitListAnimation(

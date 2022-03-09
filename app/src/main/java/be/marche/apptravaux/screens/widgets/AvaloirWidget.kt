@@ -1,13 +1,11 @@
 package be.marche.apptravaux.screens.widgets
 
-import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.R
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -34,12 +32,11 @@ class AvaloirWidget {
         avaloirs: List<Avaloir>,
         navController: NavController
     ) {
-        Log.d("ZEZE", "loaded count ${avaloirs.count()}")
         LazyColumn {
             items(avaloirs) { avaloir ->
-                ItemAvaloir(avaloir, {
+                ItemAvaloir(avaloir) {
                     navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/${avaloir.idReferent}")
-                })
+                }
             }
         }
     }

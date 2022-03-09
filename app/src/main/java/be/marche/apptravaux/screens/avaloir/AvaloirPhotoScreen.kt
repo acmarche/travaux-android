@@ -9,6 +9,7 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -263,6 +264,7 @@ class AvaloirPhotoScreen(
             },
             modifier = Modifier
                 .padding(16.dp)
+                .background(Color.Red)
                 .fillMaxWidth(),
             shape = RoundedCornerShape(8.dp)
         ) {

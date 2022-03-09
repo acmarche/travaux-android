@@ -53,10 +53,8 @@ class AvaloirListScreen(val navController: NavController) {
         ) {
             when (val state = avaloirViewModel.uiState.collectAsState().value) {
                 is AvaloirUiState.Loading -> {
-                    Log.d("ZEZE", "loading")
                 }
                 is AvaloirUiState.Error -> {
-                    Log.d("ZEZE", "error")
                     ErrorDialog(state.message)
                 }
                 is AvaloirUiState.Loaded -> {
@@ -64,7 +62,6 @@ class AvaloirListScreen(val navController: NavController) {
                     widget.LoadAvaloirs(state.data, navController)
                 }
                 is AvaloirUiState.Empty -> {
-                    Log.d("ZEZE", "vide")
                     Column {
                         ErrorDialog("La liste est vide")
                         Divider(
