@@ -109,6 +109,7 @@ class AvaloirViewModel @Inject constructor(
 
     private val _selectedAvaloir: MutableStateFlow<Avaloir?> = MutableStateFlow(null)
     val selectedAvaloir: StateFlow<Avaloir?> = _selectedAvaloir
+        get
 
 
     private val _datesAvaloir: MutableStateFlow<List<DateNettoyage>> = MutableStateFlow(emptyList())
@@ -122,7 +123,8 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
-    private val _commentaireAvaloir: MutableStateFlow<List<Commentaire>> = MutableStateFlow(emptyList())
+    private val _commentaireAvaloir: MutableStateFlow<List<Commentaire>> =
+        MutableStateFlow(emptyList())
     val commentairesAvaloir: StateFlow<List<Commentaire>> = _commentaireAvaloir
 
     fun getCommentaireAvaloir(avaloirId: Int) {
@@ -164,6 +166,22 @@ class AvaloirViewModel @Inject constructor(
     fun insertAvaloirDraft(avaloir: AvaloirDraft) {
         viewModelScope.launch {
             avaloirRepository.insertAvaloirDraft(avaloir)
+        }
+    }
+
+    fun insertCommentaireDb(commentaire: Commentaire) {
+        viewModelScope.launch {
+            avaloirRepository.insertCommentaireDb(commentaire)
+            if (selectedAvaloir.value != null)
+                getCommentaireAvaloir(selectedAvaloir.value!!.idReferent)
+        }
+    }
+
+    fun insertDateNettoyageDb(dateNettoyage: DateNettoyage) {
+        viewModelScope.launch {
+            avaloirRepository.insertDateNettoyageDb(dateNettoyage)
+            if (selectedAvaloir.value != null)
+                getDatesAvaloir(selectedAvaloir.value!!.idReferent)
         }
     }
 

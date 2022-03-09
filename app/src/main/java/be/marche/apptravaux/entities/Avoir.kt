@@ -32,6 +32,7 @@ data class AvaloirDraft(
 data class Commentaire(
     @PrimaryKey(autoGenerate = true)
     val id: Int?,
+    val idReferent: Int,
     val avaloirId: Int,
     val content: String,
     val createdAt: Date
@@ -41,6 +42,7 @@ data class Commentaire(
 data class DateNettoyage(
     @PrimaryKey(autoGenerate = true)
     val id: Int?,
+    val idReferent: Int,
     val avaloirId: Int,
     val date: Date
 )

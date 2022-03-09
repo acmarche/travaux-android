@@ -17,13 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
+import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.OutlinedTextFieldJf
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import timber.log.Timber
-import java.text.SimpleDateFormat
 import java.util.*
 
 class AvaloirCommentaireScreen(
@@ -112,9 +112,8 @@ class AvaloirCommentaireScreen(
             }
             Button(
                 onClick = {
-
+                    addCommentaire(avaloir, textStateThree.value.text)
                     navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/${avaloir.idReferent}")
-
                 },
                 modifier = Modifier
                     .padding(16.dp)
@@ -131,9 +130,11 @@ class AvaloirCommentaireScreen(
         }
     }
 
-    private fun updateClean(avaloir: Avaloir) {
-        val timeStamp = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        avaloirViewModel.addCleaningDateAsync(avaloir, timeStamp)
+    private fun addCommentaire(avaloir: Avaloir, content: String) {
+        val timeStamp = Date()
+        val commentaire = Commentaire(null, 0, avaloir.idReferent, content, timeStamp)
+
+        avaloirViewModel.insertCommentaireDb(commentaire)
     }
 
 

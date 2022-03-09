@@ -1,16 +1,15 @@
 package be.marche.apptravaux.screens.widgets
 
 import android.util.Log
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -25,13 +24,11 @@ class MapNew {
     fun GoogleMapView(
         modifier: Modifier,
         cameraPositionState: CameraPositionState,
+        position: LatLng,
         onMapLoaded: () -> Unit,
     ) {
-        Log.d("ZEZE", "create GoogleMapView")
-        var uiSettings by remember { mutableStateOf(MapUiSettings(compassEnabled = false)) }
-        var shouldAnimateZoom by remember { mutableStateOf(true) }
-        var ticker by remember { mutableStateOf(0) }
-        var mapProperties by remember {
+        val uiSettings by remember { mutableStateOf(MapUiSettings(compassEnabled = false)) }
+        val mapProperties by remember {
             mutableStateOf(
                 MapProperties(
                     mapType = MapType.NORMAL
@@ -59,26 +56,18 @@ class MapNew {
                 false
             }
 
-            val dragState: MarkerDragState = MarkerDragState()
-
-            val position = LatLng(
-                cameraPositionState.position.target.latitude,
-                cameraPositionState.position.target.longitude
-            )
-
             Marker(
                 position = position,
                 title = "Marker in Sydney",
                 onClick = markerClick,
                 draggable = true,
-                markerDragState = dragState
             )
         }
 
-        Column {
-            val coroutineScope = rememberCoroutineScope()
-            //DebugView(cameraPositionState)
-        }
+        /*    Column {
+                val coroutineScope = rememberCoroutineScope()
+                DebugView(cameraPositionState)
+            }*/
     }
 
     @Composable

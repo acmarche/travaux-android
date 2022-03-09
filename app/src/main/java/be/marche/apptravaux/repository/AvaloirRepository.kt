@@ -64,8 +64,12 @@ class AvaloirRepository @Inject constructor(
         avaloirDao.insertDates(dates)
     }
 
-    suspend fun insertCommentaires(commentaires: List<Commentaire>) {
-        avaloirDao.insertCommentaires(commentaires)
+    suspend fun insertCommentaireDb( commentaire: Commentaire) {
+        avaloirDao.insertCommentaire(commentaire)
+    }
+
+    suspend fun insertDateNettoyageDb(dateNettoyage: DateNettoyage) {
+        avaloirDao.insertDateNettoyage(dateNettoyage)
     }
 
     suspend fun insertAvaloirDraft(avaloir: AvaloirDraft) {

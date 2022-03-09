@@ -1,6 +1,5 @@
 package be.marche.apptravaux.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.AvaloirDraft
@@ -64,6 +63,12 @@ interface AvaloirDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAvaloirDraft(avaloir: AvaloirDraft)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCommentaire(commentaire: Commentaire)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDateNettoyage(dateNettoyage: DateNettoyage)
 
     @Delete()
     suspend fun deleteAvaloirDraft(avaloirDraft: AvaloirDraft)

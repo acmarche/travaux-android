@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.*
 import androidx.navigation.NavController
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
+import be.marche.apptravaux.entities.DateNettoyage
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.MapNew
 import be.marche.apptravaux.ui.theme.Colors
@@ -192,6 +193,7 @@ class AvaloirDetailScreen(
                     map.GoogleMapView(
                         modifier = Modifier,
                         cameraPositionState = cameraPositionState,
+                        position = singapore,
                         onMapLoaded = {
                             isMapLoaded = true
                         },
@@ -305,33 +307,10 @@ class AvaloirDetailScreen(
         }
     }
 
-    private data class DottedShape(
-        val step: Dp
-    ) : Shape {
-        override fun createOutline(
-            size: Size,
-            layoutDirection: LayoutDirection,
-            density: Density
-        ) = Outline.Generic(Path().apply {
-            val stepPx = with(density) { step.toPx() }
-            val stepCount = (size.width / stepPx).roundToInt()
-            val actualStep = size.width / stepCount
-            val dotSize = Size(width = actualStep / 2, height = size.height)
-            for (i in 0 until stepCount) {
-                addRect(
-                    Rect(
-                        offset = Offset(x = i * actualStep, y = 0f),
-                        size = dotSize
-                    )
-                )
-            }
-            close()
-        })
-    }
-
     private fun updateClean(avaloir: Avaloir) {
-        val timeStamp = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        avaloirViewModel.addCleaningDateAsync(avaloir, timeStamp)
+        val timeStamp = Date()
+        val dateNettoyage = DateNettoyage(null, 0, avaloir.idReferent, timeStamp)
+        avaloirViewModel.insertDateNettoyageDb(dateNettoyage)
     }
 
     fun formatDate(createdAt: Date): String {

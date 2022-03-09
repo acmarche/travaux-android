@@ -1,6 +1,5 @@
 package be.marche.apptravaux.screens.avaloir
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -8,6 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +27,10 @@ class AvaloirListScreen(val navController: NavController) {
     fun ListScreen(
         avaloirViewModel: AvaloirViewModel = viewModel()
     ) {
+        LaunchedEffect(true) {
+            avaloirViewModel.fetchAvaloirsFromDb()
+        }
+
         Scaffold(
             topBar = {
                 TopAppBar(
