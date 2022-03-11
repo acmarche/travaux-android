@@ -68,7 +68,7 @@ class AvaloirDraftsScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            text = "Données non synchronisées sur le serveur",
+                            text = "Données en brouillons",
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )
@@ -90,6 +90,10 @@ class AvaloirDraftsScreen(
             avaloirViewModel.refreshDrafts()
             val avaloirs =
                 avaloirViewModel.allAvaloirsDraftsFlow.collectAsState()
+            val dates =
+                avaloirViewModel.allAvaloirsDraftsFlow.collectAsState()
+            val commentaires =
+                avaloirViewModel.allAvaloirsDraftsFlow.collectAsState()
 
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -97,6 +101,14 @@ class AvaloirDraftsScreen(
             ) {
                 Text(
                     text = "${avaloirs.value.count()} avaloirs brouillons",
+                    style = MaterialTheme.typography.h6
+                )
+                Text(
+                    text = "${dates.value.count()} dates brouillons",
+                    style = MaterialTheme.typography.h6
+                )
+                Text(
+                    text = "${commentaires.value.count()} commentaires brouillons",
                     style = MaterialTheme.typography.h5
                 )
                 Divider(

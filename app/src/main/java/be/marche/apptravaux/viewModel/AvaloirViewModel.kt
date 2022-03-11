@@ -38,14 +38,17 @@ class AvaloirViewModel @Inject constructor(
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider
 ) : ViewModel() {
 
-    /**
-     * Fetch from Api
-     */
     private val _uiState = MutableStateFlow<AvaloirUiState>(AvaloirUiState.Empty)
     val uiState: StateFlow<AvaloirUiState> = _uiState
 
     private val _allAvaloirsDraftsFlow = MutableStateFlow<List<AvaloirDraft>>(emptyList())
     val allAvaloirsDraftsFlow: StateFlow<List<AvaloirDraft>> = _allAvaloirsDraftsFlow
+
+    private val _allDatesDraftsFlow = MutableStateFlow<List<DateNettoyage>>(emptyList())
+    val allDatesDraftsFlow: StateFlow<List<DateNettoyage>> = _allDatesDraftsFlow
+
+    private val _allCommentairesDraftsFlow = MutableStateFlow<List<Commentaire>>(emptyList())
+    val allCommentairesDraftsFlow: StateFlow<List<Commentaire>> = _allCommentairesDraftsFlow
 
     init {
         fetchAvaloirsFromDb()
@@ -54,6 +57,8 @@ class AvaloirViewModel @Inject constructor(
     fun refreshDrafts() {
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             _allAvaloirsDraftsFlow.value = avaloirRepository.getAllAvaloirsDraftsList()
+            _allDatesDraftsFlow.value = avaloirRepository.getAllDatesNettoyagesDraftsList()
+            _allCommentairesDraftsFlow.value = avaloirRepository.getAllCommentairessDraftsList()
         }
     }
 

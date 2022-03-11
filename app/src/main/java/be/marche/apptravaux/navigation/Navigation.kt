@@ -51,6 +51,11 @@ fun Navigation(
             HomeScreen(navController)
         }
 
+        composable(route = TravauxRoutes.SettingScreen.route) {
+            val screen = SettingScreen(navController)
+            screen.MainScreen()
+        }
+
         /**
          * AVALOIRS
          */
@@ -127,10 +132,6 @@ fun Navigation(
         composable(route = TravauxRoutes.StockHomeScreen.route) {
             StockHomeScreen(
             )
-        }
-
-        composable(route = TravauxRoutes.DemoScreen.route) {
-            //BottomAppBarWithFabC()
         }
     }
 }

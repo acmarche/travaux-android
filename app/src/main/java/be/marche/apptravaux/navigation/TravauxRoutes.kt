@@ -15,5 +15,5 @@ sealed class TravauxRoutes(val route: String) {
     object AvaloirDraftsScreen : TravauxRoutes("avaloir_drafts_screen")
     object StockHomeScreen : TravauxRoutes("stock_home_screen")
     object StockListScreen : TravauxRoutes("stock_home_screen")
-    object DemoScreen : TravauxRoutes("demo_screen")
+    object SettingScreen : TravauxRoutes("setting_screen")
 }

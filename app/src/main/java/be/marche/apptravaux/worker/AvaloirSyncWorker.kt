@@ -98,7 +98,7 @@ class AvaloirSyncWorker @AssistedInject constructor(
             is NotificationState.Success -> showNotification(
                 "message_channel_uploadCommentaires", 6,
                 "uploadCommentaires",
-                "Commentaires error: ${result.message}"
+                "Commentaires téléchargés"
             )
         }
 
