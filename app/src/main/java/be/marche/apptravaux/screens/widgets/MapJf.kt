@@ -83,10 +83,8 @@ class MapJf(
         }
 
         if (move) {
-            Timber.d("move active")
             mapView.getMapAsync { map ->
                 map.setOnCameraMoveListener {
-                    Timber.d("move camera listener")
                     val cameraPosition: CameraPosition = map.cameraPosition
                     moveMarker(cameraPosition.target.latitude, cameraPosition.target.longitude)
                 }
@@ -94,7 +92,6 @@ class MapJf(
                     val cameraPosition: CameraPosition = map.cameraPosition
                     positionState.value =
                         LatLng(cameraPosition.target.latitude, cameraPosition.target.longitude)
-                    Timber.d("move camera on idle")
                 }
             }
         }
@@ -112,7 +109,6 @@ class MapJf(
     }
 
     private fun addMarker(map: GoogleMap, name: String?, latLng: LatLng) {
-        Timber.d("add marker")
         val markerOption = MarkerOptions()
             .position(latLng)
             .title(name)
@@ -121,7 +117,6 @@ class MapJf(
     }
 
     private fun moveMarker(latitude: Double, longitude: Double) {
-        Timber.d("move marker")
         val latLng = LatLng(latitude, longitude)
         marker?.position = latLng
     }

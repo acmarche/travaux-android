@@ -97,7 +97,6 @@ class AvaloirSyncScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Timber.d("sync screen")
                 ConnectivityStatusBox(isConnected)
                 Content(avaloirViewModel, request, textInput, isConnected)
             }
@@ -111,7 +110,6 @@ class AvaloirSyncScreen(
         textInput: MutableState<String>,
         isConnected: Boolean
     ) {
-        Timber.d("sync Content screen")
         Text(text = stringResource(R.string.sync_intro1))
         Divider(
             modifier = Modifier.height(MEDIUM_PADDING),

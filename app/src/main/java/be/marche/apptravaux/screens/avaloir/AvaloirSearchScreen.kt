@@ -54,7 +54,6 @@ class AvaloirSearchScreen(
         val locationEnabled = remember {
             mutableStateOf(locationViewModel.locationEnabled())
         }
-        Timber.d("avaloir search screen")
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -129,8 +128,6 @@ class AvaloirSearchScreen(
                 )
             },
             content = {
-                Timber.d("location enabled $locationEnabled")
-
                 if (locationEnabled.value)
                     BeginSearch(avaloirViewModel)
                 else {
@@ -188,11 +185,9 @@ class AvaloirSearchScreen(
         isConnected: Boolean,
         location: LatLng
     ) {
-        Timber.d("searchScreen ContentSearch2 location")
         if (isConnected) {
             if (location.latitude > 0.0) {
                 LaunchedEffect(true) {
-                    Timber.d("searchScreen searching {$location")
                     avaloirViewModel.search(location.latitude, location.longitude, "25m")
                 }
                 ResultSearch(avaloirViewModel)
@@ -216,7 +211,6 @@ class AvaloirSearchScreen(
     private fun ResultSearch(
         avaloirViewModel: AvaloirViewModel
     ) {
-        Timber.d("searchScreen resultsearch")
         when (val state = avaloirViewModel.resultSearch.collectAsState().value) {
             is SearchResponseUiState.Loading -> {
                 //LoadScreen()
@@ -224,12 +218,9 @@ class AvaloirSearchScreen(
                 CircularProgressIndicatorSample()
             }
             is SearchResponseUiState.Error -> {
-                Timber.d("error")
                 ErrorDialog(state.message)
             }
             is SearchResponseUiState.Loaded -> {
-                Timber.d("loaded")
-                Timber.d("search avaloirs ${state.response}")
                 Text("${state.response.avaloirs.count()} avaloir(s) trouvé(s) dans un rayon de 25m")
                 Divider(
                     modifier = Modifier.height(MEDIUM_PADDING),
@@ -272,7 +263,6 @@ class AvaloirSearchScreen(
             locationViewModel.userCurrentStateLatLng.value
 
         val location = avaloirViewModel.currentLatLng
-        Timber.d("ici finish location $location")
         if (location.latitude > 0.0) {
             navController.navigate(TravauxRoutes.AvaloirPhotoScreen.route)
         } else {

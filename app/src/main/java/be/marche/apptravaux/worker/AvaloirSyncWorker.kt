@@ -315,7 +315,6 @@ class AvaloirSyncWorker @AssistedInject constructor(
                 "$name erreur"
             )
             errors.forEach() {
-                Timber.w("errors : ${it.message}")
             }
         }
     }

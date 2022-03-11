@@ -67,7 +67,6 @@ class FileHelper {
 
     //@Throws(IOException::class)
     fun bitmapToFile(image: Bitmap, file: File): File? {
-        Log.d("ZEZE", "save file path ${file.path}")
 
         /*   val file = File(
                Environment.getExternalStorageDirectory().toString() + File.separator + "jf.jpg"
@@ -76,7 +75,6 @@ class FileHelper {
 
         try {
             FileOutputStream(file).use { out ->
-                Log.d("ZEZE", "out ${out}")
                 image.compress(Bitmap.CompressFormat.JPEG, 100, out)
             }
         } catch (e: IOException) {
@@ -85,7 +83,6 @@ class FileHelper {
 
         return try {
 
-            Log.d("ZEZE", "save file name ${file.name}")
 
             //Convert bitmap to byte array
             val bos = ByteArrayOutputStream()
@@ -99,7 +96,6 @@ class FileHelper {
             fos.close()
             file
         } catch (e: Exception) {
-            Log.d("ZEZE", "save file error ${e.message}")
             e.printStackTrace()
             file // it will return null
         }
@@ -132,7 +128,7 @@ class FileHelper {
             ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap =
                 bitmap
             else -> {
-                // Timber.w("zeze phooto ici " + orientation)
+
             }
         }
 
@@ -155,7 +151,6 @@ class FileHelper {
                 image.compress(Bitmap.CompressFormat.JPEG, 95, out)
             })
         } catch (e: IOException) {
-            Log.e("ZEZE", "save image fail ${e.message}")
             e.printStackTrace()
         }
     }
@@ -168,7 +163,6 @@ class FileHelper {
     }
 
     fun createUri(context: Context, file: File): Uri {
-        Log.d("ZEZE", "create uri fiile path ${file.path}")
         return getUriForFile(
             context,
             context.packageName.toString() + ".fileprovider",
@@ -178,7 +172,6 @@ class FileHelper {
 
     private fun xx(context: Context) {
         val dir = context.getApplicationInfo().dataDir
-        Log.d("ZEZE", "data dir   ${dir}")
 
         val externalFilesDir =
             context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!

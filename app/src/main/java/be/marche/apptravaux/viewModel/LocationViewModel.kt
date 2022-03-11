@@ -44,11 +44,10 @@ class LocationViewModel @Inject constructor(
         LocationServices.getFusedLocationProviderClient(applicationContext)
 
     init {
-        Timber.d("init locationViewModel")
+
     }
 
     fun start() {
-        Timber.d("start locationViewModel")
         if (locationEnabled()) {
             getLast()
             startLocationUpdates()
@@ -70,7 +69,6 @@ class LocationViewModel @Inject constructor(
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             for (location in locationResult.locations) {
-                Timber.d("on result $location")
                 _userCurrentStateLatLng.value = LatLng(location.latitude, location.longitude)
             }
         }
@@ -95,7 +93,6 @@ class LocationViewModel @Inject constructor(
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
                 location?.also {
-                    Timber.d("location $location")
                     _userCurrentStateLatLng.value = LatLng(location.latitude, location.longitude)
                 }
             }
@@ -138,7 +135,6 @@ class LocationViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         fusedLocationClient.removeLocationUpdates(locationCallback)
-        Timber.d("onCleared")
     }
 
     fun locationEnabled(): Boolean {
@@ -152,15 +148,11 @@ class LocationViewModel @Inject constructor(
             val removeTask = fusedLocationClient.removeLocationUpdates(locationCallback)
             removeTask.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Timber.d("ok to remove Location callback")
 
                 } else {
-                    Timber.d("Failed to remove Location callback")
                 }
             }
-            Timber.d("location stoped")
         } catch (e: Exception) {
-            Timber.d("Failed to remove Location callback ${e.message}")
         }
     }
 

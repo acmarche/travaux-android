@@ -36,8 +36,6 @@ class AvaloirMapScreen(
     fun ScreenMain(
         avaloirViewModel: AvaloirViewModel = viewModel()
     ) {
-        val location = avaloirViewModel.currentLatLng
-        Timber.d("addScreen main locat $location")
         Scaffold(
             topBar = {
                 TopAppBar(

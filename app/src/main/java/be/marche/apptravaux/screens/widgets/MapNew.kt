@@ -47,12 +47,10 @@ class MapNew {
             uiSettings = uiSettings,
             onMapLoaded = onMapLoaded,
             onPOIClick = {
-                Log.d("ZEZE", "POI clicked: ${it.name}")
             }
         ) {
             // Drawing on the map is accomplished with a child-based API
             val markerClick: (Marker) -> Boolean = {
-                Log.d("ZEZE", "${it.title} was clicked")
                 false
             }
 

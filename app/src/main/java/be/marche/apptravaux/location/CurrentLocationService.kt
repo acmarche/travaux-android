@@ -90,7 +90,6 @@ class CurrentLocationService : Service() {
                 if (task.isSuccessful) {
                     stopSelf()
                 } else {
-                    Log.d("TAG", "Failed to remove Location callback")
                 }
             }
             SharedPreferenceUtil.saveLocationTrackingPref(this, false)

@@ -67,12 +67,9 @@ class AvaloirViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             try {
                 val response = avaloirRepository.getAllAvaloirsFromApi()
-                Timber.d("init viewmodel response api: ${response.toString()}")
-
                 _uiState.value = AvaloirUiState.Loaded(response)
 
             } catch (ex: Exception) {
-                Timber.d("error: ${ex.message}")
                 onErrorOccurred()
             }
         }
@@ -83,7 +80,6 @@ class AvaloirViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             try {
                 val response = avaloirRepository.getAll()
-                Timber.d("init viewmodel db: ${response.count()}")
 
                 if (response.count() == 0) {
                     _uiState.value = AvaloirUiState.Empty
@@ -92,7 +88,6 @@ class AvaloirViewModel @Inject constructor(
                 }
 
             } catch (ex: Exception) {
-                Timber.d("error: ${ex.message}")
                 onErrorOccurred()
             }
         }
@@ -237,7 +232,6 @@ class AvaloirViewModel @Inject constructor(
                 avaloirService.searchAvaloir(SearchRequest(latitude, longitude, distance))
             if (response.isSuccessful) {
                 response.body()?.let { searchResponse ->
-                    Timber.d("response search $searchResponse")
                     _resultSearch.value = SearchResponseUiState.Loaded(searchResponse)
                 }
             } else {

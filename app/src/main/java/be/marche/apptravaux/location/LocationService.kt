@@ -60,8 +60,6 @@ class LocationService : Service() {
     fun getDeviceLocation(
         context: Context
     ) {
-        Timber.d("start get device ${context.applicationContext}")
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
         locationRequest = LocationRequest.create().apply {
             interval = UPDATE_INTERVAL
@@ -73,7 +71,6 @@ class LocationService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 for (location in locationResult.locations) {
                     currentLocationState.value = convertLocationToLng(location)
-                    Timber.d("on result $currentLocationState")
                 }
             }
         }
@@ -100,23 +97,17 @@ class LocationService : Service() {
             val locationResult = fusedLocationProviderClient.lastLocation
             locationResult.addOnSuccessListener {
                 currentLocationState.value = convertLocationToLng(it)
-                Timber.d("location service success ${currentLocationState}")
             }
             locationResult.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val lastKnownLocation = task.result
                     if (lastKnownLocation != null && lastKnownLocation.latitude > 0.0) {
                         currentLocationState.value = convertLocationToLng(lastKnownLocation)
-                        Timber.d(
-                            "location service on complete ${currentLocationState}"
-                        )
                     }
                 } else {
-                    Timber.d(" Current User location is null")
                 }
             }
         } catch (e: SecurityException) {
-            Timber.d("Exception:  $e.message.toString()")
         }
     }
 
@@ -132,15 +123,11 @@ class LocationService : Service() {
             val removeTask = fusedLocationProviderClient.removeLocationUpdates(locationCallback)
             removeTask.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Timber.d("ok to remove Location callback")
                     stopSelf()
                 } else {
-                    Timber.d("Failed to remove Location callback")
                 }
             }
-            Timber.d("location stoped")
         } catch (e: Exception) {
-            Timber.d("Failed to remove Location callback ${e.message}")
         }
     }
 
@@ -160,6 +147,5 @@ class LocationService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Timber.d("destroy service")
     }
 }

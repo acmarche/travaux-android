@@ -6,6 +6,5 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun StockHomeScreen() {
-    Log.d("ZEZE", "Stock jome")
     Text("Home scree")
 }

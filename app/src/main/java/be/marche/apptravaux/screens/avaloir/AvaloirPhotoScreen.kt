@@ -54,8 +54,6 @@ class AvaloirPhotoScreen(
     fun TakePicureMain(
         avaloirViewModel: AvaloirViewModel = viewModel()
     ) {
-        Timber.d("take picture main")
-
         LaunchedEffect(true) {
             avaloirViewModel.createFileForSaving()
         }
@@ -114,21 +112,14 @@ class AvaloirPhotoScreen(
         resultStateTakePhoto: MutableState<Boolean>,
         avaloirViewModel: AvaloirViewModel
     ) {
-        Timber.d("take picture content")
-
         val context = LocalContext.current
-
-        Timber.d(" fileName ${fileImage.path}")
-
         val fileUri = fileHelper.createUri(context, fileImage)
         val cameraLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.TakePicture()
         ) { result: Boolean ->
             if (result) {
-                Timber.d(" oki camera $fileUri")
                 resultStateTakePhoto.value = true
             } else {
-                Timber.d(" KO camera $fileUri")
             }
         }
 
@@ -207,7 +198,6 @@ class AvaloirPhotoScreen(
         uri: Uri
     ) {
         if (statePhoto) {
-            Timber.d("ok bitmap")
             Image(
                 rememberImagePainter(uri),
                 contentDescription = "Image",
@@ -234,7 +224,6 @@ class AvaloirPhotoScreen(
                 val today = Date()
                 val avaloir =
                     AvaloirDraft(null, location.latitude, location.longitude, fileImage.path, today)
-                Timber.d("insert draft $avaloir")
                 avaloirViewModel.insertAvaloirDraft(avaloir)
                 Toast.makeText(context, "Avaloir ajouté", Toast.LENGTH_SHORT).show()
                 navController.navigate(TravauxRoutes.AvaloirDraftsScreen.route){

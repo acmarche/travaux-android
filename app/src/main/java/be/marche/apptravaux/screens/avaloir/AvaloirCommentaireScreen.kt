@@ -35,7 +35,6 @@ class AvaloirCommentaireScreen(
         avaloirId: Int?
     ) {
         LaunchedEffect(avaloirId) { // only launch once whenever cardId change
-            Timber.d(" effet ${avaloirId}")
             if (avaloirId != null) {
                 avaloirViewModel.getSelectedAvaloir(avaloirId)
             }

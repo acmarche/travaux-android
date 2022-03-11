@@ -31,14 +31,12 @@ class ListActivity : ComponentActivity() {
         val appli = application as TravauxApplication
         appli.workerFactory
 
-        Log.d("ZEZE", "List activity create")
         setContent {
             AppTravaux6Theme {
 
                 cardViewModel.findByIdT(50)
 
                 val avaloir: Avaloir? = cardViewModel.avaloir.collectAsState().value
-                Log.d("ZEZE", "avaloir : ${avaloir}")
 
                 Screen(avaloir)
 
@@ -49,7 +47,6 @@ class ListActivity : ComponentActivity() {
 
 @Composable
 fun Screen(avaloir: Avaloir?) {
-    Log.d("ZEZE", "avaloir in screen : ${avaloir}")
 
     // State has only on Screen
     var checked by remember { mutableStateOf(false) }
@@ -70,7 +67,6 @@ fun MySwitch(initialChecked: Boolean, onCheckChanged: (Boolean) -> Unit) {
     //  var checked2 = remember { mutableStateOf(checked) }
     // var checked by remember { mutableStateOf(initialEnabled) }
 
-    Log.d("ZEZE", "switch $initialChecked")
     // ****↓Add****
     println("MySwitch(): $initialChecked")
 

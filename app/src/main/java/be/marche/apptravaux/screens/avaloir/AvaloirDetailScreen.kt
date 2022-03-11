@@ -54,10 +54,7 @@ class AvaloirDetailScreen(
     fun AvaloirDetailScreenMain(
         avaloirId: Int?
     ) {
-        Timber.d("${avaloirId}")
-
         LaunchedEffect(avaloirId) { // only launch once whenever cardId change
-            Timber.d(" effet ${avaloirId}")
             if (avaloirId != null) {
                 avaloirViewModel.getSelectedAvaloir(avaloirId)
             }
@@ -242,7 +239,6 @@ class AvaloirDetailScreen(
     @Composable
     private fun DatesContent() {
         val dates = avaloirViewModel.datesAvaloir.collectAsState().value
-        Timber.d("dates $dates")
         val builder = StringBuilder()
         val format = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
 
