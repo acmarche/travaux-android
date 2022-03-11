@@ -13,7 +13,7 @@ const val DATABASE_NAME = "apptravaux"
     entities = [
         Avaloir::class, AvaloirDraft::class, DateNettoyage::class, Commentaire::class, Sync::class
     ],
-    version = 9,
+    version = 10,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

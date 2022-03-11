@@ -17,7 +17,7 @@ interface AvaloirService {
     ): List<Avaloir>
 
     @GET("avaloirs/api/all")
-     fun fetchAllAvaloirsNotSuspend(
+    fun fetchAllAvaloirsNotSuspend(
     ): Call<List<Avaloir>>
 
     @POST("avaloirs/api/xx")
@@ -31,6 +31,18 @@ interface AvaloirService {
         @Part file: MultipartBody.Part,
         @Part("image") requestBody: RequestBody
     ): Call<DataResponse>
+
+    @POST("avaloirs/api/clean/{id}/{date}")
+    fun insertDateNotSuspend(
+        @Path("id") avaloirId: Int,
+        @Path("date") date: String
+    ): Call<DataResponse>
+
+    @POST("avaloirs/api/commentaire/{id}/{content}")
+     fun insertCommentaireNotSuspend(
+        @Path("id") avaloirId: Int,
+        @Path("content") comment: CharSequence
+    ): Call<DataResponseCommentaire>
 
     @Multipart
     @POST("avaloirs/api/insert")

@@ -12,7 +12,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -62,7 +61,7 @@ class CardViewModel @Inject constructor(
 
     fun findByIdT(avaloirId: Int) {
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
-            avaloir.value = avaloirRepository.findById(avaloirId)
+            avaloir.value = avaloirRepository.findAvaloirById(avaloirId)
         }
     }
 }

@@ -18,19 +18,27 @@ class AvaloirRepository @Inject constructor(
         return avaloirDao.getAll()
     }
 
-    fun getAllDraftsList(): List<AvaloirDraft> {
-        return avaloirDao.getAllDraftsList()
+    fun getAllAvaloirsDraftsList(): List<AvaloirDraft> {
+        return avaloirDao.getAllAvaloirsDraftsList()
     }
 
-    fun getAllDraftsFlow(): Flow<List<Avaloir>> {
+    fun getAllDatesNettoyagesDraftsList(): List<DateNettoyage> {
+        return avaloirDao.getAllDatesNettoyagesDraftsList()
+    }
+
+    fun getAllCommentairessDraftsList(): List<Commentaire> {
+        return avaloirDao.getAllCommentairesDraftsList()
+    }
+
+    fun getAllAvaloirsDraftsFlow(): Flow<List<Avaloir>> {
         return avaloirDao.getFlowList()
     }
 
-    fun findById(avaloirId: Int): Avaloir {
+    fun findAvaloirById(avaloirId: Int): Avaloir {
         return avaloirDao.getById(avaloirId)
     }
 
-    fun findByIdFlow(avaloirId: Int): Flow<Avaloir> {
+    fun findAvaloirByIdFlow(avaloirId: Int): Flow<Avaloir> {
         return avaloirDao.getByIdFlow(avaloirId)
     }
 
@@ -82,6 +90,14 @@ class AvaloirRepository @Inject constructor(
 
     fun deleteAvaloirDraftNotSuspend(avaloirDraft: AvaloirDraft) {
         avaloirDao.deleteAvaloirDraftNotSuspend(avaloirDraft)
+    }
+
+    fun deleteDateNettoyageNotSuspend(dateNettoyage: DateNettoyage) {
+        avaloirDao.deleteDateNettoyageNotSuspend(dateNettoyage)
+    }
+
+    fun deleteCommentaireNotSuspend(commentaire: Commentaire) {
+        avaloirDao.deleteCommentaireNotSuspend(commentaire)
     }
 
 }

@@ -11,7 +11,13 @@ import kotlinx.coroutines.flow.Flow
 interface AvaloirDao {
 
     @Query("SELECT * FROM avaloirdraft")
-    fun getAllDraftsList(): List<AvaloirDraft>
+    fun getAllAvaloirsDraftsList(): List<AvaloirDraft>
+
+    @Query("SELECT * FROM datenettoyage WHERE idReferent = 0")
+    fun getAllDatesNettoyagesDraftsList(): List<DateNettoyage>
+
+    @Query("SELECT * FROM commentaire WHERE idReferent = 0")
+    fun getAllCommentairesDraftsList(): List<Commentaire>
 
     @Query("SELECT * FROM avaloir")
     fun getAll(): List<Avaloir>
@@ -75,6 +81,12 @@ interface AvaloirDao {
 
     @Delete()
     fun deleteAvaloirDraftNotSuspend(avaloirDraft: AvaloirDraft)
+
+    @Delete()
+    fun deleteDateNettoyageNotSuspend(dateNettoyage: DateNettoyage)
+
+    @Delete()
+    fun deleteCommentaireNotSuspend(commentaire: Commentaire)
 
 
 }

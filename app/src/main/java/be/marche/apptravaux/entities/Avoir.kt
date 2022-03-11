@@ -44,7 +44,7 @@ data class DateNettoyage(
     val id: Int?,
     val idReferent: Int,
     val avaloirId: Int,
-    val date: Date
+    val createdAt: Date
 )
 
 @Entity

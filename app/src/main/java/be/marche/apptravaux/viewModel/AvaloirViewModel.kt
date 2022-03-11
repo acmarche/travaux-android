@@ -2,11 +2,9 @@ package be.marche.apptravaux.viewModel
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
@@ -55,7 +53,7 @@ class AvaloirViewModel @Inject constructor(
 
     fun refreshDrafts() {
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
-            _allAvaloirsDraftsFlow.value = avaloirRepository.getAllDraftsList()
+            _allAvaloirsDraftsFlow.value = avaloirRepository.getAllAvaloirsDraftsList()
         }
     }
 
@@ -137,7 +135,7 @@ class AvaloirViewModel @Inject constructor(
 
     fun getSelectedAvaloir(avaloirId: Int) {
         viewModelScope.launch {
-            avaloirRepository.findByIdFlow(avaloirId).collect { task ->
+            avaloirRepository.findAvaloirByIdFlow(avaloirId).collect { task ->
                 _selectedAvaloir.value = task
             }
         }
@@ -150,7 +148,7 @@ class AvaloirViewModel @Inject constructor(
     }
 
     val allAvaloirsDraftFlow: Flow<List<AvaloirDraft>> = flow {
-        avaloirRepository.getAllDraftsFlow()
+        avaloirRepository.getAllAvaloirsDraftsFlow()
     }
 
     /*  fun getAllAvaloirsFromServer(): LiveData<List<Avaloir>> = liveData {
