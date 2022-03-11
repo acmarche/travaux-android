@@ -275,10 +275,6 @@ class AvaloirViewModel @Inject constructor(
      * WorkManager
      */
     val workManager = WorkManager.getInstance(applicationContext)
-    val uid: MutableState<UUID> = mutableStateOf(AvaloirSyncWorker.WORK_UUID)
-
-    internal val outputWorkInfos: LiveData<WorkInfo> =
-        workManager.getWorkInfoByIdLiveData(uid.value)
 
     internal fun cancelWork() {
         workManager.cancelUniqueWork("IMAGE_MANIPULATION_WORK_NAME")

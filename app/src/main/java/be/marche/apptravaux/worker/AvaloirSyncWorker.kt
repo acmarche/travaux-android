@@ -25,7 +25,6 @@ import dagger.assisted.AssistedInject
 import timber.log.Timber
 import java.io.File
 import java.util.*
-import java.util.UUID.randomUUID
 
 @HiltWorker
 class AvaloirSyncWorker @AssistedInject constructor(
@@ -37,24 +36,25 @@ class AvaloirSyncWorker @AssistedInject constructor(
 
     companion object {
         const val WORK_RESULT = "work_result"
-        val WORK_UUID = randomUUID()
     }
 
     private val manager =
         applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    private val outputData = Data.Builder().putString(WORK_RESULT, "Task Started")
+    private val outputData = Data.Builder().putString(WORK_RESULT, "Synchronisation démarrée")
 
     override fun doWork(): Result {
         val taskData = inputData
         val taskDataString = taskData.getString(AvaloirSyncScreen.MESSAGE_STATUS)
         val notificationString = taskData.getString(AvaloirSyncScreen.MESSAGE_STATUS)
 
+        outputData.putString(WORK_RESULT, "Zeze").build()
+
         uploadContent()
         sleep(15)
         downloadContent()
 
-        outputData.putString(WORK_RESULT, "Task Finished").build()
+        outputData.putString(WORK_RESULT, "Synchronisation finie").build()
         return Result.success(outputData.build())
     }
 
@@ -63,98 +63,44 @@ class AvaloirSyncWorker @AssistedInject constructor(
         var result = downloadAvaloirs()
         when (result) {
             is NotificationState.Error -> showNotification(
-                "message_channel_downloAvaloirs", 4,
+                "message_channel_downloAvaloirs", 1,
                 "downloAvaloirs",
                 "Avaloirs error: ${result.message}"
             )
-            is NotificationState.Success -> showNotification(
-                "message_channel_downloAvaloirs", 4,
-                "downloAvaloirs",
-                "Avaloirs téléchargés"
-            )
+            is NotificationState.Success -> {}
         }
 
         result = downloadDates()
         when (result) {
             is NotificationState.Error -> showNotification(
-                "message_channel_downlodate", 5,
+                "message_channel_downlodate", 2,
                 "downlodates",
                 "Dates error: ${result.message}"
             )
-            is NotificationState.Success -> showNotification(
-                "message_channel_downlodate", 5,
-                "downlodates",
-                "Dates téléchargées"
-            )
+            is NotificationState.Success -> {}
         }
 
         result = downloadCommentaires()
         when (result) {
             is NotificationState.Error -> showNotification(
-                "message_channel_uploadCommentaires", 6,
+                "message_channel_uploadCommentaires", 3,
                 "uploadCommentaires",
                 "Commentaires error: ${result.message}"
             )
-            is NotificationState.Success -> showNotification(
-                "message_channel_uploadCommentaires", 6,
-                "uploadCommentaires",
-                "Commentaires téléchargés"
-            )
+            is NotificationState.Success -> {}
         }
-
     }
 
     private fun uploadContent() {
 
-        var result = uploadAvaloir()
-        when (result) {
-            is NotificationState.Error -> showNotification(
-                "message_channel_uploadAvaloir",
-                2,
-                "uploadAvaloir",
-                "Envoie des avaloirs erreur ${result.message}"
-            )
-            is NotificationState.Success -> showNotification(
-                "message_channel_uploadAvaloir",
-                2,
-                "uploadAvaloir",
-                "Avaloirs uploadés"
-            )
-            null -> {}
-        }
+        var results = uploadAvaloir()
+        treatmentResults("uploadAvaloir", 4, results)
 
+        results = uploadDatesNettoyage()
+        treatmentResults("uploadDatesNettoyage", 5, results)
 
-        result = uploadDatesNettoyage()
-        when (result) {
-            is NotificationState.Error -> showNotification(
-                "message_channel_uploadDatesNettoyage", 3,
-                "uploadDatesNettoyage",
-                "Envoie des Dates erreur ${result.message}"
-            )
-            is NotificationState.Success -> showNotification(
-                "message_channel_uploadDatesNettoyage", 3,
-                "uploadDatesNettoyage",
-                "Dates uploadés"
-            )
-            null -> {
-
-            }
-        }
-
-        result = uploadCommentaires()
-        when (result) {
-            is NotificationState.Error -> showNotification(
-                "message_channel_uploadCommentaires", 4,
-                "uploadCommentaires",
-                "Envoie des Commentaires erreur ${result.message}"
-            )
-            is NotificationState.Success -> showNotification(
-                "message_channel_uploadCommentaires", 4,
-                "uploadCommentaires",
-                "Commentaires uploadés"
-            )
-            null -> {}
-        }
+        results = uploadCommentaires()
+        treatmentResults("uploadCommentaire", 6, results)
 
     }
 
@@ -163,27 +109,25 @@ class AvaloirSyncWorker @AssistedInject constructor(
             val response = avaloirService.fetchAllAvaloirsNotSuspend()
             val res = response.execute()
             if (res.isSuccessful) {
-                Timber.d("work avaloirs ${res.body()}")
                 res.body()?.let {
                     try {
                         avaloirRepository.insertAvaloirsNotSuspend(it)
                         return NotificationState.Success("OK")
                     } catch (e: Exception) {
                         Firebase.crashlytics.recordException(e)
-                        Timber.d("avaloirs error ${e.message}")
                         return NotificationState.Error("${e.message}")
                     }
                 }
-                return NotificationState.Success("OK")
             } else {
                 Firebase.crashlytics.log("error download avaloirs ${res.code()} ${res.body()}")
                 return NotificationState.Error("${res.body()}")
             }
         } catch (e: Exception) {
             Firebase.crashlytics.recordException(e)
-            Timber.d("work err $e")
             return NotificationState.Error("${e.message}")
         }
+        Firebase.crashlytics.log("error download comments empty")
+        return NotificationState.Error("Empty")
     }
 
     private fun downloadDates(): NotificationState {
@@ -193,25 +137,23 @@ class AvaloirSyncWorker @AssistedInject constructor(
             if (res.isSuccessful) {
                 res.body()?.let {
                     try {
-                        Timber.d("work dates ${it}")
                         avaloirRepository.insertDatesNotSuspend(it)
                         return NotificationState.Success("OK")
                     } catch (e: Exception) {
                         Firebase.crashlytics.recordException(e)
-                        Timber.d("dates error ${e.message}")
                         return NotificationState.Error("${e.message}")
                     }
                 }
-                return NotificationState.Success("OK")
             } else {
                 Firebase.crashlytics.log("error download dates ${res.code()} ${res.body()}")
                 return NotificationState.Error("${res.body()}")
             }
         } catch (e: Exception) {
             Firebase.crashlytics.recordException(e)
-            Timber.d("work dates err $e")
             return NotificationState.Error("${e.message}")
         }
+        Firebase.crashlytics.log("error download comments empty")
+        return NotificationState.Error("Empty")
     }
 
     private fun downloadCommentaires(): NotificationState {
@@ -219,31 +161,30 @@ class AvaloirSyncWorker @AssistedInject constructor(
             val response = avaloirService.fetchAllCommentairesNotSuspend()
             val res = response.execute()
             if (res.isSuccessful) {
-                Timber.d("work commentaires ${res.body()}")
                 res.body()?.let {
                     try {
                         avaloirRepository.insertCommentairesNotSuspend(it)
+                        return NotificationState.Success("OK")
                     } catch (e: Exception) {
                         Firebase.crashlytics.recordException(e)
-                        Timber.d("commentaires error ${e.message}")
                         return NotificationState.Error("${e.message}")
                     }
                 }
-                return NotificationState.Success("OK")
             } else {
-                Timber.d("work commentaires ${res.body()}")
                 Firebase.crashlytics.log("error download comments ${res.code()} ${res.body()}")
                 return NotificationState.Error("${res.body()}")
             }
         } catch (e: Exception) {
             Firebase.crashlytics.recordException(e)
-            Timber.d("work err $e")
             return NotificationState.Error("${e.message}")
         }
+        Firebase.crashlytics.log("error download comments empty")
+        return NotificationState.Error("Empty")
     }
 
-    private fun uploadAvaloir(): NotificationState? {
+    private fun uploadAvaloir(): List<NotificationState> {
 
+        val results = mutableListOf<NotificationState>()
         val fileHelper = FileHelper()
 
         avaloirRepository.getAllAvaloirsDraftsList().forEach { avaloirDraft ->
@@ -258,62 +199,76 @@ class AvaloirSyncWorker @AssistedInject constructor(
             val res = response.execute()
             if (res.isSuccessful) {
                 res.body()?.let { dataMessage ->
+                    val error = dataMessage.error
+                    if (error > 0) {
+                        results.add(NotificationState.Error(dataMessage.message))
+                        Firebase.crashlytics.log("error avaloir upload ${dataMessage.message}")
+                        return@forEach
+                    }
                     val avaloir = dataMessage.avaloir
                     if (avaloir.idReferent > 0) {
                         try {
                             avaloirRepository.deleteAvaloirDraftNotSuspend(avaloirDraft)
+                            results.add(NotificationState.Success("OK"))
                         } catch (e: Exception) {
                             Firebase.crashlytics.recordException(e)
-                            return NotificationState.Error("${e.message}")
+                            results.add(NotificationState.Error("${e.message}"))
                         }
-                        return NotificationState.Success("OK")
                     }
-                    return NotificationState.Error("OK")
                 }
             } else {
-                Firebase.crashlytics.log("error avaloir upload failed ${res.code()} ${res.body()}")
-                Timber.d("avaloir upload failed ${response}")
-                return NotificationState.Error("${res.body()}")
+                Firebase.crashlytics.log("error avaloir upload ${res.code()} ${res.body()}")
+                results.add(NotificationState.Error("${res.body()}"))
             }
         }
 
-        return null
+        return results
     }
 
-    private fun uploadDatesNettoyage(): NotificationState? {
+    private fun uploadDatesNettoyage(): List<NotificationState> {
+
+        val results = mutableListOf<NotificationState>()
 
         avaloirRepository.getAllDatesNettoyagesDraftsList().forEach { dateNettoyage ->
 
             val format = SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE)
             val date = format.format(dateNettoyage.createdAt)
-            Timber.d("date $date")
 
             val response = avaloirService.insertDateNotSuspend(dateNettoyage.avaloirId, date)
 
             val res = response.execute()
             if (res.isSuccessful) {
                 res.body()?.let { dataMessage ->
+                    val error = dataMessage.error
+                    if (error > 0) {
+                        results.add(NotificationState.Error(dataMessage.message))
+                        Firebase.crashlytics.log("error upload date ${dataMessage.message}")
+                        return@forEach
+                    }
                     val dateResult = dataMessage.date
-                    if(dateResult.avaloirId > 0) {
+                    if (dateResult.avaloirId > 0) {
                         try {
                             avaloirRepository.deleteDateNettoyageNotSuspend(dateNettoyage)
+                            results.add(NotificationState.Success("OK"))
                         } catch (e: Exception) {
                             Firebase.crashlytics.recordException(e)
-                            return NotificationState.Error("${e.message}")
+                            results.add(NotificationState.Error("${e.message}"))
+                            return@forEach
                         }
                     }
-                    return NotificationState.Success("OK")
                 }
             } else {
                 Firebase.crashlytics.log("error upload date ${res.code()} ${res.body()}")
-                Timber.d("date failed ${response}")
-                return NotificationState.Error("${res.body()}")
+                results.add(NotificationState.Error("${res.body()}"))
+                return@forEach
             }
         }
-        return null
+        return results.toList()
     }
 
-    private fun uploadCommentaires(): NotificationState? {
+    private fun uploadCommentaires(): List<NotificationState> {
+
+        val results = mutableListOf<NotificationState>()
 
         avaloirRepository.getAllCommentairessDraftsList().forEach { commentaire ->
 
@@ -325,24 +280,44 @@ class AvaloirSyncWorker @AssistedInject constructor(
             val res = response.execute()
             if (res.isSuccessful) {
                 res.body()?.let { dataMessage ->
+                    val error = dataMessage.error
+                    if (error > 0) {
+                        results.add(NotificationState.Error(dataMessage.message))
+                        Firebase.crashlytics.log("error upload commentaires ${dataMessage.message}")
+                        return@forEach
+                    }
                     val commentaireResult = dataMessage.commentaire
-                    if(commentaireResult.avaloirId > 0) {
+                    if (commentaireResult.avaloirId > 0) {
                         try {
                             avaloirRepository.deleteCommentaireNotSuspend(commentaire)
+                            results.add(NotificationState.Success("OK"))
                         } catch (e: Exception) {
                             Firebase.crashlytics.recordException(e)
-                            return NotificationState.Error("${e.message}")
+                            results.add(NotificationState.Error("${e.message}"))
                         }
                     }
-                    return NotificationState.Success("OK")
                 }
             } else {
                 Firebase.crashlytics.log("error upload commentaires ${res.code()} ${res.body()}")
-                Timber.d("commentaire failed ${response}")
-                return NotificationState.Error("${res.body()}")
+                results.add(NotificationState.Error("${res.body()}"))
             }
         }
-        return null
+        return results
+    }
+
+
+    private fun treatmentResults(name: String, idNotify: Int, results: List<NotificationState>) {
+        val errors = results.filterIsInstance(NotificationState.Error::class.java)
+        if (errors.count() > 0) {
+            showNotification(
+                "message_channel_$name", idNotify,
+                name,
+                "$name erreur"
+            )
+            errors.forEach() {
+                Timber.w("errors : ${it.message}")
+            }
+        }
     }
 
     private fun showNotification(id: String, idNotify: Int, name: String, desc: String) {
