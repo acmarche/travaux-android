@@ -68,7 +68,7 @@ class AvaloirDraftsScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            text = "Avaloirs sur le mobile",
+                            text = "Données non synchronisées sur le serveur",
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )

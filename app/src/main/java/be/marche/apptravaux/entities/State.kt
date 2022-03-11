@@ -10,6 +10,11 @@ sealed class UiState {
     object SignIn : UiState()
 }
 
+sealed class NotificationState {
+    class Success(val message: String) : NotificationState()
+    class Error(val message: String) : NotificationState()
+}
+
 sealed class AvaloirUiState {
     object Empty : AvaloirUiState()
     object Loading : AvaloirUiState()
