@@ -41,7 +41,7 @@ class MapNew {
 
         GoogleMap(
             modifier = modifier,
-            cameraPositionState = cameraPositionState,
+        //    cameraPositionState = cameraPositionState,
             properties = mapProperties,
             googleMapOptionsFactory = { mapOptions },
             uiSettings = uiSettings,

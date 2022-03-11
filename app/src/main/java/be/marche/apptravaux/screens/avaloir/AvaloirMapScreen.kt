@@ -128,7 +128,7 @@ class AvaloirMapScreen(
                 position = CameraPosition.fromLatLngZoom(singapore, 18f)
             }
 
-            val map = MapJf(location)
+            val map = MapJf(location, {})
 
             Box(Modifier.fillMaxSize()) {
 

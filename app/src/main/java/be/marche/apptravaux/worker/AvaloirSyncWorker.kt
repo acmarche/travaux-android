@@ -50,9 +50,9 @@ class AvaloirSyncWorker @AssistedInject constructor(
         val taskDataString = taskData.getString(AvaloirSyncScreen.MESSAGE_STATUS)
         val notificationString = taskData.getString(AvaloirSyncScreen.MESSAGE_STATUS)
 
-        downloadContent()
-        sleep(15)
         uploadContent()
+        sleep(15)
+        downloadContent()
 
         outputData.putString(WORK_RESULT, "Task Finished").build()
         return Result.success(outputData.build())
@@ -112,13 +112,13 @@ class AvaloirSyncWorker @AssistedInject constructor(
                 "message_channel_uploadAvaloir",
                 2,
                 "uploadAvaloir",
-                "Avaloirs uploadés"
+                "Envoie des avaloirs erreur ${result.message}"
             )
             is NotificationState.Success -> showNotification(
                 "message_channel_uploadAvaloir",
                 2,
                 "uploadAvaloir",
-                "Envoie des avaloirs erreur ${result.message}"
+                "Avaloirs uploadés"
             )
             null -> {}
         }
@@ -129,12 +129,12 @@ class AvaloirSyncWorker @AssistedInject constructor(
             is NotificationState.Error -> showNotification(
                 "message_channel_uploadDatesNettoyage", 3,
                 "uploadDatesNettoyage",
-                "Dates uploadés"
+                "Envoie des Dates erreur ${result.message}"
             )
             is NotificationState.Success -> showNotification(
                 "message_channel_uploadDatesNettoyage", 3,
                 "uploadDatesNettoyage",
-                "Envoie des Dates erreur ${result.message}"
+                "Dates uploadés"
             )
             null -> {
 
@@ -146,12 +146,12 @@ class AvaloirSyncWorker @AssistedInject constructor(
             is NotificationState.Error -> showNotification(
                 "message_channel_uploadCommentaires", 4,
                 "uploadCommentaires",
-                "Commentaires uploadés"
+                "Envoie des Commentaires erreur ${result.message}"
             )
             is NotificationState.Success -> showNotification(
                 "message_channel_uploadCommentaires", 4,
                 "uploadCommentaires",
-                "Envoie des Commentaires erreur ${result.message}"
+                "Commentaires uploadés"
             )
             null -> {}
         }
@@ -258,13 +258,17 @@ class AvaloirSyncWorker @AssistedInject constructor(
             val res = response.execute()
             if (res.isSuccessful) {
                 res.body()?.let { dataMessage ->
-                    try {
-                        avaloirRepository.deleteAvaloirDraftNotSuspend(avaloirDraft)
-                    } catch (e: Exception) {
-                        Firebase.crashlytics.recordException(e)
-                        return NotificationState.Error("${e.message}")
+                    val avaloir = dataMessage.avaloir
+                    if (avaloir.idReferent > 0) {
+                        try {
+                            avaloirRepository.deleteAvaloirDraftNotSuspend(avaloirDraft)
+                        } catch (e: Exception) {
+                            Firebase.crashlytics.recordException(e)
+                            return NotificationState.Error("${e.message}")
+                        }
+                        return NotificationState.Success("OK")
                     }
-                    return NotificationState.Success("OK")
+                    return NotificationState.Error("OK")
                 }
             } else {
                 Firebase.crashlytics.log("error avaloir upload failed ${res.code()} ${res.body()}")
@@ -280,8 +284,6 @@ class AvaloirSyncWorker @AssistedInject constructor(
 
         avaloirRepository.getAllDatesNettoyagesDraftsList().forEach { dateNettoyage ->
 
-            Timber.d("avaloir draft try ${dateNettoyage}")
-
             val format = SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE)
             val date = format.format(dateNettoyage.createdAt)
             Timber.d("date $date")
@@ -291,11 +293,14 @@ class AvaloirSyncWorker @AssistedInject constructor(
             val res = response.execute()
             if (res.isSuccessful) {
                 res.body()?.let { dataMessage ->
-                    try {
-                        avaloirRepository.deleteDateNettoyageNotSuspend(dateNettoyage)
-                    } catch (e: Exception) {
-                        Firebase.crashlytics.recordException(e)
-                        return NotificationState.Error("${e.message}")
+                    val dateResult = dataMessage.date
+                    if(dateResult.avaloirId > 0) {
+                        try {
+                            avaloirRepository.deleteDateNettoyageNotSuspend(dateNettoyage)
+                        } catch (e: Exception) {
+                            Firebase.crashlytics.recordException(e)
+                            return NotificationState.Error("${e.message}")
+                        }
                     }
                     return NotificationState.Success("OK")
                 }
@@ -320,11 +325,14 @@ class AvaloirSyncWorker @AssistedInject constructor(
             val res = response.execute()
             if (res.isSuccessful) {
                 res.body()?.let { dataMessage ->
-                    try {
-                        avaloirRepository.deleteCommentaireNotSuspend(commentaire)
-                    } catch (e: Exception) {
-                        Firebase.crashlytics.recordException(e)
-                        return NotificationState.Error("${e.message}")
+                    val commentaireResult = dataMessage.commentaire
+                    if(commentaireResult.avaloirId > 0) {
+                        try {
+                            avaloirRepository.deleteCommentaireNotSuspend(commentaire)
+                        } catch (e: Exception) {
+                            Firebase.crashlytics.recordException(e)
+                            return NotificationState.Error("${e.message}")
+                        }
                     }
                     return NotificationState.Success("OK")
                 }

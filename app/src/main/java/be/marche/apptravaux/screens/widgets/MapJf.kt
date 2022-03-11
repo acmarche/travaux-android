@@ -1,7 +1,6 @@
 package be.marche.apptravaux.screens.widgets
 
 import android.os.Bundle
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,7 +29,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class MapJf(val positionState: MutableState<LatLng>) {
+class MapJf(
+    val positionState: MutableState<LatLng>,
+    var onMapLoaded: () -> Unit
+) {
 
     //init
     var marker: Marker? = null
@@ -40,11 +42,9 @@ class MapJf(val positionState: MutableState<LatLng>) {
         latitude: Double,
         longitude: Double,
         name: String?,
-        move: Boolean
+        move: Boolean,
     ) {
         val mapView = rememberMapViewWithLifeCycle(move)
-
-        Timber.d( "create GoogleMapWidget")
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -58,7 +58,6 @@ class MapJf(val positionState: MutableState<LatLng>) {
                     map.uiSettings.isZoomControlsEnabled = true
                     val latLng = LatLng(latitude, longitude)
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
-                    Timber.d( "ici appel add")
                     addMarker(map, name, latLng)
                     /*val markerOption = MarkerOptions()
                         .position(latLng)
@@ -84,10 +83,10 @@ class MapJf(val positionState: MutableState<LatLng>) {
         }
 
         if (move) {
-            Timber.d( "move active")
+            Timber.d("move active")
             mapView.getMapAsync { map ->
                 map.setOnCameraMoveListener {
-                    Timber.d( "move camera listener")
+                    Timber.d("move camera listener")
                     val cameraPosition: CameraPosition = map.cameraPosition
                     moveMarker(cameraPosition.target.latitude, cameraPosition.target.longitude)
                 }
@@ -95,7 +94,7 @@ class MapJf(val positionState: MutableState<LatLng>) {
                     val cameraPosition: CameraPosition = map.cameraPosition
                     positionState.value =
                         LatLng(cameraPosition.target.latitude, cameraPosition.target.longitude)
-                    Timber.d( "move camera on idle")
+                    Timber.d("move camera on idle")
                 }
             }
         }
@@ -113,7 +112,7 @@ class MapJf(val positionState: MutableState<LatLng>) {
     }
 
     private fun addMarker(map: GoogleMap, name: String?, latLng: LatLng) {
-        Timber.d( "add marker")
+        Timber.d("add marker")
         val markerOption = MarkerOptions()
             .position(latLng)
             .title(name)
@@ -122,7 +121,7 @@ class MapJf(val positionState: MutableState<LatLng>) {
     }
 
     private fun moveMarker(latitude: Double, longitude: Double) {
-        Timber.d( "move marker")
+        Timber.d("move marker")
         val latLng = LatLng(latitude, longitude)
         marker?.position = latLng
     }
@@ -132,7 +131,10 @@ class MapJf(val positionState: MutableState<LatLng>) {
         remember(mapView) {
             LifecycleEventObserver { _, event ->
                 when (event) {
-                    Lifecycle.Event.ON_CREATE -> mapView.onCreate(Bundle())
+                    Lifecycle.Event.ON_CREATE -> {
+                        mapView.onCreate(Bundle())
+                        //    onMapLoaded
+                    }
                     Lifecycle.Event.ON_START -> mapView.onStart()
                     Lifecycle.Event.ON_RESUME -> mapView.onResume()
                     Lifecycle.Event.ON_PAUSE -> mapView.onPause()

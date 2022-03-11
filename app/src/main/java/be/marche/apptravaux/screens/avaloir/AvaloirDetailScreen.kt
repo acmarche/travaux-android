@@ -32,6 +32,7 @@ import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
 import be.marche.apptravaux.navigation.TravauxRoutes
+import be.marche.apptravaux.screens.widgets.MapJf
 import be.marche.apptravaux.screens.widgets.MapNew
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
@@ -108,8 +109,15 @@ class AvaloirDetailScreen(
         }
         avaloirViewModel.getDatesAvaloir(avaloir.idReferent)
         avaloirViewModel.getCommentaireAvaloir(avaloir.idReferent)
-
-        val map = MapNew()
+        val location = remember {
+            mutableStateOf(avaloirViewModel.currentLatLng)
+        }
+        val map = MapJf(
+            location,
+            onMapLoaded = {
+                isMapLoaded = true
+            },
+        )
 
         LazyColumn(
             modifier = Modifier
@@ -190,15 +198,22 @@ class AvaloirDetailScreen(
 
             item {
                 Box(Modifier.height(350.dp)) {
-                    map.GoogleMapView(
-                        modifier = Modifier,
-                        cameraPositionState = cameraPositionState,
-                        position = singapore,
-                        onMapLoaded = {
-                            isMapLoaded = true
-                        },
-                    )
+                    /*   map.GoogleMapView(
+                           modifier = Modifier,
+                           cameraPositionState = cameraPositionState,
+                           position = singapore,
+                           onMapLoaded = {
+                               isMapLoaded = true
+                           },
+                       )*/
 
+                    map.GoogleMapWidget(
+                        location.value.latitude,
+                        location.value.longitude,
+                        null,
+                        false
+                    )
+                    isMapLoaded = true
                     if (!isMapLoaded) {
                         AnimatedVisibility(
                             modifier = Modifier.matchParentSize(),

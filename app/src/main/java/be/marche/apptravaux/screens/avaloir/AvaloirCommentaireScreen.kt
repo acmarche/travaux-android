@@ -80,7 +80,6 @@ class AvaloirCommentaireScreen(
     private fun DetailContentScreen(
         avaloir: Avaloir
     ) {
-
         val textStateThree = remember { mutableStateOf(TextFieldValue()) }
         Column {
             OutlinedTextFieldJf(textStateThree)
@@ -98,7 +97,6 @@ class AvaloirCommentaireScreen(
                         navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/${avaloir.idReferent}")
                     },
                     modifier = Modifier
-                        .padding(16.dp)
                         .background(Color.Red),
                     shape = RoundedCornerShape(8.dp)
                 ) {
@@ -109,23 +107,22 @@ class AvaloirCommentaireScreen(
                         color = Color.White
                     )
                 }
-            }
-            Button(
-                onClick = {
-                    addCommentaire(avaloir, textStateThree.value.text)
-                    navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/${avaloir.idReferent}")
-                },
-                modifier = Modifier
-                    .padding(16.dp)
-                    .background(Color.Green),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = "Ajouter le commentaire",
-                    modifier = Modifier.padding(8.dp),
-                    textAlign = TextAlign.Center,
-                    color = Color.White
-                )
+                Button(
+                    onClick = {
+                        addCommentaire(avaloir, textStateThree.value.text)
+                        navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/${avaloir.idReferent}")
+                    },
+                    modifier = Modifier
+                        .background(Color.Green),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Ajouter le commentaire",
+                        modifier = Modifier.padding(8.dp),
+                        textAlign = TextAlign.Center,
+                        color = Color.White
+                    )
+                }
             }
         }
     }

@@ -3,7 +3,6 @@ package be.marche.apptravaux.screens.avaloir
 import android.content.Context
 import android.icu.text.DateFormat
 import android.net.Uri
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -11,11 +10,9 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -27,15 +24,11 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -91,9 +84,9 @@ class AvaloirDraftsScreen(
             val avaloirs =
                 avaloirViewModel.allAvaloirsDraftsFlow.collectAsState()
             val dates =
-                avaloirViewModel.allAvaloirsDraftsFlow.collectAsState()
+                avaloirViewModel.allDatesDraftsFlow.collectAsState()
             val commentaires =
-                avaloirViewModel.allAvaloirsDraftsFlow.collectAsState()
+                avaloirViewModel.allCommentairesDraftsFlow.collectAsState()
 
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -101,11 +94,11 @@ class AvaloirDraftsScreen(
             ) {
                 Text(
                     text = "${avaloirs.value.count()} avaloirs brouillons",
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.h5
                 )
                 Text(
-                    text = "${dates.value.count()} dates brouillons",
-                    style = MaterialTheme.typography.h6
+                    text = "${dates.value.count()} dates de nettoyages brouillons",
+                    style = MaterialTheme.typography.h5
                 )
                 Text(
                     text = "${commentaires.value.count()} commentaires brouillons",
@@ -124,72 +117,8 @@ class AvaloirDraftsScreen(
                     modifier = Modifier.height(MEDIUM_PADDING),
                     color = MaterialTheme.colors.background
                 )
-                //LoadAvaloirs(avaloirs.value, navController)
                 val context = LocalContext.current
                 FruitListAnimation(avaloirs.value, context, avaloirViewModel)
-            }
-        }
-    }
-
-    @OptIn(ExperimentalAnimationApi::class)
-    @Composable
-    fun LoadAvaloirs(
-        avaloirs: List<AvaloirDraft>,
-        navController: NavController
-    ) {
-        val context = LocalContext.current
-        val message = stringResource(R.string.toast_draft)
-        LazyColumn {
-            items(avaloirs) { avaloir ->
-                ItemAvaloirDraft(avaloir, context) {
-                    Toast.makeText(
-                        context,
-                        message,
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun ItemAvaloirDraft(
-        avaloir: AvaloirDraft,
-        context: Context,
-        onItemCLick: (Int) -> Unit
-    ) {
-        Card(
-            modifier = Modifier
-                .clickable {
-                    avaloir.id?.let { onItemCLick(it) }
-                }
-                .padding(10.dp)
-                .fillMaxSize(),
-            elevation = 5.dp,
-            shape = RoundedCornerShape(5.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                ImageCache(avaloir, context)
-                Column(
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Text(
-                        text = "Location: ${avaloir.latitude} ${avaloir.longitude}",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(modifier = Modifier.padding(5.dp))
-
-                    val localDate = formatDate(avaloir.createdAt)
-                    Text(
-                        text = "Ajouté le: ${localDate}",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Normal
-                    )
-                }
             }
         }
     }
