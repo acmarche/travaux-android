@@ -23,7 +23,6 @@ import com.google.android.libraries.maps.model.CameraPosition
 import com.google.android.libraries.maps.model.LatLng
 import com.google.android.libraries.maps.model.Marker
 import com.google.android.libraries.maps.model.MarkerOptions
-import com.google.maps.android.ktx.awaitMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,16 +53,17 @@ class MapJf(
                 { mapView }
             ) { mapView ->
                 CoroutineScope(Dispatchers.Main).launch {
-                    val map = mapView.awaitMap()
-                    map.uiSettings.isZoomControlsEnabled = true
-                    val latLng = LatLng(latitude, longitude)
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
-                    addMarker(map, name, latLng)
-                    /*val markerOption = MarkerOptions()
+                    val map = mapView.getMapAsync { map ->
+                        map.uiSettings.isZoomControlsEnabled = true
+                        val latLng = LatLng(latitude, longitude)
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
+                        addMarker(map, name, latLng)
+                        /*val markerOption = MarkerOptions()
                         .position(latLng)
                         .title(name)
                         .position(latLng)
                     marker = map.addMarker(markerOption)*/
+                    }
                 }
             }
         }
@@ -78,7 +78,7 @@ class MapJf(
         val context = LocalContext.current
         val mapView = remember {
             MapView(context, mapOptions).apply {
-                id = com.google.maps.android.ktx.R.id.map_frame
+                //id = com.google.maps.android.ktx.R.id.map_frame
             }
         }
 
@@ -113,7 +113,7 @@ class MapJf(
             .position(latLng)
             .title(name)
             .position(latLng)
-        //     marker = map.addMarker(markerOption)
+        marker = map.addMarker(markerOption)
     }
 
     private fun moveMarker(latitude: Double, longitude: Double) {

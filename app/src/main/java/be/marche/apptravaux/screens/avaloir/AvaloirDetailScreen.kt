@@ -16,13 +16,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -33,7 +27,6 @@ import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.MapJf
-import be.marche.apptravaux.screens.widgets.MapNew
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
@@ -41,7 +34,6 @@ import coil.compose.rememberImagePainter
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -107,14 +99,15 @@ class AvaloirDetailScreen(
         avaloirViewModel.getDatesAvaloir(avaloir.idReferent)
         avaloirViewModel.getCommentaireAvaloir(avaloir.idReferent)
         val location = remember {
+            mutableStateOf(singapore)
+        }
+
+        val location2 = remember {
             mutableStateOf(avaloirViewModel.currentLatLng)
         }
-        val map = MapJf(
-            location,
-            onMapLoaded = {
-                isMapLoaded = true
-            },
-        )
+        val map = MapJf(location2) {
+            isMapLoaded = true
+        }
 
         LazyColumn(
             modifier = Modifier

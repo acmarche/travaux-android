@@ -11,7 +11,7 @@ android {
     compileSdk 32
     defaultConfig {
         applicationId "be.marche.apptravaux"
-        minSdk 25
+        minSdk 28
         targetSdk 32
         versionCode 12
         versionName "0.9"
@@ -26,6 +26,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            //https://developer.android.com/studio/build/shrink-code#native-crash-support
+            ndk {
+                debugSymbolLevel 'FULL'
+            }
         }
     }
     compileOptions {
@@ -82,8 +86,8 @@ dependencies {
      * using Glide as image loading and caching solution
      * Using it vs other libraries because of loading performance efficiency
      */
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    kapt 'com.github.bumptech.glide:compiler:4.12.0'
+    implementation 'com.github.bumptech.glide:glide:4.13.1'
+    kapt 'com.github.bumptech.glide:compiler:4.13.1'
     implementation("io.coil-kt:coil-compose:1.4.0")
 
     /**
@@ -95,7 +99,7 @@ dependencies {
     /**
      * My networking stuff cause Retrofit is da best.
      */
-    implementation 'com.google.code.gson:gson:2.8.7'
+    implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.6.0'
@@ -123,11 +127,11 @@ dependencies {
      * Tools
      */
     implementation("io.coil-kt:coil-compose:1.4.0")
-    def timber_version = '4.7.1'
+    def timber_version = '5.0.1'
     implementation "com.jakewharton.timber:timber:$timber_version"
     //Glide
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+    implementation 'com.github.bumptech.glide:glide:4.13.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.1'
     implementation platform('com.google.firebase:firebase-bom:29.1.0')
     implementation "com.google.firebase:firebase-crashlytics-ktx"
     implementation 'com.google.firebase:firebase-analytics-ktx'
@@ -144,14 +148,28 @@ dependencies {
     //Camera Permission
     implementation "com.google.accompanist:accompanist-permissions:0.19.0"
 
-    //Google Map
+    /**
+     *   Google Map
+     */
+    // KTX for the Maps SDK for Android library
+    implementation 'com.google.maps.android:maps-ktx:3.3.0'
+    // KTX for the Maps SDK for Android Utility Library
+    implementation 'com.google.maps.android:maps-utils-ktx:3.3.0'
+    // It is recommended to also include the latest Maps SDK and/or Utility Library versions
+    // as well to ensure that you have the latest features and bug fixes.
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation 'com.google.maps.android:android-maps-utils:2.3.0'
+
+    // KTX for the Maps SDK for Android
+   // implementation 'com.google.maps.android:maps-ktx:3.3.0'
+    // (Optional) KTX for the Maps SDK for Android Utility Library
+    implementation 'com.google.maps.android:maps-utils-ktx:3.3.0'
     implementation "com.google.android.libraries.maps:maps:3.1.0-beta"
-    implementation "com.google.maps.android:maps-v3-ktx:2.2.0"
-    implementation "androidx.fragment:fragment:1.4.1"
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
     implementation 'com.google.android.gms:play-services-location:19.0.1'
     //new
-    implementation 'com.google.maps.android:maps-compose:1.2.0'
+    implementation 'com.google.maps.android:maps-compose:1.3.0'
     // Make sure to also include the latest version of the Maps SDK for Android
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
 

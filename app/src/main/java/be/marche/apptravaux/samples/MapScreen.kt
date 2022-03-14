@@ -56,28 +56,29 @@ fun GoogleMap2() {
             { mapView }
         ) { mapView ->
             CoroutineScope(Dispatchers.Main).launch {
-                val map = mapView.awaitMap()
-                map.uiSettings.isZoomControlsEnabled = true
-                val pickUp = LatLng(50.2266, 5.3429) //Delhi
-                val destination = LatLng(50.2350, 5.3591) //Bangalore
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(destination, 13f))
-                val markerOptions = MarkerOptions()
-                    .title("Delhi")
-                    .position(pickUp)
-                map.addMarker(markerOptions)
-                val markerOptionsDestination = MarkerOptions()
-                    .title("Bangalore")
-                    .position(destination)
-                map.addMarker(markerOptionsDestination)
+                val map = mapView.getMapAsync { map ->
+                    map.uiSettings.isZoomControlsEnabled = true
+                    val pickUp = LatLng(50.2266, 5.3429) //Delhi
+                    val destination = LatLng(50.2350, 5.3591) //Bangalore
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(destination, 13f))
+                    val markerOptions = MarkerOptions()
+                        .title("Delhi")
+                        .position(pickUp)
+                    map.addMarker(markerOptions)
+                    val markerOptionsDestination = MarkerOptions()
+                        .title("Bangalore")
+                        .position(destination)
+                    map.addMarker(markerOptionsDestination)
 
-                map.addPolyline(
-                    PolylineOptions().add(
-                        pickUp,
-                        LatLng(50.2266, 5.3429), //Root of Gujarat
-                        LatLng(50.2350, 5.3591), //Root of Maharashtra
-                        destination
-                    )
-                ).color = R.color.purple_500 //Polyline color
+                    map.addPolyline(
+                        PolylineOptions().add(
+                            pickUp,
+                            LatLng(50.2266, 5.3429), //Root of Gujarat
+                            LatLng(50.2350, 5.3591), //Root of Maharashtra
+                            destination
+                        )
+                    ).color = R.color.purple_500 //Polyline color
+                }
             }
         }
     }
@@ -88,7 +89,7 @@ fun rememberMapViewWithLifeCycle2(): MapView {
     val context = LocalContext.current
     val mapView = remember {
         MapView(context).apply {
-            id = com.google.maps.android.ktx.R.id.map_frame
+            //id = com.google.maps.android.ktx.R.id.map_frame
         }
     }
     val lifeCycleObserver = rememberMapLifecycleObserver2(mapView)

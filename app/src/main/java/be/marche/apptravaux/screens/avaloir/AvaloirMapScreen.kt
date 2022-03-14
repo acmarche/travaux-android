@@ -25,7 +25,6 @@ import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.libraries.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
-import timber.log.Timber
 import com.google.android.gms.maps.model.LatLng as LatLngGms
 
 class AvaloirMapScreen(
@@ -126,7 +125,7 @@ class AvaloirMapScreen(
                 position = CameraPosition.fromLatLngZoom(singapore, 18f)
             }
 
-            val map = MapJf(location, {})
+            val map = MapJf(location) {}
 
             Box(Modifier.fillMaxSize()) {
 
