@@ -5,7 +5,6 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import be.marche.apptravaux.database.AppDatabase
 import be.marche.apptravaux.repository.WordRepository
-import be.marche.apptravaux.worker.AvaloirWorkerFactory
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -32,8 +31,8 @@ class TravauxApplication : Application(), Configuration.Provider {
     val repository by lazy { WordRepository(database.avaloirDao()) }
 
     @Inject
-    lateinit var workerFactory: AvaloirWorkerFactory
-    //lateinit var workerFactory: HiltWorkerFactory ! va pas grrr !
+    //  lateinit var workerFactory: AvaloirWorkerFactory
+    lateinit var workerFactory: HiltWorkerFactory
 
     override fun getWorkManagerConfiguration() =
         Configuration.Builder()
@@ -41,7 +40,6 @@ class TravauxApplication : Application(), Configuration.Provider {
             .setWorkerFactory(workerFactory)
             .build()
 
-    //val avaloirRepository by lazy { AvaloirRepository(database.avaloirDao()) }
     override fun onCreate() {
         super.onCreate()
 

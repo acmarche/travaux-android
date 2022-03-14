@@ -99,7 +99,7 @@ class SettingScreen(val navController: NavController) {
                 if (workInfo != null) {
                     //   val progress = workInfo.progress
                     //  val value = progress.getInt(Progress, 0)
-                    val progress = workInfo.progress.getInt(ProgressWorker.PARAM_PROGRESS, -1)
+                    val progress = workInfo.progress.getInt(ProgressWorker.Progress, -1)
                     Timber.d("value progress2 $progress")
                     // Do something with progress information
                 }
@@ -108,7 +108,7 @@ class SettingScreen(val navController: NavController) {
         val liveData = ProgressWorker.run2(context)
         liveData.observe(lifeCycle) { workInfo ->
             Timber.d("Running=${workInfo.state.isFinished}")
-            val progress = workInfo.progress.getInt(ProgressWorker.PARAM_PROGRESS, -1)
+            val progress = workInfo.progress.getInt(ProgressWorker.Progress, -1)
             Timber.d("Progress=$progress")
         }
 
