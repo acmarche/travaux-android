@@ -22,6 +22,7 @@ import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.networking.ConnectionState
 import be.marche.apptravaux.networking.connectivityState
 import be.marche.apptravaux.screens.widgets.ConnectivityStatusBox
+import be.marche.apptravaux.screens.widgets.OutlinedButtonJf
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
@@ -134,13 +135,10 @@ class AvaloirSyncScreen(
             modifier = Modifier.height(MEDIUM_PADDING),
             color = MaterialTheme.colors.background
         )
-        Button(
-            onClick = { avaloirViewModel.enqueueWorkRequest(request) },
-            enabled = isConnected
+        OutlinedButtonJf("Synchroniser les données", isConnected
         ) {
-            Text(text = "Synchroniser les données")
+            avaloirViewModel.enqueueWorkRequest(request)
         }
-
         Spacer(modifier = Modifier.height(30.dp))
 
         Text(text = textInput.value)

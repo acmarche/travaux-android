@@ -245,14 +245,13 @@ fun OutlinedTextFieldJf(textStateThree: MutableState<TextFieldValue>) {
 }
 
 @Composable
-fun OutlinedButtonJf(texte: String) {
+fun OutlinedButtonJf(texte: String, isEnabled: Boolean, onItemCLick: () -> Unit) {
     OutlinedButton(
-        onClick = {
-
-        },
+        onClick = onItemCLick,
         shape = CircleShape,
+        enabled = isEnabled,
         elevation = ButtonDefaults.elevation(8.dp),
-        modifier = Modifier.fillMaxWidth(0.5f)
+       // modifier = Modifier.fillMaxWidth(0.5f)
     ) {
         Text(
             text = texte,
