@@ -26,36 +26,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.marche.apptravaux.R
-import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.ui.theme.green
 import be.marche.apptravaux.ui.theme.red
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
-
-@Composable
-fun AvaloirRow(
-    avaloir: Avaloir,
-    onItemCLick: (Int) -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .padding(4.dp)
-            .fillMaxWidth()
-            .height(130.dp)
-            .clickable {
-                onItemCLick(avaloir.idReferent)
-            },
-        shape = RoundedCornerShape(corner = CornerSize(16.dp)),
-        elevation = 6.dp
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            avaloir.localite?.let { Text(text = it) }
-        }
-    }
-}
 
 @Composable
 fun CardRow(

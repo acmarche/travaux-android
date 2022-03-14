@@ -12,16 +12,23 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import be.marche.apptravaux.screens.widgets.CardRow
+import be.marche.apptravaux.worker.ProgressWorker
+import timber.log.Timber
 
 class SettingScreen(val navController: NavController) {
 
     @Composable
     fun MainScreen() {
-
         val context = LocalContext.current
         val a = CardData(
             "Local data"
@@ -32,7 +39,6 @@ class SettingScreen(val navController: NavController) {
                 Toast.LENGTH_LONG
             ).show()
         }
-
         val cards: List<CardData> = listOf(a)
 
         MainContentHome(datas = cards)
@@ -62,6 +68,54 @@ class SettingScreen(val navController: NavController) {
                     }
                 }
             }
+        }
+    }
+
+    @Composable
+    fun WorkerTest() {
+        val context = LocalContext.current
+        Timber.d("MainScreen")
+        val request: WorkRequest =
+            OneTimeWorkRequestBuilder<ProgressWorker>()
+                .build()
+
+        val lifeCycle = LocalLifecycleOwner.current
+        val workManager = WorkManager.getInstance(context)
+
+        /*     workManager.getWorkInfoByIdLiveData(request.id).observe(lifeCycle) { workInfo ->
+                 workInfo.let {
+                     if (workInfo != null) {
+                         val progress = workInfo.progress
+                         val value = progress.getInt(Progress, 0)
+                         Timber.d("value progress $value")
+                     }
+                 }
+             }*/
+
+        workManager
+            // requestId is the WorkRequest id
+            .getWorkInfoByIdLiveData(request.id)
+            .observe(lifeCycle, Observer { workInfo: WorkInfo? ->
+                if (workInfo != null) {
+                    //   val progress = workInfo.progress
+                    //  val value = progress.getInt(Progress, 0)
+                    val progress = workInfo.progress.getInt(ProgressWorker.PARAM_PROGRESS, -1)
+                    Timber.d("value progress2 $progress")
+                    // Do something with progress information
+                }
+            })
+
+        val liveData = ProgressWorker.run2(context)
+        liveData.observe(lifeCycle) { workInfo ->
+            Timber.d("Running=${workInfo.state.isFinished}")
+            val progress = workInfo.progress.getInt(ProgressWorker.PARAM_PROGRESS, -1)
+            Timber.d("Progress=$progress")
+        }
+
+        val a = CardData(
+            "Local data"
+        ) {
+            workManager.enqueue(request)
         }
     }
 }

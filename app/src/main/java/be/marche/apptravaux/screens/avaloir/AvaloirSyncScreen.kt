@@ -1,6 +1,5 @@
 package be.marche.apptravaux.screens.avaloir
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -15,8 +14,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.WorkRequest
 import be.marche.apptravaux.R
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.networking.ConnectionState
@@ -27,7 +27,6 @@ import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.worker.AvaloirSyncWorker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import timber.log.Timber
 
 class AvaloirSyncScreen(
     val navController: NavController
@@ -76,15 +75,26 @@ class AvaloirSyncScreen(
 
             worker.getWorkInfoByIdLiveData(request.id).observe(lifeCycle) { workInfo ->
                 workInfo.let {
-                    if (it.state.isFinished) {
-                        val outputData = it.outputData
-                        val taskResult = outputData.getString(AvaloirSyncWorker.WORK_RESULT)
-                        if (taskResult != null) {
-                            textInput.value = taskResult
+                    when (it.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            val outputData = it.outputData
+                            val taskResult = outputData.getString(AvaloirSyncWorker.WORK_RESULT)
+                            if (taskResult != null) {
+                                textInput.value = taskResult
+                            }
                         }
-                    } else {
-                        val workStatus = workInfo.state
-                        textInput.value = workStatus.toString()
+                        WorkInfo.State.FAILED -> {
+                            val workStatus = workInfo.state
+                            textInput.value = workStatus.toString()
+                        }
+                        WorkInfo.State.RUNNING -> {
+                            val workStatus = workInfo.state
+                            textInput.value = workStatus.toString()
+                        }
+                        else -> {
+                            val workStatus = workInfo.state
+                            textInput.value = workStatus.toString()
+                        }
                     }
                 }
             }
@@ -106,7 +116,7 @@ class AvaloirSyncScreen(
     @Composable
     private fun Content(
         avaloirViewModel: AvaloirViewModel,
-        request: WorkRequest,
+        request: OneTimeWorkRequest,
         textInput: MutableState<String>,
         isConnected: Boolean
     ) {

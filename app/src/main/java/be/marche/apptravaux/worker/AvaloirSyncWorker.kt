@@ -4,7 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.icu.text.SimpleDateFormat
-import android.os.Build
 import android.os.SystemClock.sleep
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
@@ -22,7 +21,6 @@ import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import timber.log.Timber
 import java.io.File
 import java.util.*
 
@@ -323,11 +321,9 @@ class AvaloirSyncWorker @AssistedInject constructor(
         val channelId = id
         val channelName = name
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel =
-                NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
-            manager.createNotificationChannel(channel)
-        }
+        val channel =
+            NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+        manager.createNotificationChannel(channel)
 
         val builder = NotificationCompat.Builder(applicationContext, channelId)
             .setContentTitle("AppTravaux")

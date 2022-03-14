@@ -38,6 +38,7 @@ class AvaloirViewModel @Inject constructor(
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider
 ) : ViewModel() {
 
+    private val AVALOIR_SYNC_WORK_REQUEST = "AVALOIR_SYNC_WORK_REQUEST"
     private val _uiState = MutableStateFlow<AvaloirUiState>(AvaloirUiState.Empty)
     val uiState: StateFlow<AvaloirUiState> = _uiState
 
@@ -268,10 +269,10 @@ class AvaloirViewModel @Inject constructor(
     /**
      * WorkManager
      */
-    val workManager = WorkManager.getInstance(applicationContext)
+    val workManager by lazy { WorkManager.getInstance(applicationContext) }
 
     internal fun cancelWork() {
-        workManager.cancelUniqueWork("IMAGE_MANIPULATION_WORK_NAME")
+        workManager.cancelUniqueWork(AVALOIR_SYNC_WORK_REQUEST)
     }
 
     private fun createInputDataForUri(): Data {
@@ -287,11 +288,16 @@ class AvaloirViewModel @Inject constructor(
             .setConstraints(powerConstraints)
             .setConstraints(networkConstraints)
             .setInputData(taskData)
+            .addTag("syncAvaloir")
             .build()
     }
 
-    internal fun enqueueWorkRequest(request: WorkRequest) {
-        workManager.enqueue(request)
+    internal fun enqueueWorkRequest(request: OneTimeWorkRequest) {
+        workManager.enqueueUniqueWork(
+            AVALOIR_SYNC_WORK_REQUEST,
+            ExistingWorkPolicy.REPLACE,
+            request
+        )
     }
 
 }
