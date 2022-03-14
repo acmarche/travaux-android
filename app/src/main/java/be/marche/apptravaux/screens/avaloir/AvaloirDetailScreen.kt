@@ -36,7 +36,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.roundToInt
 
 class AvaloirDetailScreen(
     val navController: NavController,
