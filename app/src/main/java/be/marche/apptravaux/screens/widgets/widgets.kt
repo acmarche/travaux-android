@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -241,4 +242,21 @@ fun OutlinedTextFieldJf(textStateThree: MutableState<TextFieldValue>) {
             backgroundColor = Color.Transparent
         )
     )
+}
+
+@Composable
+fun OutlinedButtonJf(texte: String) {
+    OutlinedButton(
+        onClick = {
+
+        },
+        shape = CircleShape,
+        elevation = ButtonDefaults.elevation(8.dp),
+        modifier = Modifier.fillMaxWidth(0.5f)
+    ) {
+        Text(
+            text = texte,
+            modifier = Modifier.padding(6.dp)
+        )
+    }
 }
