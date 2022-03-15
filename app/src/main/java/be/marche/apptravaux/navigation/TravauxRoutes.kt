@@ -13,7 +13,12 @@ sealed class TravauxRoutes(val route: String) {
     object AvaloirCommentaireScreen : TravauxRoutes("avaloir_commentaire_screen")
     object AvaloirSyncScreen : TravauxRoutes("avaloir_sync_screen")
     object AvaloirDraftsScreen : TravauxRoutes("avaloir_drafts_screen")
+
+    /**
+     * STOCK
+     */
     object StockHomeScreen : TravauxRoutes("stock_home_screen")
-    object StockListScreen : TravauxRoutes("stock_home_screen")
+    object StockListScreen : TravauxRoutes("stock_list_screen")
+    object StockSyncScreen : TravauxRoutes("stock_sync_screen")
     object SettingScreen : TravauxRoutes("setting_screen")
 }

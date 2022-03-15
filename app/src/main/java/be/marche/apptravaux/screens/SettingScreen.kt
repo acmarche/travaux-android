@@ -22,7 +22,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import be.marche.apptravaux.screens.widgets.CardRow
-import be.marche.apptravaux.worker.ProgressWorker
+import be.marche.apptravaux.worker.StockWorker
 import timber.log.Timber
 
 class SettingScreen(val navController: NavController) {
@@ -76,7 +76,7 @@ class SettingScreen(val navController: NavController) {
         val context = LocalContext.current
         Timber.d("MainScreen")
         val request: WorkRequest =
-            OneTimeWorkRequestBuilder<ProgressWorker>()
+            OneTimeWorkRequestBuilder<StockWorker>()
                 .build()
 
         val lifeCycle = LocalLifecycleOwner.current
@@ -99,23 +99,11 @@ class SettingScreen(val navController: NavController) {
                 if (workInfo != null) {
                     //   val progress = workInfo.progress
                     //  val value = progress.getInt(Progress, 0)
-                    val progress = workInfo.progress.getInt(ProgressWorker.Progress, -1)
+                    val progress = workInfo.progress.getInt(StockWorker.Progress, -1)
                     Timber.d("value progress2 $progress")
                     // Do something with progress information
                 }
             })
 
-        val liveData = ProgressWorker.run2(context)
-        liveData.observe(lifeCycle) { workInfo ->
-            Timber.d("Running=${workInfo.state.isFinished}")
-            val progress = workInfo.progress.getInt(ProgressWorker.Progress, -1)
-            Timber.d("Progress=$progress")
-        }
-
-        val a = CardData(
-            "Local data"
-        ) {
-            workManager.enqueue(request)
-        }
     }
 }

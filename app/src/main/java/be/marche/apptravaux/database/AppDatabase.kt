@@ -11,14 +11,15 @@ const val DATABASE_NAME = "apptravaux"
 
 @Database(
     entities = [
-        Avaloir::class, AvaloirDraft::class, DateNettoyage::class, Commentaire::class, Sync::class
+        Avaloir::class, AvaloirDraft::class, DateNettoyage::class, Commentaire::class, Sync::class, Categorie::class, Produit::class
     ],
-    version = 25,
+    version = 26,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun avaloirDao(): AvaloirDao
+    abstract fun stockDao(): StockDao
 
     companion object {
         // Singleton prevents multiple instances of database opening at the

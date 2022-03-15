@@ -12,6 +12,7 @@ import be.marche.apptravaux.networking.NetworkUtils
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.viewModel.LocationViewModel
+import be.marche.apptravaux.viewModel.StockViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
 
     private val avaloirViewModel: AvaloirViewModel by viewModels()
     private val locationViewModel: LocationViewModel by viewModels()
+    private val stockViewModel: StockViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,14 +30,14 @@ class MainActivity : ComponentActivity() {
         NetworkUtils.getNetworkLiveData(applicationContext).observe(this) {
             if (it) {
                 lifecycleScope.launch {
-            //        syncContent()
+                    //        syncContent()
                 }
             }
         }
 
         setContent {
             AppTravaux6Theme {
-                Navigation(avaloirViewModel, locationViewModel)
+                Navigation(avaloirViewModel, locationViewModel, stockViewModel)
             }
         }
     }

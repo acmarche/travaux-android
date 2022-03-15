@@ -1,0 +1,124 @@
+package be.marche.apptravaux.worker
+
+import android.content.Context
+import androidx.hilt.work.HiltWorker
+import androidx.lifecycle.LiveData
+import androidx.work.*
+import be.marche.apptravaux.entities.CategorieUiState
+import be.marche.apptravaux.entities.NotificationState
+import be.marche.apptravaux.networking.StockService
+import be.marche.apptravaux.repository.StockRepository
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
+import timber.log.Timber
+
+
+@HiltWorker
+class StockWorker @AssistedInject constructor(
+    @Assisted context: Context,
+    @Assisted workerParameters: WorkerParameters,
+    private val stockRepository: StockRepository,
+    private val stockService: StockService,
+) : CoroutineWorker(context, workerParameters) {
+
+    private val outputData = Data.Builder().putString(WORK_RESULT, "Synchronisation démarrée")
+
+    companion object {
+        const val Progress = "Progress"
+        private const val delayDuration = 5L
+        private const val WORK_NAME = "UploadPhotoWorker"
+        const val WORK_RESULT = "work_result"
+
+        fun run(context: Context): LiveData<WorkInfo> {
+            val work = OneTimeWorkRequestBuilder<StockWorker>()
+                .build()
+
+            val manager = WorkManager.getInstance(context)
+            manager.enqueueUniqueWork(WORK_NAME, ExistingWorkPolicy.REPLACE, work)
+            return manager.getWorkInfoByIdLiveData(work.id)
+        }
+    }
+
+    override suspend fun doWork(): Result {
+        download()
+        outputData.putString(AvaloirSyncWorker.WORK_RESULT, "Synchronisation finie").build()
+        return Result.success(outputData.build())
+    }
+
+    private suspend fun download(): NotificationState {
+        try {
+            val response = stockService.getAllData()
+            if (response.isSuccessful) {
+                response.body()?.let { stockData ->
+                    Timber.d("stock $stockData")
+                    try {
+                        stockRepository.insertCategories(stockData.categories)
+                    } catch (e: Exception) {
+                        Timber.d("error stock cat ${e.message}")
+                        Firebase.crashlytics.recordException(e)
+                    }
+                    try {
+                        stockRepository.insertProduits(stockData.produits)
+                    } catch (e: Exception) {
+                        Timber.d("error stock ${e.message}")
+                        Firebase.crashlytics.recordException(e)
+                    }
+                }
+            } else {
+                Firebase.crashlytics.log("error download stock ${response.code()} ${response.body()}")
+                Timber.d("error http ${response.body()}")
+            }
+
+            //    Firebase.crashlytics.log("error download avaloirs ${response.code()} ${res.body()}")
+            //    return NotificationState.Error("${response.body()}")
+        } catch (e: Exception) {
+            Firebase.crashlytics.recordException(e)
+        }
+
+        return NotificationState.Error("xx")
+    }
+
+
+    suspend fun t(): Result {
+        val firstUpdate = workDataOf(Progress to 0)
+        val lastUpdate1 = workDataOf(Progress to 30)
+        val lastUpdate2 = workDataOf(Progress to 60)
+        val lastUpdate = workDataOf(Progress to 100)
+        setProgress(firstUpdate)
+        delay(delayDuration)
+        setProgress(lastUpdate1)
+        delay(delayDuration)
+        setProgress(lastUpdate2)
+        delay(delayDuration)
+        setProgress(lastUpdate)
+        return Result.success()
+    }
+
+    suspend fun x(): Result {
+        for (x in 1..100) {
+            val progressData = workDataOf(Progress to x)
+            setProgress(progressData)
+
+            // do something
+            try {
+                delay(4000)
+                Timber.d("Cancelled")
+
+            } catch (e: CancellationException) {
+                Timber.d("Cancelled")
+            }
+
+
+            if (isStopped) {
+                Timber.d("isStopped")
+                return Result.success(workDataOf(Progress to x))
+            }
+        }
+        return Result.success(workDataOf(Progress to 100))
+    }
+
+}

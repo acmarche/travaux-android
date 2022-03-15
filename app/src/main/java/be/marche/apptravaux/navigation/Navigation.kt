@@ -12,8 +12,11 @@ import be.marche.apptravaux.navigation.Navigation.Companion.PARAM_AVALOIR
 import be.marche.apptravaux.screens.*
 import be.marche.apptravaux.screens.avaloir.*
 import be.marche.apptravaux.screens.stock.StockHomeScreen
+import be.marche.apptravaux.screens.stock.StockListScreen
+import be.marche.apptravaux.screens.stock.StockSyncScreen
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.viewModel.LocationViewModel
+import be.marche.apptravaux.viewModel.StockViewModel
 
 class Navigation {
 
@@ -27,7 +30,8 @@ class Navigation {
 @Composable
 fun Navigation(
     avaloirViewModel: AvaloirViewModel = viewModel(),
-    locationViewModel: LocationViewModel = viewModel()
+    locationViewModel: LocationViewModel = viewModel(),
+    stockViewModel: StockViewModel = viewModel()
 ) {
     val navController = rememberNavController()
 
@@ -130,8 +134,18 @@ fun Navigation(
          * STOCKS
          */
         composable(route = TravauxRoutes.StockHomeScreen.route) {
-            StockHomeScreen(
-            )
+            val screen = StockHomeScreen(navController)
+            screen.HomeScreen()
+        }
+
+        composable(route = TravauxRoutes.StockListScreen.route) {
+            val screen = StockListScreen(navController)
+            screen.ListScreen(stockViewModel)
+        }
+
+        composable(route = TravauxRoutes.StockSyncScreen.route) {
+            val screen = StockSyncScreen(navController)
+            screen.SyncContent(stockViewModel)
         }
     }
 }

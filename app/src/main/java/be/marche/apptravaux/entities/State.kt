@@ -22,6 +22,20 @@ sealed class AvaloirUiState {
     class Error(val message: String) : AvaloirUiState()
 }
 
+sealed class ProduitUiState {
+    object Empty : ProduitUiState()
+    object Loading : ProduitUiState()
+    class Loaded(val data: List<Produit>) : ProduitUiState()
+    class Error(val message: String) : ProduitUiState()
+}
+
+sealed class CategorieUiState {
+    object Empty : CategorieUiState()
+    object Loading : CategorieUiState()
+    class Loaded(val data: List<Categorie>) : CategorieUiState()
+    class Error(val message: String) : CategorieUiState()
+}
+
 sealed class ResponseUiState {
     object Empty : ResponseUiState()
     object Loading : ResponseUiState()
@@ -46,3 +60,9 @@ sealed class DataState<out R> {
     data class Success<out T>(val data: T) : DataState<T>()
     data class Error(val exception: Exception) : DataState<Nothing>()
 }
+
+
+data class StockData(
+    val categories: List<Categorie>,
+    val produits: List<Produit>
+)

@@ -3,8 +3,10 @@ package be.marche.apptravaux.di
 import android.content.Context
 import be.marche.apptravaux.database.AppDatabase
 import be.marche.apptravaux.database.AvaloirDao
+import be.marche.apptravaux.database.StockDao
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
+import be.marche.apptravaux.networking.StockService
 import be.marche.apptravaux.utils.FileHelper
 import dagger.Module
 import dagger.Provides
@@ -44,18 +46,32 @@ class AppModule {
     }
 
     @Provides
+    fun provideStockDao(appDatabase: AppDatabase): StockDao {
+        return appDatabase.stockDao()
+    }
+
+    @Provides
     fun provideFileHelper(): FileHelper {
         return FileHelper()
     }
 
     @Provides
-    fun provideRetrofit(): AvaloirService =
+    fun provideAvaloirService(): AvaloirService =
         Retrofit.Builder()
             .client(getOkHttpClient())
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(AvaloirService::class.java)
+
+    @Provides
+    fun provideStockService(): StockService =
+        Retrofit.Builder()
+            .client(getOkHttpClient())
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(StockService::class.java)
 
     private fun getOkHttpClient() =
         OkHttpClient.Builder()
