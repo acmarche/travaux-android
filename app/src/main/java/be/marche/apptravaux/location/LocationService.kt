@@ -17,7 +17,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import com.google.android.libraries.maps.model.LatLng
-import timber.log.Timber
 
 class LocationService : Service() {
 

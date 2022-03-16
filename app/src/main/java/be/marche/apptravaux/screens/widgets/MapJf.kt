@@ -26,7 +26,7 @@ import com.google.android.libraries.maps.model.MarkerOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
+
 
 class MapJf(
     val positionState: MutableState<LatLng>,

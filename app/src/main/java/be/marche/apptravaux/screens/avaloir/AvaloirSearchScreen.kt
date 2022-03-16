@@ -38,7 +38,7 @@ import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.viewModel.LocationViewModel
 import com.google.android.libraries.maps.model.LatLng
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import timber.log.Timber
+
 
 class AvaloirSearchScreen(
     private val navController: NavController,

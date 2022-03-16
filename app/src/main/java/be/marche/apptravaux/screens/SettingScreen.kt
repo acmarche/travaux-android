@@ -23,7 +23,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import be.marche.apptravaux.screens.widgets.CardRow
 import be.marche.apptravaux.worker.StockWorker
-import timber.log.Timber
+
 
 class SettingScreen(val navController: NavController) {
 
@@ -74,7 +74,6 @@ class SettingScreen(val navController: NavController) {
     @Composable
     fun WorkerTest() {
         val context = LocalContext.current
-        Timber.d("MainScreen")
         val request: WorkRequest =
             OneTimeWorkRequestBuilder<StockWorker>()
                 .build()
@@ -87,7 +86,6 @@ class SettingScreen(val navController: NavController) {
                      if (workInfo != null) {
                          val progress = workInfo.progress
                          val value = progress.getInt(Progress, 0)
-                         Timber.d("value progress $value")
                      }
                  }
              }*/
@@ -100,7 +98,6 @@ class SettingScreen(val navController: NavController) {
                     //   val progress = workInfo.progress
                     //  val value = progress.getInt(Progress, 0)
                     val progress = workInfo.progress.getInt(StockWorker.Progress, -1)
-                    Timber.d("value progress2 $progress")
                     // Do something with progress information
                 }
             })

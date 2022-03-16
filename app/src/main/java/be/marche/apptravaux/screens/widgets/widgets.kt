@@ -37,7 +37,7 @@ import be.marche.apptravaux.ui.theme.green
 import be.marche.apptravaux.ui.theme.red
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
-import timber.log.Timber
+
 
 @Composable
 fun CardRow(
@@ -300,8 +300,6 @@ fun ListSelect(options: List<Categorie>, onChange: (Int) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var firstElement by remember { mutableStateOf(Categorie(0, "Toutes les categories","")) }
 
-    Timber.d("stock load select")
-
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = {
@@ -329,7 +327,6 @@ fun ListSelect(options: List<Categorie>, onChange: (Int) -> Unit) {
             options.forEach { categorie ->
                 DropdownMenuItem(
                     onClick = {
-                        Timber.d("stock click $categorie")
                         onChange(categorie.id)
                         firstElement = categorie
                         expanded = false

@@ -23,7 +23,7 @@ import be.marche.apptravaux.screens.widgets.OutlinedTextFieldJf
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
-import timber.log.Timber
+
 import java.util.*
 
 class AvaloirCommentaireScreen(

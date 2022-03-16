@@ -23,7 +23,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import timber.log.Timber
+
 import javax.inject.Inject
 
 @HiltViewModel

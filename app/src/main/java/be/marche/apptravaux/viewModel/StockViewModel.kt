@@ -16,7 +16,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
+
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,7 +38,6 @@ class StockViewModel @Inject constructor(
 
     init {
         fetchCategoriesFromDb()
-        Timber.d("init stock view model")
     }
 
     fun fetchProduitsFromDb(categorieId: Int) {

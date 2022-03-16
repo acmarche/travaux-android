@@ -14,7 +14,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
-import timber.log.Timber
+
 
 @HiltWorker
 class StockWorker @AssistedInject constructor(
@@ -54,16 +54,13 @@ class StockWorker @AssistedInject constructor(
         try {
             val drafts = stockRepository.getAllQuantitesDraftsList()
             drafts.forEach { draft ->
-                Timber.d("stock sync $draft")
                 val response = stockService.updateProduit(draft.produit_id, draft.quantite)
 
                 if (response.isSuccessful) {
                     stockRepository.deleteQuantiteDraft(draft)
                     return NotificationState.Success("OK")
                 } else {
-                    Timber.d("stock sync fail ${response.body()}")
                     Firebase.crashlytics.log("error download stock ${response.code()} ${response.body()}")
-                    Timber.d("error http ${response.body()}")
                 }
             }
         } catch (e: Exception) {
@@ -78,23 +75,19 @@ class StockWorker @AssistedInject constructor(
             val response = stockService.getAllData()
             if (response.isSuccessful) {
                 response.body()?.let { stockData ->
-                    Timber.d("stock $stockData")
                     try {
                         stockRepository.insertCategories(stockData.categories)
                     } catch (e: Exception) {
-                        Timber.d("error stock cat ${e.message}")
                         Firebase.crashlytics.recordException(e)
                     }
                     try {
                         stockRepository.insertProduits(stockData.produits)
                     } catch (e: Exception) {
-                        Timber.d("error stock ${e.message}")
                         Firebase.crashlytics.recordException(e)
                     }
                 }
             } else {
                 Firebase.crashlytics.log("error download stock ${response.code()} ${response.body()}")
-                Timber.d("error http ${response.body()}")
             }
 
             //    Firebase.crashlytics.log("error download avaloirs ${response.code()} ${res.body()}")
@@ -130,15 +123,11 @@ class StockWorker @AssistedInject constructor(
             // do something
             try {
                 delay(4000)
-                Timber.d("Cancelled")
 
             } catch (e: CancellationException) {
-                Timber.d("Cancelled")
             }
 
-
             if (isStopped) {
-                Timber.d("isStopped")
                 return Result.success(workDataOf(Progress to x))
             }
         }

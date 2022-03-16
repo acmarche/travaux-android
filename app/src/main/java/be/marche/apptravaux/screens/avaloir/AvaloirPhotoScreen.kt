@@ -40,7 +40,7 @@ import be.marche.apptravaux.viewModel.AvaloirViewModel
 import coil.compose.rememberImagePainter
 import com.google.android.libraries.maps.model.LatLng
 import kotlinx.coroutines.launch
-import timber.log.Timber
+
 import java.io.File
 import java.util.*
 

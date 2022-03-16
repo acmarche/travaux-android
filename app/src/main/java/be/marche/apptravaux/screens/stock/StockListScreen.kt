@@ -27,7 +27,7 @@ import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.StockViewModel
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
-import timber.log.Timber
+
 
 class StockListScreen(val navController: NavController, val stockViewModel: StockViewModel) {
 
@@ -43,7 +43,6 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
 
         //   selectedCategorie by remember { mutableStateOf<Categorie?>(null) }
 
-        Timber.d("stock ListScreen")
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -114,7 +113,6 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
         produits: List<Produit>,
         navController: NavController
     ) {
-        Timber.d("stock load produits count ${produits.count()}")
         var selectedCategorie2 by remember { mutableStateOf<Categorie?>(null) }
         var keyword by remember { mutableStateOf<String?>(null) }
         var expanded by remember { mutableStateOf<Boolean>(false) }
@@ -191,10 +189,8 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
     }
 
     private fun changeQuantite(produit: Produit, quantite: String) {
-        Timber.d("stock change number ${quantite}")
         try {
             val quantiteInt = quantite.toInt()
-            Timber.d("stock change numberint ${quantiteInt}")
             if (quantiteInt > -1) {
                 produit.quantite = quantiteInt
                 stockViewModel.upDateQuantite(produit)
@@ -206,7 +202,6 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
     }
 
     private fun onSelectCategorie(categorieId: Int) {
-        Timber.d("stock change cate ${categorieId}")
         selectedCategorie.value = categorieId
         stockViewModel.fetchProduitsFromDb(categorieId)
     }
