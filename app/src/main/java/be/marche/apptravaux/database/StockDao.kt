@@ -1,11 +1,9 @@
 package be.marche.apptravaux.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import be.marche.apptravaux.entities.Categorie
 import be.marche.apptravaux.entities.Produit
+import be.marche.apptravaux.entities.QuantiteDraft
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -32,4 +30,21 @@ interface StockDao {
     @Query("SELECT * FROM categorie WHERE id = :categorieId ")
     fun getCategorieById(categorieId: Int): Categorie?
 
+    @Query("SELECT * FROM quantitedraft WHERE produit_id = :produitId ")
+  suspend  fun findQuantiteDraftByIdProduit(produitId: Int): QuantiteDraft?
+
+    @Query("SELECT * FROM quantitedraft")
+    fun getAllQuantitesDraftsList(): List<QuantiteDraft>
+
+    @Query("SELECT * FROM produit WHERE categorie_id = :categorieId ORDER BY nom ASC")
+    fun getProduitsByCategorie(categorieId: Int): List<Produit>
+
+    @Update
+    suspend fun updateProduit(produit: Produit)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateQuantiteDrat(quantiteDraft: QuantiteDraft)
+
+    @Delete()
+    suspend fun deleteQuantiteDraft(quantiteDraft: QuantiteDraft)
 }

@@ -33,7 +33,16 @@ class Produit(
     val reference: String?,
     val image: String?,
     val description: String?
-){
+) {
     @Ignore
     var categorieName: String? = null
 }
+
+@Entity()
+data class QuantiteDraft(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int,
+    val produit_nom: String,
+    val produit_id: Int,
+    var quantite: Int,
+)

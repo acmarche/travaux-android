@@ -20,6 +20,7 @@ sealed class TravauxRoutes(val route: String) {
     object StockHomeScreen : TravauxRoutes("stock_home_screen")
     object StockListScreen : TravauxRoutes("stock_list_screen")
     object StockSyncScreen : TravauxRoutes("stock_sync_screen")
+    object StockDraftScreen : TravauxRoutes("stock_draft_screen")
     object StockAddScreen : TravauxRoutes("stock_add_screen")
     object SettingScreen : TravauxRoutes("setting_screen")
 }

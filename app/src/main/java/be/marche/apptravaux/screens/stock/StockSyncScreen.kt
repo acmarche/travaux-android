@@ -121,12 +121,7 @@ class StockSyncScreen(
         textInput: MutableState<String>,
         isConnected: Boolean
     ) {
-        Text(text = stringResource(R.string.sync_intro1))
-        Divider(
-            modifier = Modifier.height(MEDIUM_PADDING),
-            color = MaterialTheme.colors.background
-        )
-        Text(text = stringResource(R.string.sync_intro2))
+        Text(text = stringResource(R.string.sync_stock))
         Divider(
             modifier = Modifier.height(MEDIUM_PADDING),
             color = MaterialTheme.colors.background

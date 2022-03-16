@@ -19,27 +19,31 @@ import androidx.navigation.NavController
 import be.marche.apptravaux.entities.Categorie
 import be.marche.apptravaux.entities.Produit
 import be.marche.apptravaux.entities.ProduitUiState
+import be.marche.apptravaux.entities.QuantiteDraft
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.CountryTextField
 import be.marche.apptravaux.screens.widgets.ErrorDialog
+import be.marche.apptravaux.screens.widgets.ListSelect
 import be.marche.apptravaux.screens.widgets.MyNumberField
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.StockViewModel
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
+import com.google.maps.android.ktx.utils.heatmaps.heatmapTileProviderWithWeightedData
 import timber.log.Timber
 
-class StockListScreen(val navController: NavController) {
+class StockListScreen(val navController: NavController, val stockViewModel: StockViewModel) {
 
     @Composable
     fun ListScreen(
-        stockViewModel: StockViewModel = viewModel()
+        //  stockViewModel: StockViewModel = viewModel()
     ) {
         LaunchedEffect(true) {
             stockViewModel.fetchProduitsFromDb()
         }
 
+        Timber.d("stock ListScreen")
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -53,7 +57,7 @@ class StockListScreen(val navController: NavController) {
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
+                                navController.navigate(TravauxRoutes.StockHomeScreen.route)
                             }
                         ) {
                             Icon(Icons.Filled.ArrowBack, contentDescription = "Retour")
@@ -72,6 +76,7 @@ class StockListScreen(val navController: NavController) {
                 }
                 is ProduitUiState.Loaded -> {
                     LoadProduits(state.data, navController)
+                    stockViewModel.fetchCategoriesFromDb()
                 }
                 is ProduitUiState.Empty -> {
                     Column {
@@ -101,12 +106,16 @@ class StockListScreen(val navController: NavController) {
         produits: List<Produit>,
         navController: NavController
     ) {
+        Timber.d("stock load produits count ${produits.count()}")
         var selectedCategorie by remember { mutableStateOf<Categorie?>(null) }
         var keyword by remember { mutableStateOf<String?>(null) }
         var expanded by remember { mutableStateOf<Boolean>(false) }
-
+        val categories = stockViewModel.allCategories
 
         LazyColumn {
+            item {
+                ListSelect(categories, { onSelectCategorie(it) })
+            }
             item {
                 CountryTextField(
                     label = "Select Country",
@@ -174,15 +183,23 @@ class StockListScreen(val navController: NavController) {
     }
 
     private fun changeQuantite(produit: Produit, quantite: String) {
-        Timber.d("change number ${quantite}")
+        Timber.d("stock change number ${quantite}")
         try {
             val quantiteInt = quantite.toInt()
+            Timber.d("stock change numberint ${quantiteInt}")
             if (quantiteInt > -1) {
                 produit.quantite = quantiteInt
+                stockViewModel.upDateQuantite(produit)
+                stockViewModel.updateQuantiteDraft(produit.nom, produit.id, quantiteInt)
             }
         } catch (e: Exception) {
             Firebase.crashlytics.recordException(e)
         }
+    }
+
+    private fun onSelectCategorie(categorieId: Int) {
+        Timber.d("stock change cate ${categorieId}")
+        stockViewModel.searchProduit(categorieId)
     }
 
 }

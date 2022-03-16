@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.marche.apptravaux.R
+import be.marche.apptravaux.entities.Categorie
 import be.marche.apptravaux.ui.theme.green
 import be.marche.apptravaux.ui.theme.red
 import coil.compose.ImagePainter
@@ -270,21 +271,73 @@ fun OutlinedButtonJf(texte: String, isEnabled: Boolean, onItemCLick: () -> Unit)
 @Composable
 fun MyNumberField(number: String, onChange: (String) -> Unit) {
 
-    var text by remember { mutableStateOf(number) }
+    var inputValue by remember { mutableStateOf(number) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     OutlinedTextField(
-        value = text,
+        value = inputValue,
         modifier = Modifier.fillMaxWidth(),
         label = { Text("Quantité") },
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         keyboardActions = KeyboardActions(
-            onDone = { keyboardController?.hide() }),
+            onDone = {
+                onChange(inputValue)
+                keyboardController?.hide()
+            }
+        ),
         onValueChange = {
-            text = it
-            onChange(it)
+            inputValue = it
+            //   onChange(it)
         }
         // keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
     )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ListSelect(options: List<Categorie>, onChange: (Int) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    var firstElement by remember { mutableStateOf(Categorie(0, "Toutes les categories","")) }
+
+    Timber.d("stock load select")
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {
+            expanded = !expanded
+        }
+    ) {
+        TextField(
+            readOnly = true,
+            value = firstElement.nom,
+            onValueChange = { },
+            label = { Text("Label") },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = expanded
+                )
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = {
+                expanded = false
+            }
+        ) {
+            options.forEach { categorie ->
+                DropdownMenuItem(
+                    onClick = {
+                        Timber.d("stock click $categorie")
+                        onChange(categorie.id)
+                        firstElement = categorie
+                        expanded = false
+                    }
+                ) {
+                    Text(text = categorie.nom)
+                }
+            }
+        }
+    }
 }

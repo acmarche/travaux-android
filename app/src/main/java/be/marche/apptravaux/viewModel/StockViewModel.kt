@@ -6,9 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import be.marche.apptravaux.R
-import be.marche.apptravaux.entities.Categorie
-import be.marche.apptravaux.entities.CategorieUiState
-import be.marche.apptravaux.entities.ProduitUiState
+import be.marche.apptravaux.entities.*
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.networking.StockService
 import be.marche.apptravaux.repository.StockRepository
@@ -18,6 +16,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,6 +35,11 @@ class StockViewModel @Inject constructor(
 
     private val _categoriesUiState = MutableStateFlow<CategorieUiState>(CategorieUiState.Empty)
     val categoriessUiState: StateFlow<CategorieUiState> = _categoriesUiState
+
+    init {
+        fetchCategoriesFromDb()
+        Timber.d("init stock view model")
+    }
 
     fun fetchProduitsFromDb() {
         _produitsUiState.value = ProduitUiState.Loading
@@ -61,9 +65,20 @@ class StockViewModel @Inject constructor(
         }
     }
 
+    private val _allQuantitesDraftsFlow = MutableStateFlow<List<QuantiteDraft>>(emptyList())
+    val allQuantitesDraftsFlow: StateFlow<List<QuantiteDraft>> = _allQuantitesDraftsFlow
+
+    fun refreshDrafts() {
+        viewModelScope.launch(coroutineDispatcherProvider.IO()) {
+            _allQuantitesDraftsFlow.value = stockRepository.getAllQuantitesDraftsList()
+        }
+    }
+
     private fun getCategorieById(categorieId: Int): Categorie? {
         return stockRepository.findCategorieById(categorieId)
     }
+
+    var allCategories = emptyList<Categorie>()
 
     fun fetchCategoriesFromDb() {
         _categoriesUiState.value = CategorieUiState.Loading
@@ -75,6 +90,7 @@ class StockViewModel @Inject constructor(
                     _categoriesUiState.value = CategorieUiState.Empty
                 } else {
                     _categoriesUiState.value = CategorieUiState.Loaded(response)
+                    allCategories = response
                 }
 
             } catch (ex: Exception) {
@@ -87,6 +103,36 @@ class StockViewModel @Inject constructor(
         _produitsUiState.value = ProduitUiState.Error(
             applicationContext.getString(R.string.something_went_wrong)
         )
+    }
+
+    fun searchProduit(categorieId: Int) {
+        viewModelScope.launch(coroutineDispatcherProvider.IO()) {
+            _produitsUiState.value = ProduitUiState.Loaded(
+                stockRepository.getProduitsByCategorie(categorieId)
+            )
+        }
+    }
+
+    fun updateQuantiteDraft(produitNom:String, produitId: Int, quantite: Int) {
+        viewModelScope.launch {
+            var quantiteDraft = stockRepository.findQuantiteDraftByIdProduit(produitId)
+            if (quantiteDraft == null) {
+                quantiteDraft = QuantiteDraft(0, produitNom, produitId, quantite)
+            }
+            stockRepository.updateQuantiteDraft(quantiteDraft)
+        }
+    }
+
+    fun upDateQuantite(produit: Produit) {
+        viewModelScope.launch {
+            stockRepository.updateProduit(produit)
+        }
+    }
+
+    fun deleteQuantiteDraft(quantiteDraft: QuantiteDraft) {
+        viewModelScope.launch {
+            stockRepository.deleteQuantiteDraft(quantiteDraft)
+        }
     }
 
     /**

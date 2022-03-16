@@ -1,5 +1,6 @@
 package be.marche.apptravaux.screens.stock
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import be.marche.apptravaux.navigation.TravauxRoutes
@@ -21,15 +23,27 @@ class StockHomeScreen(val navController: NavController) {
 
     @Composable
     fun HomeScreen() {
+        val context = LocalContext.current
         val a =
             CardData(
                 "Rechercher",
                 { navController.navigate(TravauxRoutes.StockListScreen.route) })
         val b = CardData(
             "Ajouter un produit",
-            { navController.navigate(TravauxRoutes.StockAddScreen.route) }
+            {
+                Toast.makeText(
+                    context,
+                    "Bientôt...",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         )
-        val cards: List<CardData> = listOf(a, b)
+        val c =
+            CardData(
+                "Brouillons",
+                { navController.navigate(TravauxRoutes.StockDraftScreen.route) })
+
+        val cards: List<CardData> = listOf(a, b, c)
         MainContentAvaloirHome(cards)
     }
 
