@@ -126,6 +126,12 @@ class StockSyncScreen(
             modifier = Modifier.height(MEDIUM_PADDING),
             color = MaterialTheme.colors.background
         )
+        Text(text = stringResource(R.string.sync_stock2))
+        Divider(
+            modifier = Modifier.height(MEDIUM_PADDING),
+            color = MaterialTheme.colors.background
+        )
+
         Divider(
             modifier = Modifier.height(MEDIUM_PADDING),
             color = MaterialTheme.colors.background

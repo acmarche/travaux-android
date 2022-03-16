@@ -121,7 +121,8 @@ class StockViewModel @Inject constructor(
             var quantiteDraft = stockRepository.findQuantiteDraftByIdProduit(produitId)
             if (quantiteDraft == null) {
                 quantiteDraft = QuantiteDraft(0, produitNom, produitId, quantite)
-            }
+            } else
+                quantiteDraft.quantite = quantite
             stockRepository.updateQuantiteDraft(quantiteDraft)
         }
     }
