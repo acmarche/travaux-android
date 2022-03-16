@@ -312,7 +312,7 @@ fun ListSelect(options: List<Categorie>, onChange: (Int) -> Unit) {
             readOnly = true,
             value = firstElement.nom,
             onValueChange = { },
-            label = { Text("Label") },
+            label = { Text("Catégories") },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
                     expanded = expanded

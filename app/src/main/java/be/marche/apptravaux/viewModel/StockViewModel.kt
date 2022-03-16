@@ -41,12 +41,16 @@ class StockViewModel @Inject constructor(
         Timber.d("init stock view model")
     }
 
-    fun fetchProduitsFromDb() {
+    fun fetchProduitsFromDb(categorieId: Int) {
         _produitsUiState.value = ProduitUiState.Loading
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
+            val produits: List<Produit>
             try {
-                val produits = stockRepository.getAllProduits()
-
+                if (categorieId > 0) {
+                    produits = stockRepository.getProduitsByCategorie(categorieId)
+                } else {
+                    produits = stockRepository.getAllProduits()
+                }
                 if (produits.count() == 0) {
                     _produitsUiState.value = ProduitUiState.Empty
                 } else {
@@ -113,7 +117,7 @@ class StockViewModel @Inject constructor(
         }
     }
 
-    fun updateQuantiteDraft(produitNom:String, produitId: Int, quantite: Int) {
+    fun updateQuantiteDraft(produitNom: String, produitId: Int, quantite: Int) {
         viewModelScope.launch {
             var quantiteDraft = stockRepository.findQuantiteDraftByIdProduit(produitId)
             if (quantiteDraft == null) {

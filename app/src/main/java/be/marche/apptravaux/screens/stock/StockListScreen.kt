@@ -14,14 +14,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import be.marche.apptravaux.entities.Categorie
 import be.marche.apptravaux.entities.Produit
 import be.marche.apptravaux.entities.ProduitUiState
-import be.marche.apptravaux.entities.QuantiteDraft
 import be.marche.apptravaux.navigation.TravauxRoutes
-import be.marche.apptravaux.screens.widgets.CountryTextField
 import be.marche.apptravaux.screens.widgets.ErrorDialog
 import be.marche.apptravaux.screens.widgets.ListSelect
 import be.marche.apptravaux.screens.widgets.MyNumberField
@@ -30,18 +27,21 @@ import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.StockViewModel
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
-import com.google.maps.android.ktx.utils.heatmaps.heatmapTileProviderWithWeightedData
 import timber.log.Timber
 
 class StockListScreen(val navController: NavController, val stockViewModel: StockViewModel) {
+
+    var selectedCategorie = mutableStateOf(0)
 
     @Composable
     fun ListScreen(
         //  stockViewModel: StockViewModel = viewModel()
     ) {
         LaunchedEffect(true) {
-            stockViewModel.fetchProduitsFromDb()
+            stockViewModel.fetchProduitsFromDb(0)
         }
+
+        //   selectedCategorie by remember { mutableStateOf<Categorie?>(null) }
 
         Timber.d("stock ListScreen")
         Scaffold(
@@ -80,21 +80,29 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
                 }
                 is ProduitUiState.Empty -> {
                     Column {
-                        ErrorDialog("La liste est vide")
-                        Divider(
-                            modifier = Modifier.height(MEDIUM_PADDING),
-                            color = MaterialTheme.colors.background
-                        )
-
-                        Button(
-                            onClick = { navController.navigate(TravauxRoutes.StockSyncScreen.route) }
-                        ) {
-                            Text(text = "Synchroniser les données")
+                        if (selectedCategorie.value > 0) {
+                            Text(
+                                text = "Pas de produits suivant la recherche",
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            LoadProduits(emptyList(), navController)
+                        } else {
+                            ErrorDialog("La liste est vide")
+                            Divider(
+                                modifier = Modifier.height(MEDIUM_PADDING),
+                                color = MaterialTheme.colors.background
+                            )
+                            Button(
+                                onClick = { navController.navigate(TravauxRoutes.StockSyncScreen.route) }
+                            ) {
+                                Text(text = "Synchroniser les données")
+                            }
+                            Divider(
+                                modifier = Modifier.height(MEDIUM_PADDING),
+                                color = MaterialTheme.colors.background
+                            )
                         }
-                        Divider(
-                            modifier = Modifier.height(MEDIUM_PADDING),
-                            color = MaterialTheme.colors.background
-                        )
                     }
                 }
             }
@@ -107,27 +115,27 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
         navController: NavController
     ) {
         Timber.d("stock load produits count ${produits.count()}")
-        var selectedCategorie by remember { mutableStateOf<Categorie?>(null) }
+        var selectedCategorie2 by remember { mutableStateOf<Categorie?>(null) }
         var keyword by remember { mutableStateOf<String?>(null) }
         var expanded by remember { mutableStateOf<Boolean>(false) }
         val categories = stockViewModel.allCategories
 
-        LazyColumn {
+        LazyColumn(modifier = Modifier.padding(10.dp)) {
             item {
                 ListSelect(categories, { onSelectCategorie(it) })
             }
-          /*  item {
-                CountryTextField(
-                    label = "Select Country",
-                    modifier = Modifier
-                        .padding(top = 50.dp),
-                    // .align(Alignment.TopCenter),
-                    expanded = expanded,
-                    selectedCategorie = selectedCategorie
-                ) {
-                    expanded = !expanded
-                }
-            }*/
+            /*  item {
+                  CountryTextField(
+                      label = "Select Country",
+                      modifier = Modifier
+                          .padding(top = 50.dp),
+                      // .align(Alignment.TopCenter),
+                      expanded = expanded,
+                      selectedCategorie = selectedCategorie
+                  ) {
+                      expanded = !expanded
+                  }
+              }*/
             items(produits) { produit ->
                 ItemProduit(
                     produit,
@@ -151,7 +159,7 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
                 .clickable {
                     onItemCLick(produit.id)
                 }
-                .padding(10.dp)
+                //    .padding(10.dp)
                 .fillMaxSize(),
             elevation = 5.dp,
             shape = RoundedCornerShape(5.dp)
@@ -199,7 +207,8 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
 
     private fun onSelectCategorie(categorieId: Int) {
         Timber.d("stock change cate ${categorieId}")
-        stockViewModel.searchProduit(categorieId)
+        selectedCategorie.value = categorieId
+        stockViewModel.fetchProduitsFromDb(categorieId)
     }
 
 }
