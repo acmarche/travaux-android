@@ -29,4 +29,8 @@ class StockRepository @Inject constructor(
     fun getAllCategories(): List<Categorie> {
         return stockDao.getAllCategories()
     }
+
+    fun findCategorieById(categorieId: Int): Categorie? {
+        return stockDao.getCategorieById(categorieId)
+    }
 }

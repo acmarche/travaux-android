@@ -11,6 +11,7 @@ import androidx.navigation.navArgument
 import be.marche.apptravaux.navigation.Navigation.Companion.PARAM_AVALOIR
 import be.marche.apptravaux.screens.*
 import be.marche.apptravaux.screens.avaloir.*
+import be.marche.apptravaux.screens.stock.StockAddScreen
 import be.marche.apptravaux.screens.stock.StockHomeScreen
 import be.marche.apptravaux.screens.stock.StockListScreen
 import be.marche.apptravaux.screens.stock.StockSyncScreen
@@ -146,6 +147,11 @@ fun Navigation(
         composable(route = TravauxRoutes.StockSyncScreen.route) {
             val screen = StockSyncScreen(navController)
             screen.SyncContent(stockViewModel)
+        }
+
+        composable(route = TravauxRoutes.StockAddScreen.route) {
+            val screen = StockAddScreen(navController)
+            screen.Main(stockViewModel)
         }
     }
 }

@@ -11,31 +11,23 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.CardData
 import be.marche.apptravaux.screens.widgets.CardRow
 import be.marche.apptravaux.ui.theme.Colors
+import be.marche.apptravaux.viewModel.StockViewModel
 
-class StockHomeScreen(val navController: NavController) {
+class StockAddScreen(val navController: NavController) {
 
     @Composable
-    fun HomeScreen() {
-        val a =
-            CardData(
-                "Rechercher",
-                { navController.navigate(TravauxRoutes.StockListScreen.route) })
-        val b = CardData(
-            "Ajouter un produit",
-            { navController.navigate(TravauxRoutes.StockAddScreen.route) }
-        )
-        val cards: List<CardData> = listOf(a, b)
-        MainContentAvaloirHome(cards)
+    fun Main(stockViewModel: StockViewModel = viewModel()) {
+        MainContent()
     }
 
     @Composable
-    fun MainContentAvaloirHome(
-        datas: List<CardData>
+   private fun MainContent(
     ) {
         Scaffold(
             topBar = {
@@ -62,9 +54,7 @@ class StockHomeScreen(val navController: NavController) {
         ) {
             Column(modifier = Modifier.padding(12.dp)) {
                 LazyColumn {
-                    items(datas) { data ->
-                        CardRow(data.texte, data.action)
-                    }
+
                 }
             }
         }

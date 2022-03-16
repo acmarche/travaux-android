@@ -11,16 +11,16 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface StockDao {
 
-    @Query("SELECT * FROM produit")
+    @Query("SELECT * FROM produit ORDER BY nom")
     fun getAllProduits(): List<Produit>
 
-    @Query("SELECT * FROM produit")
+    @Query("SELECT * FROM produit ORDER BY nom")
     fun getAllProduitsFlow(): Flow<List<Produit>>
 
-    @Query("SELECT * FROM categorie")
+    @Query("SELECT * FROM categorie ORDER BY nom")
     fun getAllCategories(): List<Categorie>
 
-    @Query("SELECT * FROM categorie")
+    @Query("SELECT * FROM categorie ORDER BY nom")
     fun getAllCategoriesFlow(): Flow<List<Categorie>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -29,5 +29,7 @@ interface StockDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCategories(categories: List<Categorie>)
 
+    @Query("SELECT * FROM categorie WHERE id = :categorieId ")
+    fun getCategorieById(categorieId: Int): Categorie?
 
 }

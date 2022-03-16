@@ -8,9 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -18,13 +16,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import be.marche.apptravaux.entities.Categorie
 import be.marche.apptravaux.entities.Produit
 import be.marche.apptravaux.entities.ProduitUiState
 import be.marche.apptravaux.navigation.TravauxRoutes
+import be.marche.apptravaux.screens.widgets.CountryTextField
 import be.marche.apptravaux.screens.widgets.ErrorDialog
+import be.marche.apptravaux.screens.widgets.MyNumberField
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.StockViewModel
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
+import timber.log.Timber
 
 class StockListScreen(val navController: NavController) {
 
@@ -97,11 +101,32 @@ class StockListScreen(val navController: NavController) {
         produits: List<Produit>,
         navController: NavController
     ) {
+        var selectedCategorie by remember { mutableStateOf<Categorie?>(null) }
+        var keyword by remember { mutableStateOf<String?>(null) }
+        var expanded by remember { mutableStateOf<Boolean>(false) }
+
+
         LazyColumn {
-            items(produits) { produit ->
-                ItemProduit(produit) {
-                    navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/${produit.id}")
+            item {
+                CountryTextField(
+                    label = "Select Country",
+                    modifier = Modifier
+                        .padding(top = 50.dp),
+                    // .align(Alignment.TopCenter),
+                    expanded = expanded,
+                    selectedCategorie = selectedCategorie
+                ) {
+                    expanded = !expanded
                 }
+            }
+            items(produits) { produit ->
+                ItemProduit(
+                    produit,
+                    { },
+                    {
+                        changeQuantite(produit, it)
+                    }
+                )
             }
         }
     }
@@ -109,7 +134,8 @@ class StockListScreen(val navController: NavController) {
     @Composable
     fun ItemProduit(
         produit: Produit,
-        onItemCLick: (Int) -> Unit
+        onItemCLick: (Int) -> Unit,
+        onChange: (String) -> Unit
     ) {
         Card(
             modifier = Modifier
@@ -129,14 +155,16 @@ class StockListScreen(val navController: NavController) {
                 ) {
                     Text(
                         text = produit.nom,
-                        fontSize = 15.sp,
+                        fontSize = 17.sp,
                         fontWeight = FontWeight.Bold
                     )
+                    Spacer(modifier = Modifier.padding(5.dp))
+                    MyNumberField("${produit.quantite}", onChange)
 
                     Spacer(modifier = Modifier.padding(5.dp))
 
                     Text(
-                        text = "Quantité: ${produit.quantite}",
+                        text = "Catégorie: ${produit.categorieName}",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Normal
                     )
@@ -145,5 +173,16 @@ class StockListScreen(val navController: NavController) {
         }
     }
 
+    private fun changeQuantite(produit: Produit, quantite: String) {
+        Timber.d("change number ${quantite}")
+        try {
+            val quantiteInt = quantite.toInt()
+            if (quantiteInt > -1) {
+                produit.quantite = quantiteInt
+            }
+        } catch (e: Exception) {
+            Firebase.crashlytics.recordException(e)
+        }
+    }
 
 }

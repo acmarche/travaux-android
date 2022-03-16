@@ -41,12 +41,11 @@ class AvaloirHomeScreen(val navController: NavController) {
 
         val cards: List<CardData> = listOf(a, b, c, d)
 
-        MainContentAvaloirHome(navController, cards)
+        MainContentAvaloirHome(cards)
     }
 
     @Composable
     fun MainContentAvaloirHome(
-        navController: NavController,
         datas: List<CardData>
     ) {
         Scaffold(

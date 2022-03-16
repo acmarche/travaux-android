@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import be.marche.apptravaux.R
+import be.marche.apptravaux.entities.Categorie
 import be.marche.apptravaux.entities.CategorieUiState
 import be.marche.apptravaux.entities.ProduitUiState
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
@@ -40,18 +41,28 @@ class StockViewModel @Inject constructor(
         _produitsUiState.value = ProduitUiState.Loading
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             try {
-                val response = stockRepository.getAllProduits()
+                val produits = stockRepository.getAllProduits()
 
-                if (response.count() == 0) {
+                if (produits.count() == 0) {
                     _produitsUiState.value = ProduitUiState.Empty
                 } else {
-                    _produitsUiState.value = ProduitUiState.Loaded(response)
+                    produits.forEach { produit ->
+                        val categorie = getCategorieById(produit.categorie_id)
+                        if (categorie != null) {
+                            produit.categorieName = categorie.nom
+                        }
+                    }
+                    _produitsUiState.value = ProduitUiState.Loaded(produits)
                 }
 
             } catch (ex: Exception) {
                 onErrorOccurred()
             }
         }
+    }
+
+    private fun getCategorieById(categorieId: Int): Categorie? {
+        return stockRepository.findCategorieById(categorieId)
     }
 
     fun fetchCategoriesFromDb() {

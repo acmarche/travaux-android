@@ -2,6 +2,7 @@ package be.marche.apptravaux.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity()
@@ -13,7 +14,6 @@ data class Categorie(
 ) {
     var nbproduits: Int = 0
 }
-
 
 @Entity(
     foreignKeys = [
@@ -33,4 +33,7 @@ class Produit(
     val reference: String?,
     val image: String?,
     val description: String?
-)
+){
+    @Ignore
+    var categorieName: String? = null
+}

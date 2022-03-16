@@ -10,18 +10,23 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,6 +36,7 @@ import be.marche.apptravaux.ui.theme.green
 import be.marche.apptravaux.ui.theme.red
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
+import timber.log.Timber
 
 @Composable
 fun CardRow(
@@ -251,11 +257,34 @@ fun OutlinedButtonJf(texte: String, isEnabled: Boolean, onItemCLick: () -> Unit)
         shape = CircleShape,
         enabled = isEnabled,
         elevation = ButtonDefaults.elevation(8.dp),
-       // modifier = Modifier.fillMaxWidth(0.5f)
+        // modifier = Modifier.fillMaxWidth(0.5f)
     ) {
         Text(
             text = texte,
             modifier = Modifier.padding(6.dp)
         )
     }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun MyNumberField(number: String, onChange: (String) -> Unit) {
+
+    var text by remember { mutableStateOf(number) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    OutlinedTextField(
+        value = text,
+        modifier = Modifier.fillMaxWidth(),
+        label = { Text("Quantité") },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        keyboardActions = KeyboardActions(
+            onDone = { keyboardController?.hide() }),
+        onValueChange = {
+            text = it
+            onChange(it)
+        }
+        // keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+    )
 }
