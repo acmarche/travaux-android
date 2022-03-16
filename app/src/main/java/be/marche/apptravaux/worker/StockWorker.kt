@@ -1,10 +1,10 @@
 package be.marche.apptravaux.worker
 
 import android.content.Context
+import android.os.SystemClock.sleep
 import androidx.hilt.work.HiltWorker
 import androidx.lifecycle.LiveData
 import androidx.work.*
-import be.marche.apptravaux.entities.CategorieUiState
 import be.marche.apptravaux.entities.NotificationState
 import be.marche.apptravaux.networking.StockService
 import be.marche.apptravaux.repository.StockRepository
@@ -15,7 +15,6 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import timber.log.Timber
-
 
 @HiltWorker
 class StockWorker @AssistedInject constructor(
@@ -44,9 +43,34 @@ class StockWorker @AssistedInject constructor(
     }
 
     override suspend fun doWork(): Result {
+        upload()
+        sleep(150)
         download()
         outputData.putString(AvaloirSyncWorker.WORK_RESULT, "Synchronisation finie").build()
         return Result.success(outputData.build())
+    }
+
+    private suspend fun upload(): NotificationState {
+        try {
+            val drafts = stockRepository.getAllQuantitesDraftsList()
+            drafts.forEach { draft ->
+                Timber.d("stock sync $draft")
+                val response = stockService.updateProduit(draft.produit_id, draft.quantite)
+
+                if (response.isSuccessful) {
+                    stockRepository.deleteQuantiteDraft(draft)
+                    return NotificationState.Success("OK")
+                } else {
+                    Timber.d("stock sync fail ${response.body()}")
+                    Firebase.crashlytics.log("error download stock ${response.code()} ${response.body()}")
+                    Timber.d("error http ${response.body()}")
+                }
+            }
+        } catch (e: Exception) {
+            Firebase.crashlytics.recordException(e)
+        }
+
+        return NotificationState.Error("xx")
     }
 
     private suspend fun download(): NotificationState {

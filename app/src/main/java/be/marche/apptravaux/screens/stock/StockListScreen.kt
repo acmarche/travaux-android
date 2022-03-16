@@ -116,7 +116,7 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
             item {
                 ListSelect(categories, { onSelectCategorie(it) })
             }
-            item {
+          /*  item {
                 CountryTextField(
                     label = "Select Country",
                     modifier = Modifier
@@ -127,7 +127,7 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
                 ) {
                     expanded = !expanded
                 }
-            }
+            }*/
             items(produits) { produit ->
                 ItemProduit(
                     produit,

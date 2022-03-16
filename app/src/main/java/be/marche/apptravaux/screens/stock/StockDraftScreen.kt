@@ -1,6 +1,5 @@
 package be.marche.apptravaux.screens.stock
 
-import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -22,20 +21,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import be.marche.apptravaux.entities.AvaloirDraft
 import be.marche.apptravaux.entities.QuantiteDraft
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.StockViewModel
-import java.util.*
 
 class StockDraftScreen(
     val navController: NavController,
@@ -87,7 +83,7 @@ class StockDraftScreen(
                 )
                 Button(
                     onClick = {
-
+                        navController.navigate(TravauxRoutes.StockSyncScreen.route)
                     }
                 ) {
                     Text(text = "Synchroniser les données")
