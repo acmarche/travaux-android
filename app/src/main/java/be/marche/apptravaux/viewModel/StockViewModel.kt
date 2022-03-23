@@ -40,15 +40,25 @@ class StockViewModel @Inject constructor(
         fetchCategoriesFromDb()
     }
 
-    fun fetchProduitsFromDb(categorieId: Int) {
+    fun fetchProduitsFromDb(categorieId: Int, textSearched: String?) {
         _produitsUiState.value = ProduitUiState.Loading
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
-            val produits: List<Produit>
+            var produits: List<Produit> = emptyList()
             try {
-                if (categorieId > 0) {
-                    produits = stockRepository.getProduitsByCategorie(categorieId)
-                } else {
-                    produits = stockRepository.getAllProduits()
+                when {
+                    categorieId > 0 && textSearched != null -> {
+                        produits =
+                            stockRepository.getProduitsByCategorieAndName(categorieId, textSearched)
+                    }
+                    categorieId > 0 && textSearched == null -> {
+                        stockRepository.getProduitsByCategorie(categorieId)
+                    }
+                    categorieId == 0 && textSearched != null -> {
+                        stockRepository.getProduitsByName(textSearched)
+                    }
+                    else -> {
+                        produits = stockRepository.getAllProduits()
+                    }
                 }
                 if (produits.count() == 0) {
                     _produitsUiState.value = ProduitUiState.Empty

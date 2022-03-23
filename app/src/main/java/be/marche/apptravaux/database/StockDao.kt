@@ -39,6 +39,12 @@ interface StockDao {
     @Query("SELECT * FROM produit WHERE categorie_id = :categorieId ORDER BY nom ASC")
     fun getProduitsByCategorie(categorieId: Int): List<Produit>
 
+    @Query("SELECT * FROM produit WHERE categorie_id = :categorieId AND nom LIKE '%' || :nom || '%' ORDER BY nom ASC")
+    fun getProduitsByCategorieAndName(categorieId: Int?, nom: String?): List<Produit>
+
+    @Query("SELECT * FROM produit WHERE nom LIKE '%' || :nom || '%' ORDER BY nom ASC")
+    fun getProduitsByName(nom: String): List<Produit>
+
     @Update
     suspend fun updateProduit(produit: Produit)
 

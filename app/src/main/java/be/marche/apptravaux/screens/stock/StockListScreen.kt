@@ -7,46 +7,52 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Categorie
 import be.marche.apptravaux.entities.Produit
 import be.marche.apptravaux.entities.ProduitUiState
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.ErrorDialog
-import be.marche.apptravaux.screens.widgets.ListSelect
 import be.marche.apptravaux.screens.widgets.MyNumberField
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
-import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.StockViewModel
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
-
+import timber.log.Timber
 
 class StockListScreen(val navController: NavController, val stockViewModel: StockViewModel) {
 
     var selectedCategorie = mutableStateOf(0)
+    val textState = mutableStateOf(TextFieldValue(""))
 
     @Composable
     fun ListScreen(
         //  stockViewModel: StockViewModel = viewModel()
     ) {
         LaunchedEffect(true) {
-            stockViewModel.fetchProduitsFromDb(0)
+            stockViewModel.fetchProduitsFromDb(0,null)
         }
 
-        //   selectedCategorie by remember { mutableStateOf<Categorie?>(null) }
+        Timber.d("create ListScreen")
 
         Scaffold(
             topBar = {
-                TopAppBarJf("Liste des produits"
+                TopAppBarJf(
+                    "Liste des produits"
                 ) { navController.navigate(TravauxRoutes.StockHomeScreen.route) }
             }
         ) {
@@ -96,6 +102,7 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
         produits: List<Produit>,
         navController: NavController
     ) {
+        Timber.d("create LoadProduits")
         var selectedCategorie2 by remember { mutableStateOf<Categorie?>(null) }
         var keyword by remember { mutableStateOf<String?>(null) }
         var expanded by remember { mutableStateOf<Boolean>(false) }
@@ -103,7 +110,10 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
 
         LazyColumn(modifier = Modifier.padding(10.dp)) {
             item {
-                ListSelect(categories, { onSelectCategorie(it) })
+                SearchView(textState, { onSearchText(it) })
+            }
+            item {
+                ListSelectCategories(categories, { onSelectCategorie(it) })
             }
             /*  item {
                   CountryTextField(
@@ -135,6 +145,7 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
         onItemCLick: (Int) -> Unit,
         onChange: (String) -> Unit
     ) {
+        Timber.d("create ItemProduit")
         Card(
             modifier = Modifier
                 .clickable {
@@ -171,6 +182,112 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
         }
     }
 
+    @Composable
+    fun SearchView(
+        state: MutableState<TextFieldValue>,
+        onChange: (TextFieldValue) -> Unit
+    ) {
+        Timber.d("create SearchView")
+        TextField(
+            value = state.value,
+            onValueChange = { value ->
+                state.value = value
+                onChange(value)
+            },
+            modifier = Modifier
+                .fillMaxWidth(),
+            textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .size(24.dp)
+                )
+            },
+            trailingIcon = {
+                if (state.value != TextFieldValue("")) {
+                    IconButton(
+                        onClick = {
+                            state.value =
+                                TextFieldValue("") // Remove text from TextField when you press the 'X' icon
+                        }
+                    ) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .padding(15.dp)
+                                .size(24.dp)
+                        )
+                    }
+                }
+            },
+            singleLine = true,
+            shape = RectangleShape, // The TextFiled has rounded corners top left and right by default
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = Color.White,
+                cursorColor = Color.White,
+                leadingIconColor = Color.White,
+                trailingIconColor = Color.White,
+                backgroundColor = colorResource(id = R.color.purple_500),
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            )
+        )
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    fun ListSelectCategories(
+        options: List<Categorie>,
+        onChange: (Int) -> Unit
+    ) {
+        Timber.d("create ListSelectCategories")
+        var expanded by remember { mutableStateOf(false) }
+        var firstElement by remember { mutableStateOf(Categorie(0, "Toutes les categories", "")) }
+
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = {
+                expanded = !expanded
+            }
+        ) {
+            TextField(
+                readOnly = true,
+                value = firstElement.nom,
+                onValueChange = { },
+                label = { Text("Catégories") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = expanded
+                    )
+                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors()
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = {
+                    expanded = false
+                }
+            ) {
+                options.forEach { categorie ->
+                    DropdownMenuItem(
+                        onClick = {
+                            onChange(categorie.id)
+                            firstElement = categorie
+                            expanded = false
+                        }
+                    ) {
+                        Text(text = categorie.nom)
+                    }
+                }
+            }
+        }
+    }
+
     private fun changeQuantite(produit: Produit, quantite: String) {
         try {
             val quantiteInt = quantite.toInt()
@@ -186,7 +303,13 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
 
     private fun onSelectCategorie(categorieId: Int) {
         selectedCategorie.value = categorieId
-        stockViewModel.fetchProduitsFromDb(categorieId)
+        stockViewModel.fetchProduitsFromDb(selectedCategorie.value, textState.value.text)
+    }
+
+    private fun onSearchText(textSearched: TextFieldValue) {
+        //textState.value = textSearched
+        Timber.d("on search ${textSearched.text}")
+        stockViewModel.fetchProduitsFromDb(selectedCategorie.value, textState.value.text)
     }
 
 }

@@ -32,7 +32,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.marche.apptravaux.R
-import be.marche.apptravaux.entities.Categorie
 import be.marche.apptravaux.ui.theme.green
 import be.marche.apptravaux.ui.theme.red
 import coil.compose.ImagePainter
@@ -292,49 +291,4 @@ fun MyNumberField(number: String, onChange: (String) -> Unit) {
         }
         // keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
     )
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun ListSelect(options: List<Categorie>, onChange: (Int) -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
-    var firstElement by remember { mutableStateOf(Categorie(0, "Toutes les categories","")) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = {
-            expanded = !expanded
-        }
-    ) {
-        TextField(
-            readOnly = true,
-            value = firstElement.nom,
-            onValueChange = { },
-            label = { Text("Catégories") },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = expanded
-                )
-            },
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
-        )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-            }
-        ) {
-            options.forEach { categorie ->
-                DropdownMenuItem(
-                    onClick = {
-                        onChange(categorie.id)
-                        firstElement = categorie
-                        expanded = false
-                    }
-                ) {
-                    Text(text = categorie.nom)
-                }
-            }
-        }
-    }
 }

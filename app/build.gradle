@@ -7,6 +7,8 @@ plugins {
     id 'com.google.firebase.crashlytics'
 }
 
+//android.defaultConfig.ndk.debugSymbolLevel = 'FULL'
+
 android {
     compileSdk 32
     defaultConfig {
@@ -20,16 +22,17 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+    //https://developer.android.com/studio/build/shrink-code#native-crash-support
+        ndk {
+                debugSymbolLevel 'FULL'
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            //https://developer.android.com/studio/build/shrink-code#native-crash-support
-            ndk {
-                debugSymbolLevel 'FULL'
-            }
+            
         }
     }
     compileOptions {

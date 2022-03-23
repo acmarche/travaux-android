@@ -35,6 +35,14 @@ class StockRepository @Inject constructor(
         return stockDao.getProduitsByCategorie(categorieId)
     }
 
+    fun getProduitsByCategorieAndName(categorieId: Int?, nom: String?): List<Produit> {
+        return stockDao.getProduitsByCategorieAndName(categorieId,nom)
+    }
+
+    fun getProduitsByName(nom: String): List<Produit> {
+        return stockDao.getProduitsByName(nom)
+    }
+
     fun findCategorieById(categorieId: Int): Categorie? {
         return stockDao.getCategorieById(categorieId)
     }

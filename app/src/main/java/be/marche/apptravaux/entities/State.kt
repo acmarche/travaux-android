@@ -1,5 +1,6 @@
 package be.marche.apptravaux.entities
 
+import androidx.compose.runtime.Stable
 import be.marche.apptravaux.ui.entities.SearchResponse
 import java.io.File
 
@@ -66,3 +67,12 @@ data class StockData(
     val categories: List<Categorie>,
     val produits: List<Produit>
 )
+
+@Stable
+interface UiState2<T : Result<T>> {
+    val value: T?
+    val exception: Throwable?
+
+    val hasError: Boolean
+        get() = exception != null
+}
