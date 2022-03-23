@@ -1,5 +1,6 @@
 package be.marche.apptravaux.screens.stock
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,14 +26,13 @@ import be.marche.apptravaux.entities.Categorie
 import be.marche.apptravaux.entities.Produit
 import be.marche.apptravaux.entities.ProduitUiState
 import be.marche.apptravaux.navigation.TravauxRoutes
-import be.marche.apptravaux.screens.widgets.ErrorDialog
 import be.marche.apptravaux.screens.widgets.MyNumberField
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
-import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.StockViewModel
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import timber.log.Timber
+import java.util.*
 
 class StockListScreen(val navController: NavController, val stockViewModel: StockViewModel) {
 
@@ -44,10 +44,12 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
         //  stockViewModel: StockViewModel = viewModel()
     ) {
         LaunchedEffect(true) {
-            stockViewModel.fetchProduitsFromDb(0,null)
+            stockViewModel.fetchProduitsFromDb(0, null)
+            stockViewModel.fetchCategoriesFromDb()
         }
 
         Timber.d("create ListScreen")
+        val textState = remember { mutableStateOf(TextFieldValue("")) }
 
         Scaffold(
             topBar = {
@@ -56,42 +58,45 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
                 ) { navController.navigate(TravauxRoutes.StockHomeScreen.route) }
             }
         ) {
+            Column {
+                SearchView(state = textState, {})
+                CountryList(navController = navController, state = textState)
+            }
             when (val state = stockViewModel.produitsUiState.collectAsState().value) {
                 is ProduitUiState.Loading -> {
                 }
                 is ProduitUiState.Error -> {
-                    ErrorDialog(state.message)
+                    //    ErrorDialog(state.message)
                 }
                 is ProduitUiState.Loaded -> {
-                    LoadProduits(state.data, navController)
-                    stockViewModel.fetchCategoriesFromDb()
+                    //    LoadProduits(state.data, navController)
                 }
                 is ProduitUiState.Empty -> {
-                    Column {
-                        if (selectedCategorie.value > 0) {
-                            Text(
-                                text = "Pas de produits suivant la recherche",
-                                fontSize = 17.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            LoadProduits(emptyList(), navController)
-                        } else {
-                            ErrorDialog("La liste est vide")
-                            Divider(
-                                modifier = Modifier.height(MEDIUM_PADDING),
-                                color = MaterialTheme.colors.background
-                            )
-                            Button(
-                                onClick = { navController.navigate(TravauxRoutes.StockSyncScreen.route) }
-                            ) {
-                                Text(text = "Synchroniser les données")
-                            }
-                            Divider(
-                                modifier = Modifier.height(MEDIUM_PADDING),
-                                color = MaterialTheme.colors.background
-                            )
-                        }
-                    }
+                    /* Column {
+                         if (selectedCategorie.value > 0) {
+                             Text(
+                                 text = "Pas de produits suivant la recherche",
+                                 fontSize = 17.sp,
+                                 fontWeight = FontWeight.Bold
+                             )
+                             LoadProduits(emptyList(), navController)
+                         } else {
+                             ErrorDialog("La liste est vide")
+                             Divider(
+                                 modifier = Modifier.height(MEDIUM_PADDING),
+                                 color = MaterialTheme.colors.background
+                             )
+                             Button(
+                                 onClick = { navController.navigate(TravauxRoutes.StockSyncScreen.route) }
+                             ) {
+                                 Text(text = "Synchroniser les données")
+                             }
+                             Divider(
+                                 modifier = Modifier.height(MEDIUM_PADDING),
+                                 color = MaterialTheme.colors.background
+                             )
+                         }
+                     }*/
                 }
             }
         }
@@ -183,6 +188,46 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
     }
 
     @Composable
+    fun CountryList(navController: NavController, state: MutableState<TextFieldValue>) {
+        val produits = stockViewModel.allProduits
+        var filteredProduits: List<Produit>
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            val searchedText = state.value.text
+            filteredProduits = if (searchedText.isEmpty()) {
+                produits
+            } else {
+                val resultList = ArrayList<Produit>()
+                for (produit in produits) {
+                    if (produit.nom.lowercase(Locale.getDefault())
+                            .contains(searchedText.lowercase(Locale.getDefault()))
+                    ) {
+                        resultList.add(produit)
+                    }
+                }
+                resultList
+            }
+            Timber.d("countries $filteredProduits")
+            items(filteredProduits) { filteredProduit ->
+                ItemProduit(filteredProduit, { }, {})
+            }
+        }
+    }
+
+    @Composable
+    fun CountryListItem(countryText: String, onItemClick: (String) -> Unit) {
+        Row(
+            modifier = Modifier
+                .clickable(onClick = { onItemClick(countryText) })
+                .background(colorResource(id = R.color.purple_500))
+                .height(57.dp)
+                .fillMaxWidth()
+                .padding(PaddingValues(8.dp, 16.dp))
+        ) {
+            Text(text = countryText, fontSize = 18.sp, color = Color.White)
+        }
+    }
+
+    @Composable
     fun SearchView(
         state: MutableState<TextFieldValue>,
         onChange: (TextFieldValue) -> Unit
@@ -192,7 +237,7 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
             value = state.value,
             onValueChange = { value ->
                 state.value = value
-                onChange(value)
+                //onChange(value)
             },
             modifier = Modifier
                 .fillMaxWidth(),

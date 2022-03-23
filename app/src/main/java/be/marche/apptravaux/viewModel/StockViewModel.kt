@@ -64,6 +64,7 @@ class StockViewModel @Inject constructor(
                     else -> {
                         Timber.d("search 4")
                         produits = stockRepository.getAllProduits()
+                        allProduits = produits
                     }
                 }
                 Timber.d("search count ${produits.count()}")
@@ -99,6 +100,7 @@ class StockViewModel @Inject constructor(
     }
 
     var allCategories = emptyList<Categorie>()
+    var allProduits = emptyList<Produit>()
 
     fun fetchCategoriesFromDb() {
         _categoriesUiState.value = CategorieUiState.Loading
