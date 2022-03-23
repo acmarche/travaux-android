@@ -1,6 +1,5 @@
 package be.marche.apptravaux.screens.stock
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,17 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Categorie
 import be.marche.apptravaux.entities.Produit
-import be.marche.apptravaux.entities.ProduitUiState
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.MyNumberField
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
@@ -53,6 +49,7 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
 
         Timber.d("create ListScreen")
         val textState = remember { mutableStateOf(TextFieldValue("")) }
+        val categorieState = remember { mutableStateOf(0) }
 
         Scaffold(
             topBar = {
@@ -62,46 +59,11 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
             }
         ) {
             Column {
-                SearchView(state = textState, {})
-                CountryList(navController = navController, state = textState)
+                SearchView(textState, {})
+                ListSelectCategories(categorieState, { onSelectCategorie(it) })
+                CountryList(navController, categorieState, textState)
             }
-            when (val state = stockViewModel.produitsUiState.collectAsState().value) {
-                is ProduitUiState.Loading -> {
-                }
-                is ProduitUiState.Error -> {
-                    //    ErrorDialog(state.message)
-                }
-                is ProduitUiState.Loaded -> {
-                    //    LoadProduits(state.data, navController)
-                }
-                is ProduitUiState.Empty -> {
-                    /* Column {
-                         if (selectedCategorie.value > 0) {
-                             Text(
-                                 text = "Pas de produits suivant la recherche",
-                                 fontSize = 17.sp,
-                                 fontWeight = FontWeight.Bold
-                             )
-                             LoadProduits(emptyList(), navController)
-                         } else {
-                             ErrorDialog("La liste est vide")
-                             Divider(
-                                 modifier = Modifier.height(MEDIUM_PADDING),
-                                 color = MaterialTheme.colors.background
-                             )
-                             Button(
-                                 onClick = { navController.navigate(TravauxRoutes.StockSyncScreen.route) }
-                             ) {
-                                 Text(text = "Synchroniser les données")
-                             }
-                             Divider(
-                                 modifier = Modifier.height(MEDIUM_PADDING),
-                                 color = MaterialTheme.colors.background
-                             )
-                         }
-                     }*/
-                }
-            }
+
         }
     }
 
@@ -121,7 +83,7 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
                 SearchView(textState, { onSearchText(it) })
             }
             item {
-                ListSelectCategories(categories, { onSelectCategorie(it) })
+                //ListSelectCategories(categories, { onSelectCategorie(it) })
             }
             /*  item {
                   CountryTextField(
@@ -191,25 +153,28 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
     }
 
     @Composable
-    fun CountryList(navController: NavController, state: MutableState<TextFieldValue>) {
+    fun CountryList(
+        navController: NavController,
+        categorieState: MutableState<Int>,
+        searchState: MutableState<TextFieldValue>
+    ) {
+        Timber.d("country list cat ${categorieState.value} et ${searchState.value}")
         val produits = stockViewModel.allProduits
         var filteredProduits: List<Produit>
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            val searchedText = state.value.text
-            filteredProduits = if (searchedText.isEmpty()) {
+            val searchedText = searchState.value.text
+            val searchedCategorie = categorieState.value
+            filteredProduits = if (searchedText.isEmpty() && searchedCategorie == 0) {
                 produits
             } else {
                 val resultList = ArrayList<Produit>()
                 for (produit in produits) {
-                    if (produit.nom.lowercase(Locale.getDefault())
-                            .contains(searchedText.lowercase(Locale.getDefault()))
-                    ) {
+                    if (filterProduit(produit, searchedCategorie, searchedText)) {
                         resultList.add(produit)
                     }
                 }
                 resultList
             }
-            Timber.d("countries $filteredProduits")
             items(filteredProduits) { filteredProduit ->
                 ItemProduit(filteredProduit, { }, {})
             }
@@ -284,12 +249,13 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun ListSelectCategories(
-        options: List<Categorie>,
+        categorieState: MutableState<Int>,
         onChange: (Int) -> Unit
     ) {
         Timber.d("create ListSelectCategories")
         var expanded by remember { mutableStateOf(false) }
         var firstElement by remember { mutableStateOf(Categorie(0, "Toutes les categories", "")) }
+        val categories = stockViewModel.allCategories
 
         ExposedDropdownMenuBox(
             expanded = expanded,
@@ -315,9 +281,11 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
                     expanded = false
                 }
             ) {
-                options.forEach { categorie ->
+                categories.forEach { categorie ->
                     DropdownMenuItem(
                         onClick = {
+                            Timber.d("click cat ${categorie.id}")
+                            categorieState.value = categorie.id
                             onChange(categorie.id)
                             firstElement = categorie
                             expanded = false
@@ -343,15 +311,35 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
         }
     }
 
+    private fun filterProduit(produit: Produit, categorieId: Int, searchText: String): Boolean {
+        return checkCat(produit, categorieId) && checkKeyword(produit, searchText)
+    }
+
+    private fun checkCat(produit: Produit, categorieId: Int): Boolean {
+        Timber.d("checkCat $categorieId, ${produit.categorie_id}")
+        if (categorieId == 0)
+            return true
+
+        return produit.categorie_id == categorieId
+    }
+
+    private fun checkKeyword(produit: Produit, searchText: String): Boolean {
+        Timber.d("checkKeyword $searchText, $produit.nom")
+        if (searchText.length == 0)
+            return true
+        return produit.nom.lowercase(Locale.getDefault())
+            .contains(searchText.lowercase(Locale.getDefault()))
+    }
+
     private fun onSelectCategorie(categorieId: Int) {
-        selectedCategorie.value = categorieId
-        stockViewModel.fetchProduitsFromDb(selectedCategorie.value, textState.value.text)
+        //  selectedCategorie.value = categorieId
+        //  stockViewModel.fetchProduitsFromDb(selectedCategorie.value, textState.value.text)
     }
 
     private fun onSearchText(textSearched: TextFieldValue) {
         //textState.value = textSearched
         Timber.d("on search ${textSearched.text}")
-        stockViewModel.fetchProduitsFromDb(selectedCategorie.value, textState.value.text)
+        //   stockViewModel.fetchProduitsFromDb(selectedCategorie.value, textState.value.text)
     }
 
 }
