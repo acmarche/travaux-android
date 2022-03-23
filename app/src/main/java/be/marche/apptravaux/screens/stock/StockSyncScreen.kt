@@ -1,15 +1,15 @@
 package be.marche.apptravaux.screens.stock
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -23,7 +23,7 @@ import be.marche.apptravaux.networking.ConnectionState
 import be.marche.apptravaux.networking.connectivityState
 import be.marche.apptravaux.screens.widgets.ConnectivityStatusBox
 import be.marche.apptravaux.screens.widgets.OutlinedButtonJf
-import be.marche.apptravaux.ui.theme.Colors
+import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.StockViewModel
 import be.marche.apptravaux.worker.StockWorker
@@ -46,26 +46,9 @@ class StockSyncScreen(
     ) {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Synchronisation des stocks",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                navController.navigate(TravauxRoutes.StockHomeScreen.route)
-                            }
-                        ) {
-                            Icon(Icons.Filled.ArrowBack, contentDescription = "Retour")
-                        }
-                    },
-                    backgroundColor = Colors.Pink500,
-                    elevation = AppBarDefaults.TopAppBarElevation
-                )
+                TopAppBarJf(
+                    "Synchronisation des stocks"
+                ) { navController.navigate(TravauxRoutes.StockHomeScreen.route) }
             }
         ) {
             val lifeCycle = LocalLifecycleOwner.current

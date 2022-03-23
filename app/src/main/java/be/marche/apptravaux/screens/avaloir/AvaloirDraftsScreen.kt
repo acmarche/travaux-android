@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -37,7 +36,7 @@ import androidx.navigation.NavController
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.AvaloirDraft
 import be.marche.apptravaux.navigation.TravauxRoutes
-import be.marche.apptravaux.ui.theme.Colors
+import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.utils.FileHelper
 import be.marche.apptravaux.viewModel.AvaloirViewModel
@@ -58,26 +57,9 @@ class AvaloirDraftsScreen(
     ) {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Données en brouillons",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
-                            }
-                        ) {
-                            Icon(Icons.Filled.ArrowBack, contentDescription = "Retour")
-                        }
-                    },
-                    backgroundColor = Colors.Pink500,
-                    elevation = AppBarDefaults.TopAppBarElevation
-                )
+                TopAppBarJf(
+                    "Données en brouillons"
+                ) { navController.navigate(TravauxRoutes.AvaloirHomeScreen.route) }
             }
         ) {
             avaloirViewModel.refreshDrafts()

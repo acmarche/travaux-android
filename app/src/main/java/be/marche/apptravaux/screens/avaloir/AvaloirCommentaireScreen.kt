@@ -4,8 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,10 +18,9 @@ import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.OutlinedTextFieldJf
-import be.marche.apptravaux.ui.theme.Colors
+import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
-
 import java.util.*
 
 class AvaloirCommentaireScreen(
@@ -44,25 +41,9 @@ class AvaloirCommentaireScreen(
 
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Ajout d'un commentaire",
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/${avaloirId}")
-                            }
-                        ) {
-                            Icon(Icons.Filled.ArrowBack, contentDescription = "Retour")
-                        }
-                    },
-                    backgroundColor = Colors.Pink500,
-                    elevation = AppBarDefaults.TopAppBarElevation
-                )
+                TopAppBarJf(
+                    "Ajout d'un commentaire"
+                ) { navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/${avaloirId}") }
             }
         ) {
             selectedAvaloir.let {

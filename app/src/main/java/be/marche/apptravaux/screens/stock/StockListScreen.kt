@@ -22,6 +22,7 @@ import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.ErrorDialog
 import be.marche.apptravaux.screens.widgets.ListSelect
 import be.marche.apptravaux.screens.widgets.MyNumberField
+import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.StockViewModel
@@ -45,26 +46,8 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
 
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Liste des produits",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Left
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                navController.navigate(TravauxRoutes.StockHomeScreen.route)
-                            }
-                        ) {
-                            Icon(Icons.Filled.ArrowBack, contentDescription = "Retour")
-                        }
-                    },
-                    backgroundColor = Colors.Pink500,
-                    elevation = AppBarDefaults.TopAppBarElevation
-                )
+                TopAppBarJf("Liste des produits"
+                ) { navController.navigate(TravauxRoutes.StockHomeScreen.route) }
             }
         ) {
             when (val state = stockViewModel.produitsUiState.collectAsState().value) {

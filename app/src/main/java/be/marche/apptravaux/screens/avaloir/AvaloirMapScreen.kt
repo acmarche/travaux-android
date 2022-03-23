@@ -5,21 +5,18 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import be.marche.apptravaux.R
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.MapJf
-import be.marche.apptravaux.ui.theme.Colors.Pink500
+import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.gms.maps.model.CameraPosition
@@ -37,29 +34,9 @@ class AvaloirMapScreen(
     ) {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = stringResource(R.string.add_avaloir),
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
-                            }
-                        ) {
-                            Icon(
-                                Icons.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.back)
-                            )
-                        }
-                    },
-                    backgroundColor = Pink500,
-                    elevation = AppBarDefaults.TopAppBarElevation
-                )
+                TopAppBarJf(
+                    stringResource(R.string.add_avaloir)
+                ) { navController.navigate(TravauxRoutes.AvaloirHomeScreen.route) }
             }
         ) {
             ContentMainScreen(avaloirViewModel)

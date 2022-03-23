@@ -5,33 +5,26 @@ import android.content.Intent
 import android.provider.Settings
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.SearchResponseUiState
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.networking.ConnectionState
 import be.marche.apptravaux.networking.connectivityState
-import be.marche.apptravaux.screens.widgets.AvaloirWidget
-import be.marche.apptravaux.screens.widgets.CardRow
-import be.marche.apptravaux.screens.widgets.CircularProgressIndicatorSample
-import be.marche.apptravaux.screens.widgets.ErrorDialog
+import be.marche.apptravaux.screens.widgets.*
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.viewModel.AvaloirViewModel
@@ -56,28 +49,9 @@ class AvaloirSearchScreen(
         }
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Recherche dans un rayon de 25m",
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
-                            }
-                        ) {
-                            Icon(
-                                Icons.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.back)
-                            )
-                        }
-                    },
-                    backgroundColor = Colors.Pink500,
-                    elevation = AppBarDefaults.TopAppBarElevation
-                )
+                TopAppBarJf(
+                    "Recherche dans un rayon de 25m"
+                ) { navController.navigate(TravauxRoutes.AvaloirHomeScreen.route) }
             },
             floatingActionButton = {
                 FloatingActionButton(

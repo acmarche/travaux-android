@@ -12,9 +12,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.Button
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -33,14 +34,12 @@ import be.marche.apptravaux.entities.AvaloirDraft
 import be.marche.apptravaux.entities.CreateFileState
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.ErrorDialog
-import be.marche.apptravaux.ui.theme.Colors
-import be.marche.apptravaux.ui.theme.Colors.Pink500
+import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.utils.FileHelper
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import coil.compose.rememberImagePainter
 import com.google.android.libraries.maps.model.LatLng
 import kotlinx.coroutines.launch
-
 import java.io.File
 import java.util.*
 
@@ -63,30 +62,9 @@ class AvaloirPhotoScreen(
         }
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = stringResource(R.string.add_photo_avaloir),
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            color = Colors.White
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
-                            }
-                        ) {
-                            Icon(
-                                Icons.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.back)
-                            )
-                        }
-                    },
-                    backgroundColor = Pink500,
-                    elevation = AppBarDefaults.TopAppBarElevation
-                )
+                TopAppBarJf(
+                    stringResource(R.string.add_photo_avaloir)
+                ) { navController.navigate(TravauxRoutes.AvaloirHomeScreen.route) }
             }
         ) {
             val state = avaloirViewModel.resultCreateFile.collectAsState().value
