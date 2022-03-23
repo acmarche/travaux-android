@@ -6,14 +6,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -213,35 +216,29 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
         }
     }
 
-    @Composable
-    fun CountryListItem(countryText: String, onItemClick: (String) -> Unit) {
-        Row(
-            modifier = Modifier
-                .clickable(onClick = { onItemClick(countryText) })
-                .background(colorResource(id = R.color.purple_500))
-                .height(57.dp)
-                .fillMaxWidth()
-                .padding(PaddingValues(8.dp, 16.dp))
-        ) {
-            Text(text = countryText, fontSize = 18.sp, color = Color.White)
-        }
-    }
-
+    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     fun SearchView(
         state: MutableState<TextFieldValue>,
         onChange: (TextFieldValue) -> Unit
     ) {
         Timber.d("create SearchView")
-        TextField(
+        val keyboardController = LocalSoftwareKeyboardController.current
+        OutlinedTextField(
             value = state.value,
+            label = { Text(text = "Mot clef") },
             onValueChange = { value ->
                 state.value = value
                 //onChange(value)
             },
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
+            ),
             modifier = Modifier
                 .fillMaxWidth(),
-            textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+            textStyle = TextStyle(color = Color.Black, fontSize = 18.sp),
             leadingIcon = {
                 Icon(
                     Icons.Default.Search,
@@ -271,16 +268,16 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
             },
             singleLine = true,
             shape = RectangleShape, // The TextFiled has rounded corners top left and right by default
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = Color.White,
-                cursorColor = Color.White,
-                leadingIconColor = Color.White,
-                trailingIconColor = Color.White,
-                backgroundColor = colorResource(id = R.color.purple_500),
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
-            )
+            /*  colors = TextFieldDefaults.textFieldColors(
+                  textColor = Color.White,
+                  cursorColor = Color.White,
+                  leadingIconColor = Color.White,
+                  trailingIconColor = Color.White,
+                  backgroundColor = Color.Transparent,
+                  focusedIndicatorColor = Color.Transparent,
+                  unfocusedIndicatorColor = Color.Transparent,
+                  disabledIndicatorColor = Color.Transparent
+              )*/
         )
     }
 
