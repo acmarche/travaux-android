@@ -41,7 +41,7 @@ class MapNew {
 
         GoogleMap(
             modifier = modifier,
-        //    cameraPositionState = cameraPositionState,
+            //    cameraPositionState = cameraPositionState,
             properties = mapProperties,
             googleMapOptionsFactory = { mapOptions },
             uiSettings = uiSettings,
@@ -55,7 +55,7 @@ class MapNew {
             }
 
             Marker(
-                position = position,
+                state = MarkerState(position = cameraPositionState.position.target),
                 title = "Marker in Sydney",
                 onClick = markerClick,
                 draggable = true,
@@ -77,7 +77,7 @@ class MapNew {
         ) {
             if (cameraPositionState.isMoving) {
                 Marker(
-                    position = cameraPositionState.position.target,
+                    state = MarkerState(position = cameraPositionState.position.target),
                     title = "Marker in Sydney",
                     //     onClick = markerClick,
                     draggable = true,
