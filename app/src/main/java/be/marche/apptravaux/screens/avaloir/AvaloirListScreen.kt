@@ -1,12 +1,21 @@
 package be.marche.apptravaux.screens.avaloir
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import be.marche.apptravaux.entities.AvaloirUiState
@@ -27,6 +36,8 @@ class AvaloirListScreen(val navController: NavController) {
             avaloirViewModel.fetchAvaloirsFromDb()
         }
 
+        val textState = remember { mutableStateOf(TextFieldValue("")) }
+
         Scaffold(
             topBar = {
                 TopAppBarJf(
@@ -42,7 +53,10 @@ class AvaloirListScreen(val navController: NavController) {
                 }
                 is AvaloirUiState.Loaded -> {
                     val widget = AvaloirWidget()
-                    widget.LoadAvaloirs(state.data, navController)
+                    Column {
+                        SearchView(textState, {})
+                        widget.LoadAvaloirs(state.data, textState, navController)
+                    }
                 }
                 is AvaloirUiState.Empty -> {
                     Column {
@@ -65,6 +79,71 @@ class AvaloirListScreen(val navController: NavController) {
                 }
             }
         }
+    }
+
+    @OptIn(ExperimentalComposeUiApi::class)
+    @Composable
+    fun SearchView(
+        state: MutableState<TextFieldValue>,
+        onChange: (TextFieldValue) -> Unit
+    ) {
+        val keyboardController = LocalSoftwareKeyboardController.current
+        OutlinedTextField(
+            value = state.value,
+            label = { Text(text = "Rue") },
+            onValueChange = { value ->
+                state.value = value
+                //onChange(value)
+            },
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            textStyle = TextStyle(color = Color.Black, fontSize = 18.sp),
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .size(24.dp)
+                )
+            },
+            trailingIcon = {
+                if (state.value != TextFieldValue("")) {
+                    IconButton(
+                        onClick = {
+                            state.value =
+                                TextFieldValue("") // Remove text from TextField when you press the 'X' icon
+                        }
+                    ) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .padding(15.dp)
+                                .size(24.dp)
+                        )
+                    }
+                }
+            },
+            singleLine = true,
+            shape = RectangleShape, // The TextFiled has rounded corners top left and right by default
+            /*  colors = TextFieldDefaults.textFieldColors(
+                  textColor = Color.White,
+                  cursorColor = Color.White,
+                  leadingIconColor = Color.White,
+                  trailingIconColor = Color.White,
+                  backgroundColor = Color.Transparent,
+                  focusedIndicatorColor = Color.Transparent,
+                  unfocusedIndicatorColor = Color.Transparent,
+                  disabledIndicatorColor = Color.Transparent
+              )*/
+        )
     }
 
 

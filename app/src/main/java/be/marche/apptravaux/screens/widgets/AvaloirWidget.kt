@@ -12,11 +12,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -24,21 +26,49 @@ import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import coil.compose.rememberImagePainter
+import java.util.*
 
 class AvaloirWidget {
 
     @Composable
     fun LoadAvaloirs(
         avaloirs: List<Avaloir>,
+        searchState: MutableState<TextFieldValue>?,
         navController: NavController
     ) {
         LazyColumn {
-            items(avaloirs) { avaloir ->
+            val filteredAvaloirs: List<Avaloir>
+            val searchedText = searchState?.value?.text
+
+            when {
+                searchedText == null -> filteredAvaloirs = avaloirs
+                searchedText.isEmpty() -> filteredAvaloirs = avaloirs
+                else -> {
+                    val resultList = ArrayList<Avaloir>()
+                    for (avaloir in avaloirs) {
+                        if (filterAvaloir(avaloir, searchedText)) {
+                            resultList.add(avaloir)
+                        }
+                    }
+                    filteredAvaloirs = resultList
+                }
+            }
+            items(filteredAvaloirs) { avaloir ->
                 ItemAvaloir(avaloir) {
                     navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/${avaloir.idReferent}")
                 }
             }
         }
+    }
+
+    private fun filterAvaloir(avaloir: Avaloir, searchText: String): Boolean {
+        if (searchText.isEmpty())
+            return true
+        if (avaloir.rue == null)
+            return true
+
+        return avaloir.rue.lowercase(Locale.getDefault())
+            .contains(searchText.lowercase(Locale.getDefault()))
     }
 
     @Composable

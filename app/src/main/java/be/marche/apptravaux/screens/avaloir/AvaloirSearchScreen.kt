@@ -201,7 +201,7 @@ class AvaloirSearchScreen(
                     color = MaterialTheme.colors.background
                 )
                 val widget = AvaloirWidget()
-                widget.LoadAvaloirs(state.response.avaloirs, navController)
+                widget.LoadAvaloirs(state.response.avaloirs, null, navController)
             }
             else -> {
 
