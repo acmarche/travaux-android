@@ -16,7 +16,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 import javax.inject.Inject
 
@@ -42,32 +41,26 @@ class StockViewModel @Inject constructor(
     }
 
     fun fetchProduitsFromDb(categorieId: Int, textSearched: String?) {
-        Timber.d("searching")
         _produitsUiState.value = ProduitUiState.Loading
         viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             var produits: List<Produit> = emptyList()
             try {
                 when {
                     categorieId > 0 && textSearched != null -> {
-                        Timber.d("search 1")
                         produits =
                             stockRepository.getProduitsByCategorieAndName(categorieId, textSearched)
                     }
                     categorieId > 0 && textSearched == null -> {
-                        Timber.d("search 2")
                         produits = stockRepository.getProduitsByCategorie(categorieId)
                     }
                     categorieId == 0 && textSearched != null -> {
-                        Timber.d("search 3")
                         produits = stockRepository.getProduitsByName(textSearched)
                     }
                     else -> {
-                        Timber.d("search 4")
                         produits = stockRepository.getAllProduits()
                         allProduits = produits
                     }
                 }
-                Timber.d("search count ${produits.count()}")
                 if (produits.count() == 0) {
                     _produitsUiState.value = ProduitUiState.Empty
                 } else {
