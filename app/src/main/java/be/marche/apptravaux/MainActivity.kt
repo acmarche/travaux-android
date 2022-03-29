@@ -7,14 +7,18 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
+import androidx.work.Data
+import androidx.work.WorkInfo
 import be.marche.apptravaux.navigation.Navigation
 import be.marche.apptravaux.networking.NetworkUtils
+import be.marche.apptravaux.screens.avaloir.AvaloirSyncScreen
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.viewModel.LocationViewModel
 import be.marche.apptravaux.viewModel.StockViewModel
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -30,7 +34,7 @@ class MainActivity : ComponentActivity() {
         NetworkUtils.getNetworkLiveData(applicationContext).observe(this) {
             if (it) {
                 lifecycleScope.launch {
-                    //        syncContent()
+                    syncContent()
                 }
             }
         }
@@ -42,10 +46,45 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private suspend fun syncContent() {
-        avaloirViewModel.allAvaloirs.collect {
-            avaloirViewModel.insertAvaloirs(it)
+    private fun syncContent() {
+        val workerAvaloir = avaloirViewModel.workManager
+        val taskData =
+            Data.Builder().putString(AvaloirSyncScreen.MESSAGE_STATUS, "Notification Done.").build()
+        val requestAvaloir = avaloirViewModel.createRequest(taskData)
+        avaloirViewModel.enqueueWorkRequest(requestAvaloir)
+
+        workerAvaloir.getWorkInfoByIdLiveData(requestAvaloir.id).observe(this) {
+            if (it != null) {
+                when (it.state) {
+                    WorkInfo.State.FAILED -> {
+                        val workStatus = it.state
+                        Firebase.crashlytics.log("Failt auto sync avaloir $workStatus")
+                    }
+                    else -> {
+
+                    }
+                }
+            }
         }
+
+        val workerStock = stockViewModel.workManager
+        val requestStock = stockViewModel.createRequest(taskData)
+        stockViewModel.enqueueWorkRequest(requestStock)
+
+        workerStock.getWorkInfoByIdLiveData(requestStock.id).observe(this) {
+            if (it != null) {
+                when (it.state) {
+                    WorkInfo.State.FAILED -> {
+                        val workStatus = it.state
+                        Firebase.crashlytics.log("Failt auto sync stock $workStatus")
+                    }
+                    else -> {
+
+                    }
+                }
+            }
+        }
+
     }
 
     @Preview

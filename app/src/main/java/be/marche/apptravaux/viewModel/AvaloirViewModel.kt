@@ -110,7 +110,6 @@ class AvaloirViewModel @Inject constructor(
     val selectedAvaloir: StateFlow<Avaloir?> = _selectedAvaloir
         get
 
-
     private val _datesAvaloir: MutableStateFlow<List<DateNettoyage>> = MutableStateFlow(emptyList())
     val datesAvaloir: StateFlow<List<DateNettoyage>> = _datesAvaloir
 
