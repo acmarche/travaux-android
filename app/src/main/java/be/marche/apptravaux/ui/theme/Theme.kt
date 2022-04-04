@@ -5,6 +5,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalConfiguration
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
@@ -39,10 +43,47 @@ fun AppTravaux6Theme(
         LightColorPalette
     }
 
-    MaterialTheme(
-        colors = colors,
-        typography = Typography,
-        shapes = Shapes,
-        content = content
-    )
+    val configuration = LocalConfiguration.current
+    val dimensions =
+        if (configuration.screenWidthDp <= 420) smartphoneDimension else tabletDimension
+    val typography =
+        if (configuration.screenWidthDp <= 420) textSmallDimension else textTabletDimensions
+
+    ProvideDimens(dimensions = dimensions) {
+        ProvideAppTypography(typography = typography) {
+            MaterialTheme(
+                colors = colors,
+                typography = Typography,
+                shapes = Shapes,
+                content = content
+            )
+        }
+    }
 }
+
+
+object ScreenSizeTheme {
+    val dimens: Dimensions
+        @Composable
+        get() = LocalAppDimens.current
+    val textStyle: Typography
+        @Composable
+        get() = LocalAppTypography.current
+}
+
+
+@Composable
+fun ProvideDimens(dimensions: Dimensions, content: @Composable () -> Unit) {
+    val dimensionSet = remember { dimensions }
+    CompositionLocalProvider(LocalAppDimens provides dimensionSet, content = content)
+}
+
+private val LocalAppDimens = staticCompositionLocalOf { smartphoneDimension }
+
+@Composable
+fun ProvideAppTypography(typography: Typography, content: @Composable () -> Unit) {
+    val typographySet = remember { typography }
+    CompositionLocalProvider(LocalAppTypography provides typographySet, content = content)
+}
+
+private val LocalAppTypography = staticCompositionLocalOf { textSmallDimension }

@@ -20,11 +20,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
+import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import coil.compose.rememberImagePainter
 import java.util.*
 
@@ -93,8 +93,8 @@ class AvaloirWidget {
                     painter = rememberImagePainter(avaloir.imageUrl),
                     contentDescription = "Image",
                     modifier = Modifier
-                        .width(70.dp)
-                        .height(70.dp)
+                        .width(ScreenSizeTheme.dimens.width)
+                        .height(ScreenSizeTheme.dimens.height)
                         .padding(5.dp)
                         .clip(RoundedCornerShape(5.dp))
                 )
@@ -104,7 +104,7 @@ class AvaloirWidget {
                 ) {
                     Text(
                         text = "Rue: ${avaloir.rue}",
-                        fontSize = 15.sp,
+                        style = ScreenSizeTheme.textStyle.fontStyle_2,
                         fontWeight = FontWeight.Bold
                     )
 
@@ -112,7 +112,7 @@ class AvaloirWidget {
 
                     Text(
                         text = "Localité: ${avaloir.localite}",
-                        fontSize = 15.sp,
+                        style = ScreenSizeTheme.textStyle.fontStyle_2,
                         fontWeight = FontWeight.Normal
                     )
                 }

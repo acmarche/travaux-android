@@ -1,6 +1,7 @@
 package be.marche.apptravaux.screens
 
 import android.icu.text.DateFormat
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeOut
@@ -11,16 +12,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
@@ -28,8 +30,8 @@ import be.marche.apptravaux.entities.DateNettoyage
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.MapJf
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
-import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
+import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import coil.compose.rememberImagePainter
 import com.google.android.gms.maps.model.CameraPosition
@@ -57,8 +59,8 @@ class AvaloirDetailScreen(
         Scaffold(
             topBar = {
                 TopAppBarJf(
-                "Détail avaloir"
-            ) { navController.navigate(TravauxRoutes.AvaloirListScreen.route) }
+                    "Détail avaloir"
+                ) { navController.navigate(TravauxRoutes.AvaloirListScreen.route) }
             }
         ) {
             selectedAvaloir.let {
@@ -86,6 +88,8 @@ class AvaloirDetailScreen(
             mutableStateOf(singapore)
         }
 
+        val context = LocalContext.current
+
         val location2 = remember {
             mutableStateOf(avaloirViewModel.currentLatLng)
         }
@@ -96,14 +100,14 @@ class AvaloirDetailScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 25.dp)
+            //  .padding(horizontal = 25.dp)
         )
         {
             item {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight()
+                        //     .wrapContentHeight()
                         .padding(vertical = 25.dp),
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
@@ -112,17 +116,39 @@ class AvaloirDetailScreen(
                         Image(
                             painter = rememberImagePainter(avaloir.imageUrl),
                             contentDescription = null,
-                            modifier = Modifier.size(128.dp)
+                            contentScale = ContentScale.FillHeight,
+                            modifier = Modifier
+                                .size(
+                                    width = ScreenSizeTheme.dimens.imageW,
+                                    height = ScreenSizeTheme.dimens.imageH
+                                )
+                                .clickable {
+                                    Toast
+                                        .makeText(
+                                            context,
+                                            "zeze",
+                                            Toast.LENGTH_LONG
+                                        )
+                                        .show()
+                                }
                         )
                     }
                     Column() {
-                        Text(text = "${avaloir.rue}", fontWeight = FontWeight.Bold)
-                        Text(text = "${avaloir.localite} ", fontWeight = FontWeight.Bold)
+                        Text(
+                            text = "${avaloir.rue}",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = ScreenSizeTheme.textStyle.fontWidth_2
+                        )
+                        Text(
+                            text = "${avaloir.localite} ",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = ScreenSizeTheme.textStyle.fontWidth_2
+                        )
                         Text(
                             text = "Localisation: ${avaloir.latitude} ${avaloir.longitude}",
                             style = TextStyle(
                                 color = Color.LightGray,
-                                fontSize = 14.sp
+                                fontSize = ScreenSizeTheme.textStyle.fontWidth_1
                             )
                         )
                         Text(text = "Id: ${avaloir.idReferent} ")
@@ -171,7 +197,7 @@ class AvaloirDetailScreen(
             }
 
             item {
-                Box(Modifier.height(350.dp)) {
+                Box(Modifier.height(ScreenSizeTheme.dimens.carte)) {
                     /*   map.GoogleMapView(
                            modifier = Modifier,
                            cameraPositionState = cameraPositionState,
@@ -228,7 +254,7 @@ class AvaloirDetailScreen(
             style = TextStyle(
                 textDecoration = TextDecoration.Underline,
                 color = Color.Green,
-                fontSize = 18.sp
+                fontSize = ScreenSizeTheme.textStyle.fontTitle_1
             )
         )
         Text(text = builder.toString())
@@ -238,23 +264,25 @@ class AvaloirDetailScreen(
     @Composable
     private fun CommentairesContent() {
         val commentaires = avaloirViewModel.commentairesAvaloir.collectAsState().value
-        Text(
-            text = "Commentaires",
-            style = TextStyle(
-                textDecoration = TextDecoration.Underline,
-                color = Color.Green,
-                fontSize = 18.sp
+        if (commentaires.count() > 0) {
+            Text(
+                text = "Commentaires",
+                style = TextStyle(
+                    textDecoration = TextDecoration.Underline,
+                    color = Color.Green,
+                    fontSize = ScreenSizeTheme.textStyle.fontTitle_1
+                )
             )
-        )
 
-        Column {
-            commentaires.forEach() { commentaire ->
-                ItemCommentaire(commentaire) {
+            Column {
+                commentaires.forEach() { commentaire ->
+                    ItemCommentaire(commentaire) {
 
+                    }
                 }
             }
+            Spacer(modifier = Modifier.height(10.dp))
         }
-        Spacer(modifier = Modifier.height(10.dp))
     }
 
     @Composable

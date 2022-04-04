@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.marche.apptravaux.R
+import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.ui.theme.green
 import be.marche.apptravaux.ui.theme.red
 import coil.compose.ImagePainter
@@ -58,7 +59,7 @@ fun CardRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = texte)
+            Text(text = texte, fontSize = ScreenSizeTheme.textStyle.fontWidth_1)
         }
     }
 }

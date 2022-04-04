@@ -24,6 +24,7 @@ import be.marche.apptravaux.screens.widgets.AvaloirWidget
 import be.marche.apptravaux.screens.widgets.ErrorDialog
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
+import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 
 class AvaloirListScreen(val navController: NavController) {
@@ -103,7 +104,8 @@ class AvaloirListScreen(val navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
-            textStyle = TextStyle(color = Color.Black, fontSize = 18.sp),
+            textStyle = ScreenSizeTheme.textStyle.fontStyle_2,
+           // textStyle = TextStyle(color = Color.Black, fontSize = 18.sp),
             leadingIcon = {
                 Icon(
                     Icons.Default.Search,

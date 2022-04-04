@@ -27,6 +27,7 @@ import be.marche.apptravaux.networking.connectivityState
 import be.marche.apptravaux.screens.widgets.*
 import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
+import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.viewModel.LocationViewModel
 import com.google.android.libraries.maps.model.LatLng
@@ -167,7 +168,9 @@ class AvaloirSearchScreen(
                 ResultSearch(avaloirViewModel)
             }
         } else {
-            CardRow(texte = "La recherche par géolocalisation ne peut se faire que si internet est fonctionnel") {
+            CardRow(
+                texte = "La recherche par géolocalisation ne peut se faire que si internet est fonctionnel"
+            ) {
 
             }
             Text(text = "Pas de géolocalisation !!")
@@ -195,7 +198,10 @@ class AvaloirSearchScreen(
                 ErrorDialog(state.message)
             }
             is SearchResponseUiState.Loaded -> {
-                Text("${state.response.avaloirs.count()} avaloir(s) trouvé(s) dans un rayon de 25m")
+                Text(
+                    text = "${state.response.avaloirs.count()} avaloir(s) trouvé(s) dans un rayon de 25m",
+                    fontSize = ScreenSizeTheme.textStyle.fontWidth_1
+                )
                 Divider(
                     modifier = Modifier.height(MEDIUM_PADDING),
                     color = MaterialTheme.colors.background
@@ -211,20 +217,27 @@ class AvaloirSearchScreen(
 
     @Composable
     private fun LocationText(location: LatLng) {
-        Text(text = "Votre localisation: ${location.latitude}, ${location.longitude}")
+        Text(
+            text = "Votre localisation: ${location.latitude}, ${location.longitude}",
+            fontSize = ScreenSizeTheme.textStyle.fontWidth_1
+        )
     }
 
     @Composable
     private fun DescriptionText() {
         Text(
             text = "Cliquez sur un avaloir trouvé ou ajouter un autre",
+            fontSize = ScreenSizeTheme.textStyle.fontWidth_1,
             modifier = Modifier.padding(5.dp)
         )
     }
 
     @Composable
     private fun LoadScreen() {
-        Text(text = "Recherche en cours...")
+        Text(
+            text = "Recherche en cours...",
+            fontSize = ScreenSizeTheme.textStyle.fontWidth_1
+        )
         CircularProgressIndicator(progress = 0.5f)
     }
 
