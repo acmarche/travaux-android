@@ -1,34 +1,40 @@
 package be.marche.apptravaux.screens.widgets
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
+import android.content.Context
+import android.icu.text.DateFormat
+import android.icu.text.SimpleDateFormat
+import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.TravauxRoutes
-import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
+import be.marche.apptravaux.utils.FileHelper
 import coil.compose.rememberImagePainter
+import java.io.File
 import java.util.*
 
 class AvaloirWidget {
+
+    val fileHelper = FileHelper()
 
     @Composable
     fun LoadAvaloirs(
@@ -36,6 +42,7 @@ class AvaloirWidget {
         searchState: MutableState<TextFieldValue>?,
         navController: NavController
     ) {
+        val context = LocalContext.current
         LazyColumn {
             val filteredAvaloirs: List<Avaloir>
             val searchedText = searchState?.value?.text
@@ -54,7 +61,7 @@ class AvaloirWidget {
                 }
             }
             items(filteredAvaloirs) { avaloir ->
-                ItemAvaloir(avaloir) {
+                ItemAvaloir(avaloir, context) {
                     navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/${avaloir.idReferent}")
                 }
             }
@@ -74,6 +81,7 @@ class AvaloirWidget {
     @Composable
     fun ItemAvaloir(
         avaloir: Avaloir,
+        context: Context,
         onItemCLick: (Int) -> Unit
     ) {
         Card(
@@ -89,94 +97,91 @@ class AvaloirWidget {
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Image(
-                    painter = rememberImagePainter(avaloir.imageUrl),
-                    contentDescription = "Image",
-                    modifier = Modifier
-                        .width(ScreenSizeTheme.dimens.width)
-                        .height(ScreenSizeTheme.dimens.height)
-                        .padding(5.dp)
-                        .clip(RoundedCornerShape(5.dp))
-                )
-
+                ImageAvaloir(avaloir, context)
                 Column(
                     modifier = Modifier.padding(10.dp)
                 ) {
+                    val texteRue = avaloir.rue ?: "non déterminé"
                     Text(
-                        text = "Rue: ${avaloir.rue}",
-                        style = ScreenSizeTheme.textStyle.fontStyle_2,
+                        text = "Rue: $texteRue",
+                        style = ScreenSizeTheme.textStyle.fontStyle_1,
                         fontWeight = FontWeight.Bold
                     )
 
                     Spacer(modifier = Modifier.padding(5.dp))
+                    val texteLocalite = avaloir.localite ?: "non déterminé"
 
                     Text(
-                        text = "Localité: ${avaloir.localite}",
-                        style = ScreenSizeTheme.textStyle.fontStyle_2,
+                        text = "Localité: $texteLocalite",
+                        style = ScreenSizeTheme.textStyle.fontStyle_1,
                         fontWeight = FontWeight.Normal
                     )
+
+                    Text(
+                        text = "Ajouté le ${formatDate(avaloir.createdAt)}",
+                        style = ScreenSizeTheme.textStyle.fontStyle_1,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(modifier = Modifier.padding(5.dp))
                 }
             }
         }
     }
 
+    fun formatDate(createdAt: Date): String {
+        //val format = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
+        return DateFormat.getPatternInstance(DateFormat.YEAR_ABBR_MONTH_DAY).format(createdAt)
+    }
+
     @Composable
-    fun ItemAvaloirBroke(
+    fun ImageAvaloir(
         avaloir: Avaloir,
-        onItemCLick: (Int) -> Unit
+        context: Context
     ) {
-        Row(
-            modifier = Modifier
-                .padding(all = 8.dp)
-                .clickable {
-                    onItemCLick(avaloir.idReferent)
-                },
-        ) {
-            Image(
-                painter = rememberImagePainter(avaloir.imageUrl),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(128.dp)
-                    .border(1.5.dp, MaterialTheme.colors.secondaryVariant, CircleShape)
-                    .clip(CircleShape)
-            )
-
-            Divider(
-                modifier = Modifier.height(MEDIUM_PADDING),
-                color = MaterialTheme.colors.background
-            )
-
-            val surfaceColor: Color by animateColorAsState(
-                MaterialTheme.colors.primary
-            )
-
-            Column() {
-                Text(
-                    text = "Rue: ${avaloir.rue}",
-                    color = MaterialTheme.colors.secondaryVariant,
-                    style = MaterialTheme.typography.subtitle2
-                )
-
-                Divider(
-                    modifier = Modifier.height(MEDIUM_PADDING),
-                    color = MaterialTheme.colors.background
-                )
-
-                Surface(
-                    shape = MaterialTheme.shapes.medium,
-                    elevation = 1.dp,
-                    // surfaceColor color will be changing gradually from primary to surface
-                    color = surfaceColor,
-                    // animateContentSize will change the Surface size gradually
-                    modifier = Modifier
-                        .animateContentSize()
-                        .padding(1.dp)
-                ) {
-                    Text(
-                        text = "Localité: ${avaloir.localite}",
-                        modifier = Modifier.padding(all = 4.dp),
-                        style = MaterialTheme.typography.body2
+        with(avaloir.imageUrl) {
+            when {
+                this == null -> {
+                    Image(
+                        painterResource(R.drawable.profile_picture),
+                        contentDescription = "Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .width(ScreenSizeTheme.dimens.width)
+                            .height(ScreenSizeTheme.dimens.height)
+                            .padding(5.dp)
                     )
+                }
+                this.contains("http") -> {
+                    Image(
+                        painter = rememberImagePainter(avaloir.imageUrl),
+                        contentDescription = "Image",
+                        modifier = Modifier
+                            .width(ScreenSizeTheme.dimens.width)
+                            .height(ScreenSizeTheme.dimens.height)
+                            .padding(5.dp)
+                            .clip(RoundedCornerShape(5.dp))
+                    )
+                }
+                else -> {
+                    var fileUri: Uri? = null
+                    try {
+                        val cacheFile = File(avaloir.imageUrl!!)
+                        fileUri = fileHelper.createUri(context, cacheFile)
+                    } catch (e: Exception) {
+
+                    }
+                    if (fileUri != null) {
+                        Image(
+                            rememberImagePainter(fileUri),
+                            contentDescription = "Image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .width(ScreenSizeTheme.dimens.width)
+                                .height(ScreenSizeTheme.dimens.height)
+                                .padding(5.dp)
+                        )
+                    }
                 }
             }
         }

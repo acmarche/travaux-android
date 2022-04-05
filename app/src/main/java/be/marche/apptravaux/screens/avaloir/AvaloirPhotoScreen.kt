@@ -30,7 +30,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import be.marche.apptravaux.R
-import be.marche.apptravaux.entities.AvaloirDraft
+import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.CreateFileState
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.ErrorDialog
@@ -201,10 +201,17 @@ class AvaloirPhotoScreen(
             onClick = {
                 val today = Date()
                 val avaloir =
-                    AvaloirDraft(null, location.latitude, location.longitude, fileImage.path, today)
-                avaloirViewModel.insertAvaloirDraft(avaloir)
+                    Avaloir(
+                        id = null,
+                        idReferent = 0,
+                        latitude = location.latitude,
+                        longitude = location.longitude,
+                        imageUrl = fileImage.path,
+                        createdAt = today
+                    )
+                avaloirViewModel.insertAvaloir(avaloir)
                 Toast.makeText(context, "Avaloir ajouté", Toast.LENGTH_SHORT).show()
-                navController.navigate(TravauxRoutes.AvaloirDraftsScreen.route){
+                navController.navigate(TravauxRoutes.AvaloirListScreen.route) {
                     popUpTo(TravauxRoutes.AvaloirHomeScreen.route)
                 }
             },
@@ -222,6 +229,7 @@ class AvaloirPhotoScreen(
             )
         }
     }
+
     @Composable
     private fun BtnCancel(
     ) {

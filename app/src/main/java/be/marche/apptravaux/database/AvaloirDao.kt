@@ -2,7 +2,6 @@ package be.marche.apptravaux.database
 
 import androidx.room.*
 import be.marche.apptravaux.entities.Avaloir
-import be.marche.apptravaux.entities.AvaloirDraft
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
 import kotlinx.coroutines.flow.Flow
@@ -10,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AvaloirDao {
 
-    @Query("SELECT * FROM avaloirdraft")
-    fun getAllAvaloirsDraftsList(): List<AvaloirDraft>
+    @Query("SELECT * FROM avaloir WHERE idReferent = 0")
+    fun getAllAvaloirsDraftsList(): List<Avaloir>
 
     @Query("SELECT * FROM datenettoyage WHERE idReferent = 0")
     fun getAllDatesNettoyagesDraftsList(): List<DateNettoyage>
@@ -19,13 +18,13 @@ interface AvaloirDao {
     @Query("SELECT * FROM commentaire WHERE idReferent = 0")
     fun getAllCommentairesDraftsList(): List<Commentaire>
 
-    @Query("SELECT * FROM avaloir")
+    @Query("SELECT * FROM avaloir ORDER BY createdAt DESC")
     fun getAll(): List<Avaloir>
 
-    @Query("SELECT * FROM avaloirdraft")
-    fun getAllDraftsFlow(): Flow<List<AvaloirDraft>>
+    @Query("SELECT * FROM avaloir WHERE idReferent = 0")
+    fun getAllDraftsFlow(): Flow<List<Avaloir>>
 
-    @Query("SELECT * FROM avaloir")
+    @Query("SELECT * FROM avaloir ORDER BY createdAt DESC")
     fun getFlowList(): Flow<List<Avaloir>>
 
     @Query("SELECT * FROM avaloir WHERE idReferent = :avaloirId")
@@ -65,19 +64,16 @@ interface AvaloirDao {
     suspend fun insertAvaloir(avaloir: Avaloir)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAvaloirDraft(avaloir: AvaloirDraft)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCommentaire(commentaire: Commentaire)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDateNettoyage(dateNettoyage: DateNettoyage)
 
     @Delete()
-    suspend fun deleteAvaloirDraft(avaloirDraft: AvaloirDraft)
+    suspend fun deleteAvaloirDraft(avaloirDraft: Avaloir)
 
     @Delete()
-    fun deleteAvaloirDraftNotSuspend(avaloirDraft: AvaloirDraft)
+    fun deleteAvaloirDraftNotSuspend(avaloirDraft: Avaloir)
 
     @Delete()
     fun deleteDateNettoyageNotSuspend(dateNettoyage: DateNettoyage)

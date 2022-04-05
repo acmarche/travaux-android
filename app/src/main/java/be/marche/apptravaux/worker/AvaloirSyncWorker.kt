@@ -4,17 +4,18 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.icu.text.SimpleDateFormat
+import android.os.Build
 import android.os.SystemClock.sleep
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import be.marche.apptravaux.BuildConfig
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.NotificationState
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.repository.AvaloirRepository
-import be.marche.apptravaux.screens.avaloir.AvaloirSyncScreen
 import be.marche.apptravaux.ui.entities.Coordinates
 import be.marche.apptravaux.utils.FileHelper
 import com.google.firebase.crashlytics.ktx.crashlytics
@@ -42,9 +43,6 @@ class AvaloirSyncWorker @AssistedInject constructor(
     private val outputData = Data.Builder().putString(WORK_RESULT, "Synchronisation démarrée")
 
     override fun doWork(): Result {
-        val taskData = inputData
-        val taskDataString = taskData.getString(AvaloirSyncScreen.MESSAGE_STATUS)
-        val notificationString = taskData.getString(AvaloirSyncScreen.MESSAGE_STATUS)
 
         outputData.putString(WORK_RESULT, "Zeze").build()
 
@@ -303,7 +301,6 @@ class AvaloirSyncWorker @AssistedInject constructor(
         return results
     }
 
-
     private fun treatmentResults(name: String, idNotify: Int, results: List<NotificationState>) {
         val errors = results.filterIsInstance(NotificationState.Error::class.java)
         if (errors.count() > 0) {
@@ -318,18 +315,26 @@ class AvaloirSyncWorker @AssistedInject constructor(
     }
 
     private fun showNotification(id: String, idNotify: Int, name: String, desc: String) {
-        val channelId = id
-        val channelName = name
+        if (BuildConfig.VERSION_CODE > Build.VERSION_CODES.O) {
 
-        val channel =
-            NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
-        manager.createNotificationChannel(channel)
+            val channelId = id
+            val channelName = name
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel =
+                    NotificationChannel(
+                        channelId,
+                        channelName,
+                        NotificationManager.IMPORTANCE_DEFAULT
+                    )
+                manager.createNotificationChannel(channel)
+            }
 
-        val builder = NotificationCompat.Builder(applicationContext, channelId)
-            .setContentTitle("AppTravaux")
-            .setContentText(desc)
-            .setSmallIcon(R.drawable.ic_outline_notifications_active_24)
+            val builder = NotificationCompat.Builder(applicationContext, channelId)
+                .setContentTitle("AppTravaux")
+                .setContentText(desc)
+                .setSmallIcon(R.drawable.ic_outline_notifications_active_24)
 
-        manager.notify(idNotify, builder.build())
+            manager.notify(idNotify, builder.build())
+        }
     }
 }

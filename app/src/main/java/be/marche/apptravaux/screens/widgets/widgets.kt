@@ -3,7 +3,6 @@ package be.marche.apptravaux.screens.widgets
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,9 +33,6 @@ import be.marche.apptravaux.R
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.ui.theme.green
 import be.marche.apptravaux.ui.theme.red
-import coil.compose.ImagePainter
-import coil.compose.rememberImagePainter
-
 
 @Composable
 fun CardRow(
@@ -147,33 +142,6 @@ fun ConnectivityStatusBox(
                     color = Color.White,
                     fontSize = 15.sp
                 )
-            }
-        }
-    }
-}
-
-@Composable
-fun ImageCoil() {
-    val painter = rememberImagePainter(
-        data = "https://picsum.photos/300/300",
-        builder = {
-            crossfade(true)
-        }
-    )
-
-    Box {
-        Image(
-            painter = painter,
-            contentDescription = stringResource(R.string.app_name),
-        )
-
-        when (painter.state) {
-            is ImagePainter.State.Loading -> {
-                // Display a circular progress indicator whilst loading
-                CircularProgressIndicator(Modifier.align(Alignment.Center))
-            }
-            is ImagePainter.State.Error -> {
-                // If you wish to display some content if the request fails
             }
         }
     }

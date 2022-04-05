@@ -2,21 +2,15 @@ package be.marche.apptravaux.viewModel
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.*
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.*
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.repository.AvaloirRepository
-import be.marche.apptravaux.screens.avaloir.AvaloirSyncScreen.Companion.MESSAGE_STATUS
 import be.marche.apptravaux.ui.entities.SearchRequest
 import be.marche.apptravaux.utils.FileHelper
-import be.marche.apptravaux.worker.AvaloirSyncWorker
 import com.google.android.libraries.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -25,8 +19,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,8 +34,8 @@ class AvaloirViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<AvaloirUiState>(AvaloirUiState.Empty)
     val uiState: StateFlow<AvaloirUiState> = _uiState
 
-    private val _allAvaloirsDraftsFlow = MutableStateFlow<List<AvaloirDraft>>(emptyList())
-    val allAvaloirsDraftsFlow: StateFlow<List<AvaloirDraft>> = _allAvaloirsDraftsFlow
+    private val _allAvaloirsDraftsFlow = MutableStateFlow<List<Avaloir>>(emptyList())
+    val allAvaloirsDraftsFlow: StateFlow<List<Avaloir>> = _allAvaloirsDraftsFlow
 
     private val _allDatesDraftsFlow = MutableStateFlow<List<DateNettoyage>>(emptyList())
     val allDatesDraftsFlow: StateFlow<List<DateNettoyage>> = _allDatesDraftsFlow
@@ -147,7 +139,7 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
-    val allAvaloirsDraftFlow: Flow<List<AvaloirDraft>> = flow {
+    val allAvaloirsDraftFlow: Flow<List<Avaloir>> = flow {
         avaloirRepository.getAllAvaloirsDraftsFlow()
     }
 
@@ -158,12 +150,6 @@ class AvaloirViewModel @Inject constructor(
     fun insertAvaloir(avaloir: Avaloir) {
         viewModelScope.launch {
             avaloirRepository.insertAvaloirs(listOf(avaloir))
-        }
-    }
-
-    fun insertAvaloirDraft(avaloir: AvaloirDraft) {
-        viewModelScope.launch {
-            avaloirRepository.insertAvaloirDraft(avaloir)
         }
     }
 
@@ -183,7 +169,7 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
-    fun deleteAvaloirDraft(avaloir: AvaloirDraft) {
+    fun deleteAvaloirDraft(avaloir: Avaloir) {
         viewModelScope.launch {
             avaloirRepository.deleteAvaloirDraft(avaloir)
         }
@@ -264,39 +250,4 @@ class AvaloirViewModel @Inject constructor(
             }
         }
     }
-
-    /**
-     * WorkManager
-     */
-    val workManager by lazy { WorkManager.getInstance(applicationContext) }
-
-    internal fun cancelWork() {
-        workManager.cancelUniqueWork(AVALOIR_SYNC_WORK_REQUEST)
-    }
-
-    private fun createInputDataForUri(): Data {
-        return Data.Builder().putString(MESSAGE_STATUS, "Notification Done.").build()
-    }
-
-    fun createRequest(taskData: Data): OneTimeWorkRequest {
-        val powerConstraints = Constraints.Builder().setRequiresBatteryNotLow(true).build()
-        val networkConstraints =
-            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-
-        return OneTimeWorkRequest.Builder(AvaloirSyncWorker::class.java)
-            .setConstraints(powerConstraints)
-            .setConstraints(networkConstraints)
-            .setInputData(taskData)
-            .addTag("syncAvaloir")
-            .build()
-    }
-
-    internal fun enqueueWorkRequest(request: OneTimeWorkRequest) {
-        workManager.enqueueUniqueWork(
-            AVALOIR_SYNC_WORK_REQUEST,
-            ExistingWorkPolicy.REPLACE,
-            request
-        )
-    }
-
 }

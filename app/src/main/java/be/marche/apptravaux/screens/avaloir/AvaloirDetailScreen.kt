@@ -122,6 +122,7 @@ class AvaloirDetailScreen(
                                     width = ScreenSizeTheme.dimens.imageW,
                                     height = ScreenSizeTheme.dimens.imageH
                                 )
+                                .padding(horizontal = 25.dp)
                                 .clickable {
                                     Toast
                                         .makeText(
@@ -198,15 +199,6 @@ class AvaloirDetailScreen(
 
             item {
                 Box(Modifier.height(ScreenSizeTheme.dimens.carte)) {
-                    /*   map.GoogleMapView(
-                           modifier = Modifier,
-                           cameraPositionState = cameraPositionState,
-                           position = singapore,
-                           onMapLoaded = {
-                               isMapLoaded = true
-                           },
-                       )*/
-
                     map.GoogleMapWidget(
                         location.value.latitude,
                         location.value.longitude,

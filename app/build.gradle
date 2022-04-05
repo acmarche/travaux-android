@@ -13,7 +13,7 @@ android {
     compileSdk 32
     defaultConfig {
         applicationId "be.marche.apptravaux"
-        minSdk 26
+        minSdk 24
         targetSdk 32
         versionCode 15
         versionName "1.1"

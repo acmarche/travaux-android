@@ -11,10 +11,14 @@ import androidx.navigation.navArgument
 import be.marche.apptravaux.navigation.Navigation.Companion.PARAM_AVALOIR
 import be.marche.apptravaux.screens.*
 import be.marche.apptravaux.screens.avaloir.*
-import be.marche.apptravaux.screens.stock.*
+import be.marche.apptravaux.screens.stock.StockAddScreen
+import be.marche.apptravaux.screens.stock.StockDraftScreen
+import be.marche.apptravaux.screens.stock.StockHomeScreen
+import be.marche.apptravaux.screens.stock.StockListScreen
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.viewModel.LocationViewModel
 import be.marche.apptravaux.viewModel.StockViewModel
+import be.marche.apptravaux.viewModel.WorkerViewModel
 
 class Navigation {
 
@@ -29,7 +33,8 @@ class Navigation {
 fun Navigation(
     avaloirViewModel: AvaloirViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
-    stockViewModel: StockViewModel = viewModel()
+    stockViewModel: StockViewModel = viewModel(),
+    workerViewModel: WorkerViewModel = viewModel()
 ) {
     val navController = rememberNavController()
 
@@ -51,6 +56,11 @@ fun Navigation(
 
         composable(route = TravauxRoutes.HomeScreen.route) {
             HomeScreen(navController)
+        }
+
+        composable(route = TravauxRoutes.SyncScreen.route) {
+            val screen = SyncScreen(navController)
+            screen.MaintContent(workerViewModel)
         }
 
         composable(route = TravauxRoutes.SettingScreen.route) {
@@ -93,10 +103,6 @@ fun Navigation(
             screen.SearchMainScreen(avaloirViewModel)
         }
 
-        composable(route = TravauxRoutes.AvaloirSyncScreen.route) {
-            val screen = AvaloirSyncScreen(navController)
-            screen.SyncContent(avaloirViewModel)
-        }
 
         composable(
             route = TravauxRoutes.AvaloirDetailScreen.route + "/{$PARAM_AVALOIR}",
@@ -137,13 +143,8 @@ fun Navigation(
         }
 
         composable(route = TravauxRoutes.StockListScreen.route) {
-            val screen = StockListScreen(navController,stockViewModel)
+            val screen = StockListScreen(navController, stockViewModel)
             screen.ListScreen()
-        }
-
-        composable(route = TravauxRoutes.StockSyncScreen.route) {
-            val screen = StockSyncScreen(navController)
-            screen.SyncContent(stockViewModel)
         }
 
         composable(route = TravauxRoutes.StockAddScreen.route) {

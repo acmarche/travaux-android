@@ -11,11 +11,14 @@ import androidx.work.Data
 import androidx.work.WorkInfo
 import be.marche.apptravaux.navigation.Navigation
 import be.marche.apptravaux.networking.NetworkUtils
-import be.marche.apptravaux.screens.avaloir.AvaloirSyncScreen
+import be.marche.apptravaux.screens.SyncScreen
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.viewModel.LocationViewModel
 import be.marche.apptravaux.viewModel.StockViewModel
+import be.marche.apptravaux.viewModel.WorkerViewModel
+import be.marche.apptravaux.worker.AvaloirSyncWorker
+import be.marche.apptravaux.worker.StockWorker
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +30,7 @@ class MainActivity : ComponentActivity() {
     private val avaloirViewModel: AvaloirViewModel by viewModels()
     private val locationViewModel: LocationViewModel by viewModels()
     private val stockViewModel: StockViewModel by viewModels()
+    private val workerViewModel: WorkerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,17 +45,22 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AppTravaux6Theme {
-                Navigation(avaloirViewModel, locationViewModel, stockViewModel)
+                Navigation(avaloirViewModel, locationViewModel, stockViewModel, workerViewModel)
             }
         }
     }
 
     private fun syncContent() {
-        val workerAvaloir = avaloirViewModel.workManager
+        val workerAvaloir = workerViewModel.workManager
         val taskData =
-            Data.Builder().putString(AvaloirSyncScreen.MESSAGE_STATUS, "Notification Done.").build()
-        val requestAvaloir = avaloirViewModel.createRequest(taskData)
-        avaloirViewModel.enqueueWorkRequest(requestAvaloir)
+            Data.Builder().putString(SyncScreen.MESSAGE_STATUS_AVALOIR, "Notification Done.")
+                .build()
+        val requestAvaloir = workerViewModel.createRequest(
+            taskData,
+            AvaloirSyncWorker::class.java,
+            "autoSyncAvaloir"
+        )
+        workerViewModel.enqueueWorkRequest(requestAvaloir)
 
         workerAvaloir.getWorkInfoByIdLiveData(requestAvaloir.id).observe(this) {
             if (it != null) {
@@ -67,9 +76,10 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val workerStock = stockViewModel.workManager
-        val requestStock = stockViewModel.createRequest(taskData)
-        stockViewModel.enqueueWorkRequest(requestStock)
+        val workerStock = workerViewModel.workManager
+        val requestStock =
+            workerViewModel.createRequest(taskData, StockWorker::class.java, "AutoSyncStock")
+        workerViewModel.enqueueWorkRequest(requestStock)
 
         workerStock.getWorkInfoByIdLiveData(requestStock.id).observe(this) {
             if (it != null) {

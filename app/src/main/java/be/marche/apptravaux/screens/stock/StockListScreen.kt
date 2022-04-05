@@ -189,17 +189,7 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
                 }
             },
             singleLine = true,
-            shape = RectangleShape, // The TextFiled has rounded corners top left and right by default
-            /*  colors = TextFieldDefaults.textFieldColors(
-                  textColor = Color.White,
-                  cursorColor = Color.White,
-                  leadingIconColor = Color.White,
-                  trailingIconColor = Color.White,
-                  backgroundColor = Color.Transparent,
-                  focusedIndicatorColor = Color.Transparent,
-                  unfocusedIndicatorColor = Color.Transparent,
-                  disabledIndicatorColor = Color.Transparent
-              )*/
+            shape = RectangleShape,
         )
     }
 
@@ -235,7 +225,6 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
                         expanded = expanded
                     )
                 },
-                // colors = ExposedDropdownMenuDefaults.textFieldColors()
             )
             ExposedDropdownMenu(
                 modifier = Modifier,

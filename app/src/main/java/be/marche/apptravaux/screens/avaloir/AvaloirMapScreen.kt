@@ -113,14 +113,6 @@ class AvaloirMapScreen(
                     true
                 )
 
-                /*    map.GoogleMapView(
-                        modifier = Modifier.matchParentSize(),
-                        cameraPositionState = cameraPositionState,
-                        onMapLoaded = {
-                            isMapLoaded = true
-                        },
-                    )*/
-
                 isMapLoaded = true
                 if (!isMapLoaded) {
                     androidx.compose.animation.AnimatedVisibility(

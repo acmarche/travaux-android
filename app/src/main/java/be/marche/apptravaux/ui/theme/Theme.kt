@@ -53,7 +53,7 @@ fun AppTravaux6Theme(
         ProvideAppTypography(typography = typography) {
             MaterialTheme(
                 colors = colors,
-                typography = Typography,
+                typography = Typography2,
                 shapes = Shapes,
                 content = content
             )

@@ -16,15 +16,6 @@ data class Avaloir(
     val localite: String? = null,
     var imageUrl: String? = null,
     val descriptif: String? = null,
-)
-
-@Entity
-data class AvaloirDraft(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int?,
-    var latitude: Double,
-    var longitude: Double,
-    var imageUrl: String,
     val createdAt: Date
 )
 

@@ -2,7 +2,6 @@ package be.marche.apptravaux.repository
 
 import be.marche.apptravaux.database.AvaloirDao
 import be.marche.apptravaux.entities.Avaloir
-import be.marche.apptravaux.entities.AvaloirDraft
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
 import be.marche.apptravaux.networking.AvaloirService
@@ -18,7 +17,7 @@ class AvaloirRepository @Inject constructor(
         return avaloirDao.getAll()
     }
 
-    fun getAllAvaloirsDraftsList(): List<AvaloirDraft> {
+    fun getAllAvaloirsDraftsList(): List<Avaloir> {
         return avaloirDao.getAllAvaloirsDraftsList()
     }
 
@@ -80,15 +79,15 @@ class AvaloirRepository @Inject constructor(
         avaloirDao.insertDateNettoyage(dateNettoyage)
     }
 
-    suspend fun insertAvaloirDraft(avaloir: AvaloirDraft) {
-        avaloirDao.insertAvaloirDraft(avaloir)
+    suspend fun insertAvaloir(avaloir: Avaloir) {
+        avaloirDao.insertAvaloir(avaloir)
     }
 
-    suspend fun deleteAvaloirDraft(avaloirDraft: AvaloirDraft) {
+    suspend fun deleteAvaloirDraft(avaloirDraft: Avaloir) {
         avaloirDao.deleteAvaloirDraft(avaloirDraft)
     }
 
-    fun deleteAvaloirDraftNotSuspend(avaloirDraft: AvaloirDraft) {
+    fun deleteAvaloirDraftNotSuspend(avaloirDraft: Avaloir) {
         avaloirDao.deleteAvaloirDraftNotSuspend(avaloirDraft)
     }
 

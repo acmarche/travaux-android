@@ -4,19 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.*
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.*
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.networking.StockService
 import be.marche.apptravaux.repository.StockRepository
-import be.marche.apptravaux.worker.StockWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
 import javax.inject.Inject
 
 @HiltViewModel
@@ -149,36 +146,6 @@ class StockViewModel @Inject constructor(
         viewModelScope.launch {
             stockRepository.deleteQuantiteDraft(quantiteDraft)
         }
-    }
-
-    /**
-     * WorkManager
-     */
-    val workManager by lazy { WorkManager.getInstance(applicationContext) }
-
-    internal fun cancelWork() {
-        workManager.cancelUniqueWork(STOCK_SYNC_WORK_REQUEST)
-    }
-
-    fun createRequest(taskData: Data): OneTimeWorkRequest {
-        val powerConstraints = Constraints.Builder().setRequiresBatteryNotLow(true).build()
-        val networkConstraints =
-            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-
-        return OneTimeWorkRequest.Builder(StockWorker::class.java)
-            .setConstraints(powerConstraints)
-            .setConstraints(networkConstraints)
-            .setInputData(taskData)
-            .addTag("syncStock")
-            .build()
-    }
-
-    internal fun enqueueWorkRequest(request: OneTimeWorkRequest) {
-        workManager.enqueueUniqueWork(
-            STOCK_SYNC_WORK_REQUEST,
-            ExistingWorkPolicy.REPLACE,
-            request
-        )
     }
 
 }

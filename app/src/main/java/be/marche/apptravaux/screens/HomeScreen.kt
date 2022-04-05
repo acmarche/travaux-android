@@ -21,17 +21,22 @@ data class CardData(val texte: String, val action: () -> Unit)
 @Composable
 fun HomeScreen(navController: NavController) {
 
-    val c = CardData(
+    val a = CardData(
         "Gestion des avaloirs",
         { navController.navigate(TravauxRoutes.AvaloirHomeScreen.route) }
     )
-    val d =
+    val b =
         CardData("Gestion des stocks",
             { navController.navigate(TravauxRoutes.StockHomeScreen.route) })
 
-    val e = CardData("Paramètres", { navController.navigate(TravauxRoutes.SettingScreen.route) })
+    val c =
+        CardData(
+            "Synchronisation",
+            { navController.navigate(TravauxRoutes.SyncScreen.route) })
 
-    val cards: List<CardData> = listOf(c, d, e)
+    val d = CardData("Paramètres", { navController.navigate(TravauxRoutes.SettingScreen.route) })
+
+    val cards: List<CardData> = listOf(a, b, c, d)
 
     MainContentHome(datas = cards)
 }

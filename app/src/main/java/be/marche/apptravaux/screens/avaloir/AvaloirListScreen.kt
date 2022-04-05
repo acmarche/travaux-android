@@ -68,7 +68,7 @@ class AvaloirListScreen(val navController: NavController) {
                         )
 
                         Button(
-                            onClick = { navController.navigate(TravauxRoutes.AvaloirSyncScreen.route) }
+                            onClick = { navController.navigate(TravauxRoutes.SyncScreen.route) }
                         ) {
                             Text(text = "Synchroniser les données")
                         }
@@ -104,7 +104,7 @@ class AvaloirListScreen(val navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
-            textStyle = ScreenSizeTheme.textStyle.fontStyle_2,
+            textStyle = ScreenSizeTheme.textStyle.fontStyleSearch,
            // textStyle = TextStyle(color = Color.Black, fontSize = 18.sp),
             leadingIcon = {
                 Icon(
@@ -134,17 +134,7 @@ class AvaloirListScreen(val navController: NavController) {
                 }
             },
             singleLine = true,
-            shape = RectangleShape, // The TextFiled has rounded corners top left and right by default
-            /*  colors = TextFieldDefaults.textFieldColors(
-                  textColor = Color.White,
-                  cursorColor = Color.White,
-                  leadingIconColor = Color.White,
-                  trailingIconColor = Color.White,
-                  backgroundColor = Color.Transparent,
-                  focusedIndicatorColor = Color.Transparent,
-                  unfocusedIndicatorColor = Color.Transparent,
-                  disabledIndicatorColor = Color.Transparent
-              )*/
+            shape = RectangleShape,
         )
     }
 

@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import be.marche.apptravaux.R
-import be.marche.apptravaux.entities.AvaloirDraft
+import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
@@ -91,7 +91,7 @@ class AvaloirDraftsScreen(
                     color = MaterialTheme.colors.background
                 )
                 Button(
-                    onClick = { navController.navigate(TravauxRoutes.AvaloirSyncScreen.route) }
+                    onClick = { navController.navigate(TravauxRoutes.SyncScreen.route) }
                 ) {
                     Text(text = "Synchroniser les données")
                 }
@@ -107,26 +107,28 @@ class AvaloirDraftsScreen(
 
     @Composable
     fun ImageCache(
-        avaloir: AvaloirDraft,
+        avaloir: Avaloir,
         context: Context
     ) {
-        var fileUri: Uri? = null
-        try {
-            val cacheFile = File(avaloir.imageUrl)
-            fileUri = fileHelper.createUri(context, cacheFile)
-        } catch (e: Exception) {
+        if (avaloir.imageUrl != null) {
+            var fileUri: Uri? = null
+            try {
+                val cacheFile = File(avaloir.imageUrl!!)
+                fileUri = fileHelper.createUri(context, cacheFile)
+            } catch (e: Exception) {
 
-        }
-        if (fileUri != null) {
-            Image(
-                rememberImagePainter(fileUri),
-                contentDescription = "Image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .width(70.dp)
-                    .height(70.dp)
-                    .padding(5.dp)
-            )
+            }
+            if (fileUri != null) {
+                Image(
+                    rememberImagePainter(fileUri),
+                    contentDescription = "Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .width(70.dp)
+                        .height(70.dp)
+                        .padding(5.dp)
+                )
+            }
         } else {
             Image(
                 painterResource(R.drawable.profile_picture),
@@ -147,11 +149,11 @@ class AvaloirDraftsScreen(
     @ExperimentalAnimationApi
     @Composable
     fun FruitListAnimation(
-        avaloirList: List<AvaloirDraft>,
+        avaloirList: List<Avaloir>,
         context: Context,
         avaloirViewModel: AvaloirViewModel
     ) {
-        val deletedFruitList = remember { mutableStateListOf<AvaloirDraft>() }
+        val deletedFruitList = remember { mutableStateListOf<Avaloir>() }
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -184,34 +186,32 @@ class AvaloirDraftsScreen(
                                         modifier = Modifier.padding(10.dp)
                                     ) {
                                         Row(
-                                            modifier = Modifier.fillMaxWidth()
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             ImageCache(avaloir, context)
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.SpaceBetween,
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
+                                            Column {
                                                 Text(
-                                                    text = "Localisation: ${avaloir.latitude} ${avaloir.longitude}",
+                                                    text = "Ajouté le: ${avaloir.createdAt}",
                                                     style = TextStyle(
                                                         color = Color.Black,
                                                         fontSize = 18.sp,
-                                                        textAlign = TextAlign.Center
+                                                        textAlign = TextAlign.Left
                                                     ),
                                                     modifier = Modifier.padding(16.dp)
                                                 )
-                                                IconButton(
-                                                    onClick = {
-                                                        avaloirViewModel.deleteAvaloirDraft(avaloir)
-                                                        deletedFruitList.add(avaloir)
-                                                    }
-                                                ) {
-                                                    Icon(
-                                                        imageVector = Icons.Filled.Delete,
-                                                        contentDescription = "Deletion"
-                                                    )
+                                            }
+                                            IconButton(
+                                                onClick = {
+                                                    avaloirViewModel.deleteAvaloirDraft(avaloir)
+                                                    deletedFruitList.add(avaloir)
                                                 }
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Filled.Delete,
+                                                    contentDescription = "Deletion"
+                                                )
                                             }
                                         }
                                     }

@@ -65,7 +65,7 @@ class StockDraftScreen(
                 )
                 Button(
                     onClick = {
-                        navController.navigate(TravauxRoutes.StockSyncScreen.route)
+                        navController.navigate(TravauxRoutes.SyncScreen.route)
                     }
                 ) {
                     Text(text = "Synchroniser les données")
