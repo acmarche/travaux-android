@@ -40,7 +40,7 @@ val tabletDimension = Dimensions(
 )
 
 class Typography(
-    val fontStyle_1: TextStyle,
+    val fontStyle_1: TextStyle,val fontStyle_11: TextStyle,
     val fontStyle_2: TextStyle,
     val fontStyleSearch: TextStyle,
     val fontWidth_1: TextUnit,
@@ -50,6 +50,7 @@ class Typography(
 
 val textSmallDimension = Typography(
     fontStyle_1 = TextStyle.Default.copy(fontSize = 15.sp),
+    fontStyle_11 = TextStyle.Default.copy(fontSize = 13.sp),
     fontStyleSearch = TextStyle.Default.copy(fontSize = 15.sp),
     fontStyle_2 = TextStyle.Default.copy(fontSize = 22.sp),
     fontWidth_1 = 15.sp,
@@ -59,6 +60,7 @@ val textSmallDimension = Typography(
 
 val textTabletDimensions = Typography(
     fontStyle_1 = TextStyle.Default.copy(fontSize = 25.sp),
+    fontStyle_11 = TextStyle.Default.copy(fontSize = 20.sp),
     fontStyleSearch = TextStyle.Default.copy(fontSize = 32.sp),
     fontStyle_2 = TextStyle.Default.copy(fontSize = 32.sp),
     fontWidth_1 = 25.sp,

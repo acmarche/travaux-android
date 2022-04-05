@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.work.*
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
-import be.marche.apptravaux.worker.StockWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -17,20 +16,22 @@ class WorkerViewModel @Inject constructor(
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider
 ) : ViewModel() {
 
-    private val STOCK_SYNC_WORK_REQUEST = "STOCK_SYNC_WORK_REQUEST"
-    private val AVALOIR_SYNC_WORK_REQUEST = "AVALOIR_SYNC_WORK_REQUEST"
-
-    init {
-
+    companion object {
+        val STOCK_SYNC_WORK_REQUEST = "STOCK_SYNC_WORK_REQUEST"
+        val AVALOIR_SYNC_WORK_REQUEST = "AVALOIR_SYNC_WORK_REQUEST"
     }
 
     val workManager by lazy { WorkManager.getInstance(applicationContext) }
 
-    internal fun cancelWork() {
-        workManager.cancelUniqueWork(STOCK_SYNC_WORK_REQUEST)
+    internal fun cancelWork(unikWorkName: String) {
+        workManager.cancelUniqueWork(unikWorkName)
     }
 
-    fun createRequest(taskData: Data, classWorker: Class<out ListenableWorker>, tagName: String): OneTimeWorkRequest {
+    fun createRequest(
+        taskData: Data,
+        classWorker: Class<out ListenableWorker>,
+        tagName: String
+    ): OneTimeWorkRequest {
         val powerConstraints = Constraints.Builder().setRequiresBatteryNotLow(true).build()
         val networkConstraints =
             Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
@@ -43,9 +44,9 @@ class WorkerViewModel @Inject constructor(
             .build()
     }
 
-    internal fun enqueueWorkRequest(request: OneTimeWorkRequest) {
+    internal fun enqueueWorkRequest(request: OneTimeWorkRequest, unikWorkName: String) {
         workManager.enqueueUniqueWork(
-            STOCK_SYNC_WORK_REQUEST,
+            unikWorkName,
             ExistingWorkPolicy.REPLACE,
             request
         )

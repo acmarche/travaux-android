@@ -26,6 +26,7 @@ import be.marche.apptravaux.networking.connectivityState
 import be.marche.apptravaux.screens.widgets.ConnectivityStatusBox
 import be.marche.apptravaux.screens.widgets.OutlinedButtonJf
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
+import be.marche.apptravaux.ui.theme.LARGEST_PADDING
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.viewModel.WorkerViewModel
@@ -52,12 +53,13 @@ class SyncScreen(
             topBar = {
                 TopAppBarJf(
                     "Synchronisation des données"
-                ) { navController.navigate(TravauxRoutes.AvaloirHomeScreen.route) }
+                ) { navController.navigate(TravauxRoutes.HomeScreen.route) }
             }
         ) {
             val lifeCycle = LocalLifecycleOwner.current
             worker = workerViewModel.workManager
-            val textInput = remember { mutableStateOf("") }
+            val textInputAvaloir = remember { mutableStateOf("") }
+            val textInputStock = remember { mutableStateOf("") }
             val taskDataAvaloir =
                 Data.Builder().putString(MESSAGE_STATUS_AVALOIR, "Notification Done.").build()
             val taskDataStock =
@@ -70,7 +72,9 @@ class SyncScreen(
                 "avaloirSync"
             )
             val requestStock = workerViewModel.createRequest(
-                taskDataStock, StockWorker::class.java, "StockSync"
+                taskDataStock,
+                StockWorker::class.java,
+                "StockSync"
             )
 
             Column(
@@ -82,7 +86,9 @@ class SyncScreen(
                 Spacer(modifier = Modifier.height(30.dp))
                 TextesExplicatifs()
                 Spacer(modifier = Modifier.height(30.dp))
-                Text(text = textInput.value)
+                Text(text = textInputAvaloir.value)
+                Spacer(modifier = Modifier.height(30.dp))
+                Text(text = textInputStock.value)
 
                 Divider(
                     modifier = Modifier.height(MEDIUM_PADDING),
@@ -92,8 +98,14 @@ class SyncScreen(
                 OutlinedButtonJf(
                     "Synchroniser les données", isConnected
                 ) {
-                    workerViewModel.enqueueWorkRequest(requestAvaloir)
-                    workerViewModel.enqueueWorkRequest(requestStock)
+                    workerViewModel.enqueueWorkRequest(
+                        requestAvaloir,
+                        WorkerViewModel.AVALOIR_SYNC_WORK_REQUEST
+                    )
+                    workerViewModel.enqueueWorkRequest(
+                        requestStock,
+                        WorkerViewModel.STOCK_SYNC_WORK_REQUEST
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(30.dp))
@@ -102,8 +114,8 @@ class SyncScreen(
                     color = MaterialTheme.colors.background
                 )
 
-                syncStatutAvaloir(textInput, lifeCycle, requestStock)
-                syncStatutStock(textInput, lifeCycle, requestAvaloir)
+                syncStatutAvaloir(textInputAvaloir, lifeCycle, requestStock)
+                syncStatutStock(textInputStock, lifeCycle, requestAvaloir)
             }
         }
     }
@@ -116,11 +128,7 @@ class SyncScreen(
             fontSize = ScreenSizeTheme.textStyle.fontWidth_1
         )
         Divider(
-            modifier = Modifier.height(MEDIUM_PADDING),
-            color = MaterialTheme.colors.background
-        )
-        Divider(
-            modifier = Modifier.height(MEDIUM_PADDING),
+            modifier = Modifier.height(LARGEST_PADDING),
             color = MaterialTheme.colors.background
         )
         Text(text = stringResource(R.string.sync_intro2))

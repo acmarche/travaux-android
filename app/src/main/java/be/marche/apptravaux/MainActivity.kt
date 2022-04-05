@@ -60,7 +60,10 @@ class MainActivity : ComponentActivity() {
             AvaloirSyncWorker::class.java,
             "autoSyncAvaloir"
         )
-        workerViewModel.enqueueWorkRequest(requestAvaloir)
+        workerViewModel.enqueueWorkRequest(
+            requestAvaloir,
+            WorkerViewModel.AVALOIR_SYNC_WORK_REQUEST
+        )
 
         workerAvaloir.getWorkInfoByIdLiveData(requestAvaloir.id).observe(this) {
             if (it != null) {
@@ -79,7 +82,7 @@ class MainActivity : ComponentActivity() {
         val workerStock = workerViewModel.workManager
         val requestStock =
             workerViewModel.createRequest(taskData, StockWorker::class.java, "AutoSyncStock")
-        workerViewModel.enqueueWorkRequest(requestStock)
+        workerViewModel.enqueueWorkRequest(requestStock, WorkerViewModel.STOCK_SYNC_WORK_REQUEST)
 
         workerStock.getWorkInfoByIdLiveData(requestStock.id).observe(this) {
             if (it != null) {
