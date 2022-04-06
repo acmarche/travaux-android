@@ -150,25 +150,27 @@ class SyncScreen(
     ) {
         worker.getWorkInfoByIdLiveData(request.id).observe(lifeCycle) { workInfo ->
             workInfo.let {
-                when (it.state) {
-                    WorkInfo.State.SUCCEEDED -> {
-                        val outputData = it.outputData
-                        val taskResult = outputData.getString(AvaloirSyncWorker.WORK_RESULT)
-                        if (taskResult != null) {
-                            textInput.value = taskResult
+                if (it != null) {
+                    when (it.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            val outputData = it.outputData
+                            val taskResult = outputData.getString(AvaloirSyncWorker.WORK_RESULT)
+                            if (taskResult != null) {
+                                textInput.value = taskResult
+                            }
                         }
-                    }
-                    WorkInfo.State.FAILED -> {
-                        val workStatus = workInfo.state
-                        textInput.value = workStatus.toString()
-                    }
-                    WorkInfo.State.RUNNING -> {
-                        val workStatus = workInfo.state
-                        textInput.value = workStatus.toString()
-                    }
-                    else -> {
-                        val workStatus = workInfo.state
-                        textInput.value = workStatus.toString()
+                        WorkInfo.State.FAILED -> {
+                            val workStatus = workInfo.state
+                            textInput.value = workStatus.toString()
+                        }
+                        WorkInfo.State.RUNNING -> {
+                            val workStatus = workInfo.state
+                            textInput.value = workStatus.toString()
+                        }
+                        else -> {
+                            val workStatus = workInfo.state
+                            textInput.value = workStatus.toString()
+                        }
                     }
                 }
             }
@@ -182,25 +184,27 @@ class SyncScreen(
     ) {
         worker.getWorkInfoByIdLiveData(request.id).observe(lifeCycle) { workInfo ->
             workInfo.let {
-                when (it.state) {
-                    WorkInfo.State.SUCCEEDED -> {
-                        val outputData = it.outputData
-                        val taskResult = outputData.getString(StockWorker.WORK_RESULT)
-                        if (taskResult != null) {
-                            textInput.value = taskResult
+                if (it != null) {
+                    when (it.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            val outputData = it.outputData
+                            val taskResult = outputData.getString(StockWorker.WORK_RESULT)
+                            if (taskResult != null) {
+                                textInput.value = taskResult
+                            }
                         }
-                    }
-                    WorkInfo.State.FAILED -> {
-                        val workStatus = workInfo.state
-                        textInput.value = workStatus.toString()
-                    }
-                    WorkInfo.State.RUNNING -> {
-                        val workStatus = workInfo.state
-                        textInput.value = workStatus.toString()
-                    }
-                    else -> {
-                        val workStatus = workInfo.state
-                        textInput.value = workStatus.toString()
+                        WorkInfo.State.FAILED -> {
+                            val workStatus = workInfo.state
+                            textInput.value = workStatus.toString()
+                        }
+                        WorkInfo.State.RUNNING -> {
+                            val workStatus = workInfo.state
+                            textInput.value = workStatus.toString()
+                        }
+                        else -> {
+                            val workStatus = workInfo.state
+                            textInput.value = workStatus.toString()
+                        }
                     }
                 }
             }

@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -40,7 +41,6 @@ import java.util.*
 class AvaloirDraftsScreen(
     val navController: NavController,
 ) {
-
     @OptIn(ExperimentalAnimationApi::class)
     @Composable
     fun ListScreen(
@@ -131,25 +131,25 @@ class AvaloirDraftsScreen(
                                 Card(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(100.dp)
                                         .padding(10.dp, 5.dp, 10.dp, 5.dp)
                                         .background(Color.White),
                                     elevation = 10.dp,
                                     shape = RoundedCornerShape(5.dp)
                                 ) {
                                     Column(
-                                        modifier = Modifier.padding(10.dp)
+                                      //  modifier = Modifier.padding(10.dp)
                                     ) {
                                         Row(
                                             modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            horizontalArrangement = Arrangement.Start,
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             widget.ImageAvaloir(
                                                 avaloir,
                                                 context,
-                                                ScreenSizeTheme.dimens.width,
-                                                ScreenSizeTheme.dimens.height
+                                                ScreenSizeTheme.dimens.width70,
+                                                ScreenSizeTheme.dimens.height70,
+                                                ContentScale.FillHeight
                                             )
                                             Column {
                                                 Text(

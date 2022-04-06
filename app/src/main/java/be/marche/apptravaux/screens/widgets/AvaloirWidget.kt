@@ -145,6 +145,7 @@ class AvaloirWidget {
         context: Context,
         imageWidth: Dp,
         imageHeight: Dp,
+        contentScale: ContentScale = ContentScale.Crop,
         padding: Dp = 5.dp
     ) {
         with(avaloir.imageUrl) {
@@ -153,7 +154,7 @@ class AvaloirWidget {
                     Image(
                         painterResource(R.drawable.profile_picture),
                         contentDescription = "Image",
-                        contentScale = ContentScale.Crop,
+                        contentScale = contentScale,
                         // contentScale = ContentScale.FillHeight,
                         modifier = Modifier
                             .width(imageWidth)
@@ -184,7 +185,7 @@ class AvaloirWidget {
                         Image(
                             rememberImagePainter(fileUri),
                             contentDescription = "Image",
-                           // contentScale = ContentScale.Crop,
+                            contentScale = contentScale,
                             modifier = Modifier
                                 .width(imageWidth)
                                 .height(imageHeight)

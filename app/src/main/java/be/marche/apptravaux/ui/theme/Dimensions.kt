@@ -16,6 +16,8 @@ val PRIORITY_DROP_DOWN_HEIGHT = 60.dp
 val TASK_ITEM_ELEVATION = 2.dp
 
 class Dimensions(
+  val  width70: Dp,
+  val  height70: Dp,
     val width: Dp,
     val height: Dp,
     val carte: Dp,
@@ -24,6 +26,8 @@ class Dimensions(
 )
 
 val smartphoneDimension = Dimensions(
+    width70 = 110.dp,
+    height70 = 170.dp,
     width = 150.dp,
     height = 150.dp,
     carte = 350.dp,
@@ -32,6 +36,8 @@ val smartphoneDimension = Dimensions(
 )
 
 val tabletDimension = Dimensions(
+    width70 = 190.dp,
+    height70 = 250.dp,
     width = 220.dp,
     height = 220.dp,
     carte = 550.dp,
@@ -40,7 +46,7 @@ val tabletDimension = Dimensions(
 )
 
 class Typography(
-    val fontStyle_1: TextStyle,val fontStyle_11: TextStyle,
+    val fontStyle_1: TextStyle, val fontStyle_11: TextStyle,
     val fontStyle_2: TextStyle,
     val fontStyleSearch: TextStyle,
     val fontWidth_1: TextUnit,

@@ -23,7 +23,6 @@ import com.google.firebase.ktx.Firebase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import retrofit2.Response
-import timber.log.Timber
 import java.io.File
 import java.util.*
 
@@ -50,7 +49,7 @@ class AvaloirSyncWorker @AssistedInject constructor(
 
         uploadContent()
         sleep(15)
-       // downloadContent()
+        downloadContent()
 
         outputData.putString(WORK_RESULT, "Synchronisation finie").build()
         return Result.success(outputData.build())
@@ -90,16 +89,14 @@ class AvaloirSyncWorker @AssistedInject constructor(
     }
 
     private fun uploadContent() {
+        var results = uploadAvaloir()
+        treatmentResults("uploadAvaloir", 4, results)
 
-      //  var results = uploadAvaloir()
-      //  treatmentResults("uploadAvaloir", 4, results)
-
-     var   results = uploadDatesNettoyage()
+        results = uploadDatesNettoyage()
         treatmentResults("uploadDatesNettoyage", 5, results)
 
-      //  results = uploadCommentaires()
-      //  treatmentResults("uploadCommentaire", 6, results)
-
+        results = uploadCommentaires()
+        treatmentResults("uploadCommentaire", 6, results)
     }
 
     private fun downloadAvaloirs(): NotificationState {
@@ -237,7 +234,6 @@ class AvaloirSyncWorker @AssistedInject constructor(
             val res = response.execute()
             if (res is Response && res.isSuccessful) {
                 res.body()?.let { dataMessage ->
-                    Timber.d("zeze $dataMessage")
                     val error = dataMessage.error
                     if (error > 0) {
                         results.add(NotificationState.Error(dataMessage.message))
@@ -322,15 +318,14 @@ class AvaloirSyncWorker @AssistedInject constructor(
 
             val channelId = id
             val channelName = name
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channel =
-                    NotificationChannel(
-                        channelId,
-                        channelName,
-                        NotificationManager.IMPORTANCE_DEFAULT
-                    )
-                manager.createNotificationChannel(channel)
-            }
+
+            val channel =
+                NotificationChannel(
+                    channelId,
+                    channelName,
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
+            manager.createNotificationChannel(channel)
 
             val builder = NotificationCompat.Builder(applicationContext, channelId)
                 .setContentTitle("AppTravaux")
