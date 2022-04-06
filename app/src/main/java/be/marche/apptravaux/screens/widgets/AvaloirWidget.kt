@@ -136,7 +136,7 @@ class AvaloirWidget {
 
     fun formatDate(createdAt: Date): String {
         //val format = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
-        return DateFormat.getPatternInstance(DateFormat.YEAR_ABBR_MONTH_DAY).format(createdAt)
+        return DateFormat.getPatternInstance(DateFormat.YEAR_ABBR_MONTH_DAY + DateFormat.HOUR24_MINUTE).format(createdAt)
     }
 
     @Composable

@@ -199,7 +199,6 @@ class AvaloirPhotoScreen(
     ) {
         Button(
             onClick = {
-                val today = Date()
                 val avaloir =
                     Avaloir(
                         id = null,
@@ -207,7 +206,7 @@ class AvaloirPhotoScreen(
                         latitude = location.latitude,
                         longitude = location.longitude,
                         imageUrl = fileImage.path,
-                        createdAt = today
+                        createdAt = Date()
                     )
                 avaloirViewModel.insertAvaloir(avaloir)
                 Toast.makeText(context, "Avaloir ajouté", Toast.LENGTH_SHORT).show()

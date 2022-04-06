@@ -4,14 +4,12 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.icu.text.SimpleDateFormat
-import android.os.Build
 import android.os.SystemClock.sleep
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import be.marche.apptravaux.BuildConfig
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.NotificationState
 import be.marche.apptravaux.networking.AvaloirService
@@ -58,12 +56,15 @@ class AvaloirSyncWorker @AssistedInject constructor(
     private fun downloadContent() {
 
         var result = downloadAvaloirs()
+
         when (result) {
-            is NotificationState.Error -> showNotification(
-                "message_channel_downloAvaloirs", 1,
-                "downloAvaloirs",
-                "Avaloirs error: ${result.message}"
-            )
+            is NotificationState.Error -> {
+                showNotification(
+                    "message_channel_downloAvaloirs", 1,
+                    "downloAvaloirs",
+                    "Avaloirs error: ${result.message}"
+                )
+            }
             is NotificationState.Success -> {}
         }
 
@@ -314,25 +315,23 @@ class AvaloirSyncWorker @AssistedInject constructor(
     }
 
     private fun showNotification(id: String, idNotify: Int, name: String, desc: String) {
-        if (BuildConfig.VERSION_CODE > Build.VERSION_CODES.O) {
 
-            val channelId = id
-            val channelName = name
+        val channelId = id
+        val channelName = name
 
-            val channel =
-                NotificationChannel(
-                    channelId,
-                    channelName,
-                    NotificationManager.IMPORTANCE_DEFAULT
-                )
-            manager.createNotificationChannel(channel)
+        val channel =
+            NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+        manager.createNotificationChannel(channel)
 
-            val builder = NotificationCompat.Builder(applicationContext, channelId)
-                .setContentTitle("AppTravaux")
-                .setContentText(desc)
-                .setSmallIcon(R.drawable.ic_outline_notifications_active_24)
+        val builder = NotificationCompat.Builder(applicationContext, channelId)
+            .setContentTitle("AppTravaux")
+            .setContentText(desc)
+            .setSmallIcon(R.drawable.ic_outline_notifications_active_24)
 
-            manager.notify(idNotify, builder.build())
-        }
+        manager.notify(idNotify, builder.build())
     }
 }

@@ -137,7 +137,7 @@ class AvaloirDraftsScreen(
                                     shape = RoundedCornerShape(5.dp)
                                 ) {
                                     Column(
-                                      //  modifier = Modifier.padding(10.dp)
+                                        //  modifier = Modifier.padding(10.dp)
                                     ) {
                                         Row(
                                             modifier = Modifier.fillMaxWidth(),
@@ -154,6 +154,15 @@ class AvaloirDraftsScreen(
                                             Column {
                                                 Text(
                                                     text = "Ajouté le ${formatDate(avaloir.createdAt)}",
+                                                    style = TextStyle(
+                                                        color = Color.Black,
+                                                        fontSize = ScreenSizeTheme.textStyle.fontWidth_1,
+                                                        textAlign = TextAlign.Left
+                                                    ),
+                                                    modifier = Modifier.padding(16.dp)
+                                                )
+                                                Text(
+                                                    text = "Coordonnées ${avaloir.latitude}, ${avaloir.longitude}",
                                                     style = TextStyle(
                                                         color = Color.Black,
                                                         fontSize = ScreenSizeTheme.textStyle.fontWidth_1,

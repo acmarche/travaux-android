@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
         NetworkUtils.getNetworkLiveData(applicationContext).observe(this) {
             if (it) {
                 lifecycleScope.launch {
-                   syncContent()
+                    syncContent()
                 }
             }
         }

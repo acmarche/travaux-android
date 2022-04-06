@@ -8,6 +8,7 @@ import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.networking.StockService
 import be.marche.apptravaux.utils.FileHelper
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,6 +22,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+
 
 /**
  * App scoped module for dependency injections
@@ -55,12 +57,16 @@ class AppModule {
         return FileHelper()
     }
 
+    var gson = GsonBuilder()
+        .setDateFormat("yyyy-MM-dd HH:mm")
+        .create()
+
     @Provides
     fun provideAvaloirService(): AvaloirService =
         Retrofit.Builder()
             .client(getOkHttpClient())
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(AvaloirService::class.java)
 

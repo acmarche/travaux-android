@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
 
+//createdAt: 2022-04-06 15:50
 @Entity
 data class Avaloir(
     @PrimaryKey(autoGenerate = true)
