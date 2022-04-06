@@ -24,8 +24,8 @@ class Dimensions(
 )
 
 val smartphoneDimension = Dimensions(
-    width = 70.dp,
-    height = 70.dp,
+    width = 150.dp,
+    height = 150.dp,
     carte = 350.dp,
     imageH = 350.dp,
     imageW = 200.dp

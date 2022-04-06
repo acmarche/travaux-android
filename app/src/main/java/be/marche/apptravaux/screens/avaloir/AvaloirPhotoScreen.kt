@@ -38,7 +38,7 @@ import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.utils.FileHelper
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import coil.compose.rememberImagePainter
-import com.google.android.libraries.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*

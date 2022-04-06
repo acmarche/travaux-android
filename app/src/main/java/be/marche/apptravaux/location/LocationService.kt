@@ -16,7 +16,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
-import com.google.android.libraries.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLng
+
+//import com.google.android.libraries.maps.model.LatLng
 
 class LocationService : Service() {
 

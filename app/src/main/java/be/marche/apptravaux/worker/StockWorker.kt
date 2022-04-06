@@ -15,7 +15,6 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 
-
 @HiltWorker
 class StockWorker @AssistedInject constructor(
     @Assisted context: Context,

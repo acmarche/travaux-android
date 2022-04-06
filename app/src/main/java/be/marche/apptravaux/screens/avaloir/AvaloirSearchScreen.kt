@@ -30,9 +30,8 @@ import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.viewModel.LocationViewModel
-import com.google.android.libraries.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-
 
 class AvaloirSearchScreen(
     private val navController: NavController,

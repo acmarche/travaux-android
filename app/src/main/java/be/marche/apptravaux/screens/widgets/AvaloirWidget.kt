@@ -2,7 +2,6 @@ package be.marche.apptravaux.screens.widgets
 
 import android.content.Context
 import android.icu.text.DateFormat
-import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -21,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import be.marche.apptravaux.R
@@ -97,7 +97,12 @@ class AvaloirWidget {
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                ImageAvaloir(avaloir, context)
+                ImageAvaloir(
+                    avaloir,
+                    context,
+                    ScreenSizeTheme.dimens.width,
+                    ScreenSizeTheme.dimens.height
+                )
                 Column(
                     modifier = Modifier.padding(10.dp)
                 ) {
@@ -137,7 +142,10 @@ class AvaloirWidget {
     @Composable
     fun ImageAvaloir(
         avaloir: Avaloir,
-        context: Context
+        context: Context,
+        imageWidth: Dp,
+        imageHeight: Dp,
+        padding: Dp = 5.dp
     ) {
         with(avaloir.imageUrl) {
             when {
@@ -146,10 +154,11 @@ class AvaloirWidget {
                         painterResource(R.drawable.profile_picture),
                         contentDescription = "Image",
                         contentScale = ContentScale.Crop,
+                        // contentScale = ContentScale.FillHeight,
                         modifier = Modifier
-                            .width(ScreenSizeTheme.dimens.width)
-                            .height(ScreenSizeTheme.dimens.height)
-                            .padding(5.dp)
+                            .width(imageWidth)
+                            .height(imageHeight)
+                            .padding(padding)
                     )
                 }
                 this.contains("http") -> {
@@ -157,9 +166,9 @@ class AvaloirWidget {
                         painter = rememberImagePainter(avaloir.imageUrl),
                         contentDescription = "Image",
                         modifier = Modifier
-                            .width(ScreenSizeTheme.dimens.width)
-                            .height(ScreenSizeTheme.dimens.height)
-                            .padding(5.dp)
+                            .width(imageWidth)
+                            .height(imageHeight)
+                            .padding(padding)
                             .clip(RoundedCornerShape(5.dp))
                     )
                 }
@@ -175,11 +184,11 @@ class AvaloirWidget {
                         Image(
                             rememberImagePainter(fileUri),
                             contentDescription = "Image",
-                            contentScale = ContentScale.Crop,
+                           // contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .width(ScreenSizeTheme.dimens.width)
-                                .height(ScreenSizeTheme.dimens.height)
-                                .padding(5.dp)
+                                .width(imageWidth)
+                                .height(imageHeight)
+                                .padding(padding)
                         )
                     }
                 }

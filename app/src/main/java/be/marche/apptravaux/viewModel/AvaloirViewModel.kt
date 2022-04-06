@@ -11,7 +11,7 @@ import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.repository.AvaloirRepository
 import be.marche.apptravaux.ui.entities.SearchRequest
 import be.marche.apptravaux.utils.FileHelper
-import com.google.android.libraries.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow

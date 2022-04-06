@@ -2,13 +2,11 @@ package be.marche.apptravaux.screens.avaloir
 
 import android.content.Context
 import android.icu.text.DateFormat
-import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,31 +22,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.TravauxRoutes
+import be.marche.apptravaux.screens.widgets.AvaloirWidget
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
-import be.marche.apptravaux.utils.FileHelper
+import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
-import coil.compose.rememberImagePainter
-import java.io.File
 import java.util.*
 
 class AvaloirDraftsScreen(
     val navController: NavController,
 ) {
-
-    val fileHelper = FileHelper()
 
     @OptIn(ExperimentalAnimationApi::class)
     @Composable
@@ -105,43 +96,6 @@ class AvaloirDraftsScreen(
         }
     }
 
-    @Composable
-    fun ImageCache(
-        avaloir: Avaloir,
-        context: Context
-    ) {
-        if (avaloir.imageUrl != null) {
-            var fileUri: Uri? = null
-            try {
-                val cacheFile = File(avaloir.imageUrl!!)
-                fileUri = fileHelper.createUri(context, cacheFile)
-            } catch (e: Exception) {
-
-            }
-            if (fileUri != null) {
-                Image(
-                    rememberImagePainter(fileUri),
-                    contentDescription = "Image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .width(70.dp)
-                        .height(70.dp)
-                        .padding(5.dp)
-                )
-            }
-        } else {
-            Image(
-                painterResource(R.drawable.profile_picture),
-                contentDescription = "Image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .width(70.dp)
-                    .height(70.dp)
-                    .padding(5.dp)
-            )
-        }
-    }
-
     fun formatDate(createdAt: Date): String {
         return DateFormat.getPatternInstance(DateFormat.YEAR_ABBR_MONTH_DAY).format(createdAt)
     }
@@ -153,6 +107,7 @@ class AvaloirDraftsScreen(
         context: Context,
         avaloirViewModel: AvaloirViewModel
     ) {
+        val widget = AvaloirWidget()
         val deletedFruitList = remember { mutableStateListOf<Avaloir>() }
         Column(
             modifier = Modifier.fillMaxSize()
@@ -190,13 +145,18 @@ class AvaloirDraftsScreen(
                                             horizontalArrangement = Arrangement.SpaceBetween,
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
-                                            ImageCache(avaloir, context)
+                                            widget.ImageAvaloir(
+                                                avaloir,
+                                                context,
+                                                ScreenSizeTheme.dimens.width,
+                                                ScreenSizeTheme.dimens.height
+                                            )
                                             Column {
                                                 Text(
-                                                    text = "Ajouté le: ${avaloir.createdAt}",
+                                                    text = "Ajouté le ${formatDate(avaloir.createdAt)}",
                                                     style = TextStyle(
                                                         color = Color.Black,
-                                                        fontSize = 18.sp,
+                                                        fontSize = ScreenSizeTheme.textStyle.fontWidth_1,
                                                         textAlign = TextAlign.Left
                                                     ),
                                                     modifier = Modifier.padding(16.dp)

@@ -14,13 +14,12 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import be.marche.apptravaux.location.LocationService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.google.android.libraries.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -42,10 +41,6 @@ class LocationViewModel @Inject constructor(
 
     private val fusedLocationClient =
         LocationServices.getFusedLocationProviderClient(applicationContext)
-
-    init {
-
-    }
 
     fun start() {
         if (locationEnabled()) {

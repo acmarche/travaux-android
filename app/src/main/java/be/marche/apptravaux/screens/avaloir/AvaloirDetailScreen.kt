@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,27 +15,27 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
 import be.marche.apptravaux.navigation.TravauxRoutes
-import be.marche.apptravaux.screens.widgets.MapJf
+import be.marche.apptravaux.screens.widgets.AvaloirWidget
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
-import coil.compose.rememberImagePainter
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -79,23 +78,13 @@ class AvaloirDetailScreen(
     ) {
         val singapore = LatLng(avaloir.latitude, avaloir.longitude)
         var isMapLoaded by remember { mutableStateOf(false) }
-        val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(singapore, 18f)
-        }
+
         avaloirViewModel.getDatesAvaloir(avaloir.idReferent)
         avaloirViewModel.getCommentaireAvaloir(avaloir.idReferent)
-        val location = remember {
-            mutableStateOf(singapore)
-        }
 
         val context = LocalContext.current
-
-        val location2 = remember {
-            mutableStateOf(avaloirViewModel.currentLatLng)
-        }
-        val map = MapJf(location2) {
-            isMapLoaded = true
-        }
+        val messageDate = stringResource(R.string.dateCleanNoPublished)
+        val messageCommentaire = stringResource(R.string.commentaireNoPublished)
 
         LazyColumn(
             modifier = Modifier
@@ -112,39 +101,35 @@ class AvaloirDetailScreen(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    avaloir.imageUrl?.let {
-                        Image(
-                            painter = rememberImagePainter(avaloir.imageUrl),
-                            contentDescription = null,
-                            contentScale = ContentScale.FillHeight,
-                            modifier = Modifier
-                                .size(
-                                    width = ScreenSizeTheme.dimens.imageW,
-                                    height = ScreenSizeTheme.dimens.imageH
-                                )
-                                .padding(horizontal = 25.dp)
-                                .clickable {
-                                    Toast
-                                        .makeText(
-                                            context,
-                                            "zeze",
-                                            Toast.LENGTH_LONG
-                                        )
-                                        .show()
-                                }
-                        )
-                    }
-                    Column() {
+                    val widget = AvaloirWidget()
+                    widget.ImageAvaloir(
+                        avaloir,
+                        context,
+                        ScreenSizeTheme.dimens.imageW,
+                        ScreenSizeTheme.dimens.imageH,
+                        25.dp
+                    )
+                    Column {
+                        val texteRue = avaloir.rue ?: "non déterminé"
                         Text(
-                            text = "${avaloir.rue}",
+                            text = "Rue: $texteRue",
                             fontWeight = FontWeight.Bold,
-                            fontSize = ScreenSizeTheme.textStyle.fontWidth_2
+                            fontSize = ScreenSizeTheme.textStyle.fontWidth_1
                         )
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        val texteLocalite = avaloir.localite ?: "non déterminé"
                         Text(
-                            text = "${avaloir.localite} ",
+                            text = "Localité: $texteLocalite",
                             fontWeight = FontWeight.Bold,
-                            fontSize = ScreenSizeTheme.textStyle.fontWidth_2
+                            fontSize = ScreenSizeTheme.textStyle.fontWidth_1
                         )
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        Text(
+                            text = "Ajouté le ${formatDate(avaloir.createdAt)}",
+                            style = ScreenSizeTheme.textStyle.fontStyle_1,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.padding(5.dp))
                         Text(
                             text = "Localisation: ${avaloir.latitude} ${avaloir.longitude}",
                             style = TextStyle(
@@ -156,6 +141,7 @@ class AvaloirDetailScreen(
                     }
                 }
             }
+
             item {
                 Divider(
                     modifier = Modifier.height(MEDIUM_PADDING),
@@ -163,6 +149,7 @@ class AvaloirDetailScreen(
                 )
             }
 
+            val isDraft: Boolean = avaloir.idReferent == 0
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -170,13 +157,31 @@ class AvaloirDetailScreen(
                     verticalAlignment = Alignment.Top,
                 ) {
                     Button(
-                        onClick = { updateClean(avaloir) },
+                        onClick = {
+                            if (isDraft) {
+                                Toast.makeText(
+                                    context,
+                                    messageDate,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            } else {
+                                updateClean(avaloir)
+                            }
+                        },
                     ) {
                         Text(text = "C'est nettoyé")
                     }
                     Button(
                         onClick = {
-                            navController.navigate(TravauxRoutes.AvaloirCommentaireScreen.route + "/${avaloir.idReferent}")
+                            if (isDraft) {
+                                Toast.makeText(
+                                    context,
+                                    messageCommentaire,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            } else {
+                                navController.navigate(TravauxRoutes.AvaloirCommentaireScreen.route + "/${avaloir.idReferent}")
+                            }
                         },
                     ) {
                         Text(text = "Ajouter un commentaire")
@@ -196,15 +201,31 @@ class AvaloirDetailScreen(
             item {
                 CommentairesContent()
             }
-
             item {
                 Box(Modifier.height(ScreenSizeTheme.dimens.carte)) {
-                    map.GoogleMapWidget(
-                        location.value.latitude,
-                        location.value.longitude,
-                        null,
-                        false
-                    )
+
+                    val mapProperties by remember {
+                        mutableStateOf(
+                            MapProperties(maxZoomPreference = 21f, minZoomPreference = 3f)
+                        )
+                    }
+                    val mapUiSettings by remember {
+                        mutableStateOf(
+                            MapUiSettings(mapToolbarEnabled = true)
+                        )
+                    }
+                    // val state: MarkerState = rememberMarkerState(position = singapore)
+                    val cameraPositionState = rememberCameraPositionState {
+                        position = CameraPosition.fromLatLngZoom(singapore, 18f)
+                    }
+                    GoogleMap(
+                        properties = mapProperties,
+                        uiSettings = mapUiSettings,
+                        modifier = Modifier.fillMaxSize(),
+                        cameraPositionState = cameraPositionState
+                    ) {
+                        Marker(position = singapore)
+                    }
                     isMapLoaded = true
                     if (!isMapLoaded) {
                         AnimatedVisibility(

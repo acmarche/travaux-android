@@ -22,6 +22,8 @@ import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import retrofit2.Response
+import timber.log.Timber
 import java.io.File
 import java.util.*
 
@@ -48,7 +50,7 @@ class AvaloirSyncWorker @AssistedInject constructor(
 
         uploadContent()
         sleep(15)
-        downloadContent()
+       // downloadContent()
 
         outputData.putString(WORK_RESULT, "Synchronisation finie").build()
         return Result.success(outputData.build())
@@ -89,14 +91,14 @@ class AvaloirSyncWorker @AssistedInject constructor(
 
     private fun uploadContent() {
 
-        var results = uploadAvaloir()
-        treatmentResults("uploadAvaloir", 4, results)
+      //  var results = uploadAvaloir()
+      //  treatmentResults("uploadAvaloir", 4, results)
 
-        results = uploadDatesNettoyage()
+     var   results = uploadDatesNettoyage()
         treatmentResults("uploadDatesNettoyage", 5, results)
 
-        results = uploadCommentaires()
-        treatmentResults("uploadCommentaire", 6, results)
+      //  results = uploadCommentaires()
+      //  treatmentResults("uploadCommentaire", 6, results)
 
     }
 
@@ -104,7 +106,7 @@ class AvaloirSyncWorker @AssistedInject constructor(
         try {
             val response = avaloirService.fetchAllAvaloirsNotSuspend()
             val res = response.execute()
-            if (res.isSuccessful) {
+            if (res is Response && res.isSuccessful) {
                 res.body()?.let {
                     try {
                         avaloirRepository.insertAvaloirsNotSuspend(it)
@@ -130,7 +132,7 @@ class AvaloirSyncWorker @AssistedInject constructor(
         try {
             val response = avaloirService.fetchAllDatesNotSuspend()
             val res = response.execute()
-            if (res.isSuccessful) {
+            if (res is Response && res.isSuccessful) {
                 res.body()?.let {
                     try {
                         avaloirRepository.insertDatesNotSuspend(it)
@@ -156,7 +158,7 @@ class AvaloirSyncWorker @AssistedInject constructor(
         try {
             val response = avaloirService.fetchAllCommentairesNotSuspend()
             val res = response.execute()
-            if (res.isSuccessful) {
+            if (res is Response && res.isSuccessful) {
                 res.body()?.let {
                     try {
                         avaloirRepository.insertCommentairesNotSuspend(it)
@@ -193,7 +195,7 @@ class AvaloirSyncWorker @AssistedInject constructor(
             val response = avaloirService.insertAvaloirNotSuspend(coordinates, part, requestBody)
 
             val res = response.execute()
-            if (res.isSuccessful) {
+            if (res is Response && res.isSuccessful) {
                 res.body()?.let { dataMessage ->
                     val error = dataMessage.error
                     if (error > 0) {
@@ -233,8 +235,9 @@ class AvaloirSyncWorker @AssistedInject constructor(
             val response = avaloirService.insertDateNotSuspend(dateNettoyage.avaloirId, date)
 
             val res = response.execute()
-            if (res.isSuccessful) {
+            if (res is Response && res.isSuccessful) {
                 res.body()?.let { dataMessage ->
+                    Timber.d("zeze $dataMessage")
                     val error = dataMessage.error
                     if (error > 0) {
                         results.add(NotificationState.Error(dataMessage.message))
@@ -274,7 +277,7 @@ class AvaloirSyncWorker @AssistedInject constructor(
             )
 
             val res = response.execute()
-            if (res.isSuccessful) {
+            if (res is Response && res.isSuccessful) {
                 res.body()?.let { dataMessage ->
                     val error = dataMessage.error
                     if (error > 0) {

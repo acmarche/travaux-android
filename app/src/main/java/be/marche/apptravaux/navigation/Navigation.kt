@@ -86,10 +86,6 @@ fun Navigation(
             screen.ListScreen(avaloirViewModel)
         }
 
-        composable(route = TravauxRoutes.AvaloirMapScreen.route) {
-            val screen = AvaloirMapScreen(navController)
-            screen.ScreenMain(avaloirViewModel)
-        }
 
         composable(route = TravauxRoutes.AvaloirPhotoScreen.route) {
             locationViewModel.stopLocation()
