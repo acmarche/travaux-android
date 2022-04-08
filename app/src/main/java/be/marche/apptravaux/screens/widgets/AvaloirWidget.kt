@@ -1,7 +1,6 @@
 package be.marche.apptravaux.screens.widgets
 
 import android.content.Context
-import android.icu.text.DateFormat
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -27,6 +26,7 @@ import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
+import be.marche.apptravaux.utils.DateUtils.Companion.formatDate
 import be.marche.apptravaux.utils.FileHelper
 import coil.compose.rememberImagePainter
 import java.io.File
@@ -121,7 +121,6 @@ class AvaloirWidget {
                         style = ScreenSizeTheme.textStyle.fontStyle_1,
                         fontWeight = FontWeight.Normal
                     )
-
                     Text(
                         text = "Ajouté le ${formatDate(avaloir.createdAt)}",
                         style = ScreenSizeTheme.textStyle.fontStyle_1,
@@ -134,10 +133,6 @@ class AvaloirWidget {
         }
     }
 
-    fun formatDate(createdAt: Date): String {
-        //val format = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
-        return DateFormat.getPatternInstance(DateFormat.YEAR_ABBR_MONTH_DAY + DateFormat.HOUR24_MINUTE).format(createdAt)
-    }
 
     @Composable
     fun ImageAvaloir(

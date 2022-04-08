@@ -35,8 +35,8 @@ import be.marche.apptravaux.screens.widgets.AvaloirWidget
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
+import be.marche.apptravaux.utils.DateUtils.Companion.formatDate
 import be.marche.apptravaux.viewModel.AvaloirViewModel
-import java.util.*
 
 class AvaloirDraftsScreen(
     val navController: NavController,
@@ -94,10 +94,6 @@ class AvaloirDraftsScreen(
                 FruitListAnimation(avaloirs.value, context, avaloirViewModel)
             }
         }
-    }
-
-    fun formatDate(createdAt: Date): String {
-        return DateFormat.getPatternInstance(DateFormat.YEAR_ABBR_MONTH_DAY).format(createdAt)
     }
 
     @ExperimentalAnimationApi

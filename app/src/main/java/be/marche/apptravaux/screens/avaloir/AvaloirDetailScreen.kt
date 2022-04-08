@@ -33,11 +33,13 @@ import be.marche.apptravaux.screens.widgets.AvaloirWidget
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
+import be.marche.apptravaux.utils.DateUtils.Companion.formatDate
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 
 class AvaloirDetailScreen(
@@ -340,13 +342,9 @@ class AvaloirDetailScreen(
     }
 
     private fun updateClean(avaloir: Avaloir) {
-        val timeStamp = Date()
-        val dateNettoyage = DateNettoyage(null, 0, avaloir.idReferent, timeStamp)
+        val timeStamp = LocalDateTime.now()
+        val dateNettoyage = DateNettoyage(null, 0, avaloir.idReferent, Date())
         avaloirViewModel.insertDateNettoyageDb(dateNettoyage)
-    }
-
-    fun formatDate(createdAt: Date): String {
-        return DateFormat.getPatternInstance(DateFormat.YEAR_ABBR_MONTH_DAY).format(createdAt)
     }
 
 }
