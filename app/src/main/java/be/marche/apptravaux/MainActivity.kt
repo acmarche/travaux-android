@@ -79,12 +79,11 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val workerStock = workerViewModel.workManager
         val requestStock =
             workerViewModel.createRequest(taskData, StockWorker::class.java, "AutoSyncStock")
         workerViewModel.enqueueWorkRequest(requestStock, WorkerViewModel.STOCK_SYNC_WORK_REQUEST)
 
-        workerStock.getWorkInfoByIdLiveData(requestStock.id).observe(this) {
+        workerAvaloir.getWorkInfoByIdLiveData(requestStock.id).observe(this) {
             if (it != null) {
                 when (it.state) {
                     WorkInfo.State.FAILED -> {

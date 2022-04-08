@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import be.marche.apptravaux.database.AppDatabase
-import be.marche.apptravaux.repository.WordRepository
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -29,7 +28,6 @@ class TravauxApplication : Application(), Configuration.Provider {
     // Using by lazy so the database and the repository are only created when they're needed
     // rather than when the application starts
     val database by lazy { AppDatabase.getDatabase(this) }
-    val repository by lazy { WordRepository(database.avaloirDao()) }
 
     @Inject
     //  lateinit var workerFactory: AvaloirWorkerFactory
