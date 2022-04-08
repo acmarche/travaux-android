@@ -3,8 +3,10 @@ package be.marche.apptravaux.worker
 import android.content.Context
 import android.os.SystemClock.sleep
 import androidx.hilt.work.HiltWorker
-import androidx.lifecycle.LiveData
-import androidx.work.*
+import androidx.work.CoroutineWorker
+import androidx.work.Data
+import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import be.marche.apptravaux.entities.NotificationState
 import be.marche.apptravaux.networking.StockService
 import be.marche.apptravaux.repository.StockRepository
@@ -28,17 +30,7 @@ class StockWorker @AssistedInject constructor(
     companion object {
         const val Progress = "Progress"
         private const val delayDuration = 5L
-        private const val WORK_NAME = "UploadPhotoWorker"
         const val WORK_RESULT = "work_result"
-
-        fun run(context: Context): LiveData<WorkInfo> {
-            val work = OneTimeWorkRequestBuilder<StockWorker>()
-                .build()
-
-            val manager = WorkManager.getInstance(context)
-            manager.enqueueUniqueWork(WORK_NAME, ExistingWorkPolicy.REPLACE, work)
-            return manager.getWorkInfoByIdLiveData(work.id)
-        }
     }
 
     override suspend fun doWork(): Result {
