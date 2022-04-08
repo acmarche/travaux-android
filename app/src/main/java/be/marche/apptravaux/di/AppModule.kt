@@ -7,6 +7,7 @@ import be.marche.apptravaux.database.StockDao
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.networking.StockService
+import be.marche.apptravaux.utils.DateUtils
 import be.marche.apptravaux.utils.FileHelper
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -38,7 +39,6 @@ class AppModule {
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
-        val applicationScope = CoroutineScope(SupervisorJob())
         return AppDatabase.getDatabase(context = appContext)
     }
 
@@ -57,9 +57,7 @@ class AppModule {
         return FileHelper()
     }
 
-    var gson = GsonBuilder()
-        .setDateFormat("yyyy-MM-dd HH:mm")
-        .create()
+    val gson = GsonBuilder().setDateFormat(DateUtils.PATTERN).create()
 
     @Provides
     fun provideAvaloirService(): AvaloirService =
