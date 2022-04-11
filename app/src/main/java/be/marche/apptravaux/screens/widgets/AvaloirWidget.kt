@@ -27,6 +27,7 @@ import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.utils.DateUtils.Companion.formatDate
+import be.marche.apptravaux.utils.DateUtils.Companion.formatDateTime
 import be.marche.apptravaux.utils.FileHelper
 import coil.compose.rememberImagePainter
 import java.io.File
@@ -122,7 +123,7 @@ class AvaloirWidget {
                         fontWeight = FontWeight.Normal
                     )
                     Text(
-                        text = "Ajouté le ${formatDate(avaloir.createdAt)}",
+                        text = "Ajouté le ${formatDateTime(avaloir.createdAt)}",
                         style = ScreenSizeTheme.textStyle.fontStyle_1,
                         fontWeight = FontWeight.Bold
                     )

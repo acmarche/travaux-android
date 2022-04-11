@@ -36,6 +36,7 @@ import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.utils.DateUtils.Companion.formatDate
+import be.marche.apptravaux.utils.DateUtils.Companion.formatDateTime
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 
 class AvaloirDraftsScreen(
@@ -149,7 +150,7 @@ class AvaloirDraftsScreen(
                                             )
                                             Column {
                                                 Text(
-                                                    text = "Ajouté le ${formatDate(avaloir.createdAt)}",
+                                                    text = "Ajouté le ${formatDateTime(avaloir.createdAt)}",
                                                     style = TextStyle(
                                                         color = Color.Black,
                                                         fontSize = ScreenSizeTheme.textStyle.fontWidth_1,
