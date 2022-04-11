@@ -25,10 +25,10 @@ class DateUtils {
             val formatIn = "yyyy-MM-dd HH:mm"
 
             val formatterIn: DateTimeFormatter = DateTimeFormatter.ofPattern(formatIn)
-            val dateTime: LocalDateTime = LocalDateTime.parse(createdAt, formatterIn)
 
-            val formatterOut = DateTimeFormatter.ofPattern(formatOut)
             try {
+                val dateTime: LocalDateTime = LocalDateTime.parse(createdAt, formatterIn)
+                val formatterOut = DateTimeFormatter.ofPattern(formatOut)
                 return dateTime.format(formatterOut)
             } catch (e: Exception) {
 
@@ -37,20 +37,18 @@ class DateUtils {
         }
 
         fun formatDate(createdAt: String): String {
-
             val formatOut = "dd-MM-yyyy"
             val formatIn = "yyyy-MM-dd"
 
             val formatterIn: DateTimeFormatter = DateTimeFormatter.ofPattern(formatIn)
-            val dateTime: LocalDate = LocalDate.parse(createdAt, formatterIn)
-
-            val formatterOut = DateTimeFormatter.ofPattern(formatOut)
             try {
+                val dateTime: LocalDate = LocalDate.parse(createdAt, formatterIn)
+                val formatterOut = DateTimeFormatter.ofPattern(formatOut)
                 return dateTime.format(formatterOut)
+
             } catch (e: Exception) {
 
             }
-
             return ""
         }
 
