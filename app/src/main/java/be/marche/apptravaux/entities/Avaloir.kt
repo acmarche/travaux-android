@@ -2,7 +2,6 @@ package be.marche.apptravaux.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
 
 //createdAt: 2022-04-07T15:34:41+02:00
 @Entity
@@ -17,7 +16,7 @@ data class Avaloir(
     val localite: String? = null,
     var imageUrl: String? = null,
     val descriptif: String? = null,
-    val createdAt: Date
+    val createdAt: String
 )
 
 @Entity
@@ -27,7 +26,7 @@ data class Commentaire(
     val idReferent: Int,
     val avaloirId: Int,
     val content: String,
-    val createdAt: Date
+    val createdAt: String
 )
 
 @Entity
@@ -36,14 +35,14 @@ data class DateNettoyage(
     val id: Int?,
     val idReferent: Int,
     val avaloirId: Int,
-    val createdAt: Date
+    val createdAt: String
 )
 
 @Entity
 data class Sync(
     @PrimaryKey(autoGenerate = true)
     val id: Int?,
-    val createdAt: Date,
+    val createdAt: String,
     val content: String,
     val result: Boolean
 )

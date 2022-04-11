@@ -20,6 +20,7 @@ import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.OutlinedTextFieldJf
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
+import be.marche.apptravaux.utils.DateUtils
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import java.time.LocalDateTime
 import java.util.*
@@ -109,9 +110,8 @@ class AvaloirCommentaireScreen(
     }
 
     private fun addCommentaire(avaloir: Avaloir, content: String) {
-        //val timeStamp = LocalDateTime.now()
-        val timeStamp = Date()
-        val commentaire = Commentaire(null, 0, avaloir.idReferent, content, timeStamp)
+
+        val commentaire = Commentaire(null, 0, avaloir.idReferent, content, DateUtils.dateToday())
 
         avaloirViewModel.insertCommentaireDb(commentaire)
     }

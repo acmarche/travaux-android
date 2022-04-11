@@ -35,6 +35,7 @@ import be.marche.apptravaux.entities.CreateFileState
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.ErrorDialog
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
+import be.marche.apptravaux.utils.DateUtils
 import be.marche.apptravaux.utils.FileHelper
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import coil.compose.rememberImagePainter
@@ -206,7 +207,7 @@ class AvaloirPhotoScreen(
                         latitude = location.latitude,
                         longitude = location.longitude,
                         imageUrl = fileImage.path,
-                        createdAt = Date()
+                        createdAt = DateUtils.dateToday(true)
                     )
                 avaloirViewModel.insertAvaloir(avaloir)
                 Toast.makeText(context, "Avaloir ajouté", Toast.LENGTH_SHORT).show()

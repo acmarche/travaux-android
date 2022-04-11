@@ -33,7 +33,9 @@ import be.marche.apptravaux.screens.widgets.AvaloirWidget
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
+import be.marche.apptravaux.utils.DateUtils
 import be.marche.apptravaux.utils.DateUtils.Companion.formatDate
+import be.marche.apptravaux.utils.DateUtils.Companion.formatDateTime
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -129,7 +131,7 @@ class AvaloirDetailScreen(
                         )
                         Spacer(modifier = Modifier.padding(5.dp))
                         Text(
-                            text = "Ajouté le ${formatDate(avaloir.createdAt)}",
+                            text = "Ajouté le ${formatDateTime(avaloir.createdAt)}",
                             style = ScreenSizeTheme.textStyle.fontStyle_1,
                             fontWeight = FontWeight.Bold
                         )
@@ -342,8 +344,7 @@ class AvaloirDetailScreen(
     }
 
     private fun updateClean(avaloir: Avaloir) {
-        val timeStamp = LocalDateTime.now()
-        val dateNettoyage = DateNettoyage(null, 0, avaloir.idReferent, Date())
+        val dateNettoyage = DateNettoyage(null, 0, avaloir.idReferent, DateUtils.dateToday())
         avaloirViewModel.insertDateNettoyageDb(dateNettoyage)
     }
 

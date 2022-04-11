@@ -9,6 +9,7 @@ import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.networking.StockService
 import be.marche.apptravaux.utils.DateUtils
 import be.marche.apptravaux.utils.FileHelper
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -57,14 +58,14 @@ class AppModule {
         return FileHelper()
     }
 
-    val gson = GsonBuilder().setDateFormat(DateUtils.PATTERN).create()
+    //val gson: Gson = GsonBuilder().setDateFormat(DateUtils.PATTERN).create()
 
     @Provides
     fun provideAvaloirService(): AvaloirService =
         Retrofit.Builder()
             .client(getOkHttpClient())
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(AvaloirService::class.java)
 

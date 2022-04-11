@@ -1,8 +1,8 @@
 package be.marche.apptravaux.utils
 
-import android.icu.text.DateFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
+import java.time.format.DateTimeFormatter
 
 class DateUtils {
 
@@ -10,23 +10,50 @@ class DateUtils {
 
         const val PATTERN = "yyyy-MM-dd'T'HH:mm:ss"
 
-        fun formatDate(createdAt: LocalDateTime): String {
-            //val format = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
-            val t =
-                DateFormat.getPatternInstance(DateFormat.YEAR_ABBR_MONTH_DAY + DateFormat.HOUR24_MINUTE)
-                    .format(createdAt)
-
-            return t
+        fun dateToday(withTime: Boolean = false): String {
+            val date: LocalDateTime = LocalDateTime.now()
+            var pattern = "yyyy-MM-dd"
+            if (withTime == true) {
+                pattern = "$pattern HH:mm"
+            }
+            val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern(pattern)
+            return date.format(formatter)
         }
 
-        fun formatDate(createdAt: Date): String {
-            //val format = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
-            val t =
-                DateFormat.getPatternInstance(DateFormat.YEAR_ABBR_MONTH_DAY + DateFormat.HOUR24_MINUTE)
-                    .format(createdAt)
+        fun formatDateTime(createdAt: String): String {
+            val formatOut = "dd-MM-yyyy"
+            val formatIn = "yyyy-MM-dd HH:mm"
 
-            return t
+            val formatterIn: DateTimeFormatter = DateTimeFormatter.ofPattern(formatIn)
+            val dateTime: LocalDateTime = LocalDateTime.parse(createdAt, formatterIn)
+
+            val formatterOut = DateTimeFormatter.ofPattern(formatOut)
+            try {
+                return dateTime.format(formatterOut)
+            } catch (e: Exception) {
+
+            }
+            return ""
         }
+
+        fun formatDate(createdAt: String): String {
+
+            val formatOut = "dd-MM-yyyy"
+            val formatIn = "yyyy-MM-dd"
+
+            val formatterIn: DateTimeFormatter = DateTimeFormatter.ofPattern(formatIn)
+            val dateTime: LocalDate = LocalDate.parse(createdAt, formatterIn)
+
+            val formatterOut = DateTimeFormatter.ofPattern(formatOut)
+            try {
+                return dateTime.format(formatterOut)
+            } catch (e: Exception) {
+
+            }
+
+            return ""
+        }
+
     }
 
 }
