@@ -262,10 +262,9 @@ class AvaloirDetailScreen(
     private fun DatesContent() {
         val dates = avaloirViewModel.datesAvaloir.collectAsState().value
         val builder = StringBuilder()
-        val format = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
 
         dates.forEach { date ->
-            builder.append(format.format(date.createdAt))
+            builder.append(formatDate(date.createdAt))
             builder.append(System.getProperty("line.separator"));
         }
         Text(

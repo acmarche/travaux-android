@@ -15,6 +15,7 @@ import be.marche.apptravaux.entities.NotificationState
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.repository.AvaloirRepository
 import be.marche.apptravaux.ui.entities.Coordinates
+import be.marche.apptravaux.utils.DateUtils
 import be.marche.apptravaux.utils.FileHelper
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
@@ -227,8 +228,7 @@ class AvaloirSyncWorker @AssistedInject constructor(
 
         avaloirRepository.getAllDatesNettoyagesDraftsList().forEach { dateNettoyage ->
 
-            val format = SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE)
-            val date = format.format(dateNettoyage.createdAt)
+            val date = dateNettoyage.createdAt
 
             val response = avaloirService.insertDateNotSuspend(dateNettoyage.avaloirId, date)
 
