@@ -30,7 +30,7 @@ import be.marche.apptravaux.ui.theme.LARGEST_PADDING
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.viewModel.WorkerViewModel
-import be.marche.apptravaux.worker.AvaloirSyncWorker
+import be.marche.apptravaux.worker.AvaloirAsyncWorker
 import be.marche.apptravaux.worker.StockWorker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -68,7 +68,7 @@ class SyncScreen(
             val isConnected = connection == ConnectionState.Available
             val requestAvaloir = workerViewModel.createRequest(
                 taskDataAvaloir,
-                AvaloirSyncWorker::class.java,
+                AvaloirAsyncWorker::class.java,
                 "avaloirSync"
             )
             val requestStock = workerViewModel.createRequest(
@@ -154,7 +154,7 @@ class SyncScreen(
                     when (it.state) {
                         WorkInfo.State.SUCCEEDED -> {
                             val outputData = it.outputData
-                            val taskResult = outputData.getString(AvaloirSyncWorker.WORK_RESULT)
+                            val taskResult = outputData.getString(AvaloirAsyncWorker.WORK_RESULT)
                             if (taskResult != null) {
                                 textInput.value = taskResult
                             }

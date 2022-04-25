@@ -17,7 +17,7 @@ import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.viewModel.LocationViewModel
 import be.marche.apptravaux.viewModel.StockViewModel
 import be.marche.apptravaux.viewModel.WorkerViewModel
-import be.marche.apptravaux.worker.AvaloirSyncWorker
+import be.marche.apptravaux.worker.AvaloirAsyncWorker
 import be.marche.apptravaux.worker.StockWorker
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
                 .build()
         val requestAvaloir = workerViewModel.createRequest(
             taskData,
-            AvaloirSyncWorker::class.java,
+            AvaloirAsyncWorker::class.java,
             "autoSyncAvaloir"
         )
         workerViewModel.enqueueWorkRequest(

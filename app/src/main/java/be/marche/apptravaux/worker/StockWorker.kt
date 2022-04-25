@@ -37,7 +37,7 @@ class StockWorker @AssistedInject constructor(
         upload()
         sleep(150)
         download()
-        outputData.putString(AvaloirSyncWorker.WORK_RESULT, "Synchronisation finie").build()
+        outputData.putString(AvaloirAsyncWorker.WORK_RESULT, "Synchronisation finie").build()
         return Result.success(outputData.build())
     }
 

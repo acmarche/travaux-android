@@ -39,7 +39,7 @@ interface AvaloirService {
     ): Call<DataResponse>
 
     @POST("avaloirs/api/commentaire/{id}/{content}")
-     fun insertCommentaireNotSuspend(
+    fun insertCommentaireNotSuspend(
         @Path("id") avaloirId: Int,
         @Path("content") comment: CharSequence
     ): Call<DataResponseCommentaire>
@@ -73,7 +73,7 @@ interface AvaloirService {
     ): Response<DataResponseCommentaire>
 
     @GET("avaloirs/api/dates")
-    suspend fun getAllDates(
+    suspend fun fetchAllDates(
     ): List<DateNettoyage>
 
     @GET("avaloirs/api/dates")
@@ -85,7 +85,7 @@ interface AvaloirService {
     ): Call<List<Commentaire>>
 
     @GET("avaloirs/api/commentaires")
-    suspend fun getAllCommentaires(
+    suspend fun fetchAllCommentaires(
     ): List<Commentaire>
 
     @POST("avaloirs/api/search")
