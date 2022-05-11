@@ -10,9 +10,11 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import be.marche.apptravaux.R
+import be.marche.apptravaux.entities.ErrorLog
 import be.marche.apptravaux.entities.NotificationState
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.repository.AvaloirRepository
+import be.marche.apptravaux.repository.ErrorRepository
 import be.marche.apptravaux.ui.entities.Coordinates
 import be.marche.apptravaux.utils.FileHelper
 import com.google.firebase.crashlytics.ktx.crashlytics
@@ -20,7 +22,6 @@ import com.google.firebase.ktx.Firebase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import retrofit2.Response
-import timber.log.Timber
 import java.io.File
 
 @HiltWorker
@@ -28,6 +29,7 @@ class AvaloirAsyncWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val avaloirRepository: AvaloirRepository,
+    private val errorRepository: ErrorRepository,
     private val avaloirService: AvaloirService,
 ) : CoroutineWorker(context, workerParameters) {
 
@@ -43,7 +45,6 @@ class AvaloirAsyncWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
 
         outputData.putString(WORK_RESULT, "Zeze").build()
-
         uploadContent()
         sleep(15)
         downloadContent()
@@ -102,14 +103,24 @@ class AvaloirAsyncWorker @AssistedInject constructor(
     private suspend fun downloadAvaloirs(): NotificationState {
         try {
             val avaloirs = avaloirService.fetchAllAvaloirs()
-            return try {
-                avaloirRepository.insertAvaloirsNotSuspend(avaloirs)
-                NotificationState.Success("OK")
-            } catch (e: Exception) {
-                Firebase.crashlytics.recordException(e)
-                NotificationState.Error("${e.message}")
+            var errorResult = ""
+            for (avaloir in avaloirs) {
+                try {
+                    avaloirRepository.insertAvaloirs(avaloirs)
+                    NotificationState.Success("OK")
+                } catch (e: Exception) {
+                    errorResult = "error avaloir: ${avaloir.idReferent}"
+                    insertError("downloadAvaloirs", e.message)
+                    Firebase.crashlytics.recordException(e)
+                    NotificationState.Error("${e.message}")
+                }
             }
+            if (errorResult.isNotEmpty()) {
+                return NotificationState.Error(errorResult)
+            }
+            return NotificationState.Success("oki avaloirs")
         } catch (e: Exception) {
+            insertError("downloadAvaloirs fetch", e.message)
             Firebase.crashlytics.recordException(e)
             return NotificationState.Error("${e.message}")
         }
@@ -117,18 +128,26 @@ class AvaloirAsyncWorker @AssistedInject constructor(
 
     private suspend fun downloadDates(): NotificationState {
         try {
-            Timber.d("dates1 ")
             val dates = avaloirService.fetchAllDates()
-            Timber.d("dates2 $dates")
-            return try {
-                avaloirRepository.insertDatesNotSuspend(dates)
-                NotificationState.Success("OK")
-            } catch (e: Exception) {
-                Firebase.crashlytics.recordException(e)
-                NotificationState.Error("${e.message}")
+            var errorResult = ""
+            for (date in dates) {
+                try {
+                    avaloirRepository.insertDateNettoyageDb(date)
+                } catch (e: Exception) {
+                    errorResult = "error comment: ${date.idReferent}"
+                    Firebase.crashlytics.log("error sync date id referent ${date.idReferent} date ${date.createdAt}")
+                    insertError("downloadDate message", e.message)
+                    insertError("downloadDate id", "${date.idReferent}")
+                    insertError("downloadDate idAval", "${date.avaloirId}")
+                    insertError("downloadDate date", "${date.createdAt}")
+                }
             }
+            if (errorResult.isNotEmpty()) {
+                return NotificationState.Error(errorResult)
+            }
+            return NotificationState.Success("oki dates")
         } catch (e: Exception) {
-            Timber.d("dates error ${e.message}")
+            insertError("downloadDates", e.message)
             Firebase.crashlytics.recordException(e)
             return NotificationState.Error("${e.message}")
         }
@@ -137,14 +156,30 @@ class AvaloirAsyncWorker @AssistedInject constructor(
     private suspend fun downloadCommentaires(): NotificationState {
         try {
             val commentaires = avaloirService.fetchAllCommentaires()
-            return try {
-                avaloirRepository.insertCommentairesNotSuspend(commentaires)
-                NotificationState.Success("OK")
-            } catch (e: Exception) {
-                Firebase.crashlytics.recordException(e)
-                NotificationState.Error("${e.message}")
+            var errorResult = ""
+            for (commentaire in commentaires) {
+                try {
+                    avaloirRepository.insertCommentaireDb(commentaire)
+                } catch (e: Exception) {
+                    Firebase.crashlytics.log("error sync comment id referent ${commentaire.idReferent} date ${commentaire.createdAt} content ${commentaire.content}")
+                    errorResult = "error comment: ${commentaire.idReferent}"
+                    insertError("downloadCommentaire message", e.message)
+                    insertError("downloadcommentaire id", "${commentaire.idReferent}")
+                    insertError(
+                        "downloadcommentaire idAval",
+                        "${commentaire.avaloirId}"
+                    )
+                    insertError("downloadcommentaire date", "${commentaire.createdAt}")
+                    insertError("downloadcommentaire content", "${commentaire.content}")
+                    Firebase.crashlytics.recordException(e)
+                }
             }
+            if (errorResult.isNotEmpty()) {
+                return NotificationState.Error(errorResult)
+            }
+            return NotificationState.Success("oki comments")
         } catch (e: Exception) {
+            insertError("fetchAllCommentaires", e.message)
             Firebase.crashlytics.recordException(e)
             return NotificationState.Error("${e.message}")
         }
@@ -304,5 +339,12 @@ class AvaloirAsyncWorker @AssistedInject constructor(
             .setSmallIcon(R.drawable.ic_outline_notifications_active_24)
 
         manager.notify(idNotify, builder.build())
+    }
+
+    private suspend fun insertError(sujet: String, message: String?) {
+        if (message != null) {
+            val error = ErrorLog(null, sujet, message)
+            errorRepository.insertErrors(error)
+        }
     }
 }
