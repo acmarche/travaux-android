@@ -1,13 +1,11 @@
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
 }
-
-//android.defaultConfig.ndk.debugSymbolLevel = 'FULL'
 
 android {
     compileSdk 32
@@ -22,26 +20,21 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
-    //https://developer.android.com/studio/build/shrink-code#native-crash-support
-        ndk {
-                debugSymbolLevel 'FULL'
-        }
     }
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = '1.8'
-        useIR = true
     }
     buildFeatures {
         compose true
@@ -51,7 +44,6 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
-        kotlinCompilerVersion '1.6.10'
     }
     packagingOptions {
         resources {
@@ -64,7 +56,6 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.7.0'
-    //  implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.6.0'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
@@ -76,6 +67,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 
     /**
      * viewmodel in compose
@@ -87,8 +79,8 @@ dependencies {
     /**
      * Using hilt for DI
      */
-    implementation "com.google.dagger:hilt-android:2.41"
-    kapt "com.google.dagger:hilt-compiler:2.41"
+    implementation 'com.google.dagger:hilt-android:2.42'
+    kapt 'com.google.dagger:hilt-compiler:2.42'
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
     /**
@@ -125,16 +117,16 @@ dependencies {
      * using Glide as image loading and caching solution
      * Using it vs other libraries because of loading performance efficiency
      */
-    implementation 'com.github.bumptech.glide:glide:4.13.1'
-    kapt 'com.github.bumptech.glide:compiler:4.13.1'
-    implementation("io.coil-kt:coil-compose:1.4.0")
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
+    kapt 'com.github.bumptech.glide:compiler:4.13.2'
+    implementation('io.coil-kt:coil-compose:2.0.0')
     def timber_version = '5.0.1'
     implementation "com.jakewharton.timber:timber:$timber_version"
 
     /**
      * Firebase
      */
-    implementation platform('com.google.firebase:firebase-bom:29.1.0')
+    implementation platform('com.google.firebase:firebase-bom:30.0.0')
     implementation "com.google.firebase:firebase-crashlytics-ktx"
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
