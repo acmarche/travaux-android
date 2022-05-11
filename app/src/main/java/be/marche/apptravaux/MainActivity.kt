@@ -13,10 +13,7 @@ import be.marche.apptravaux.navigation.Navigation
 import be.marche.apptravaux.networking.NetworkUtils
 import be.marche.apptravaux.screens.SyncScreen
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
-import be.marche.apptravaux.viewModel.AvaloirViewModel
-import be.marche.apptravaux.viewModel.LocationViewModel
-import be.marche.apptravaux.viewModel.StockViewModel
-import be.marche.apptravaux.viewModel.WorkerViewModel
+import be.marche.apptravaux.viewModel.*
 import be.marche.apptravaux.worker.AvaloirAsyncWorker
 import be.marche.apptravaux.worker.StockWorker
 import com.google.firebase.crashlytics.ktx.crashlytics
@@ -31,6 +28,7 @@ class MainActivity : ComponentActivity() {
     private val locationViewModel: LocationViewModel by viewModels()
     private val stockViewModel: StockViewModel by viewModels()
     private val workerViewModel: WorkerViewModel by viewModels()
+    private val errorViewModel: ErrorViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +43,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AppTravaux6Theme {
-                Navigation(avaloirViewModel, locationViewModel, stockViewModel, workerViewModel)
+                Navigation(avaloirViewModel, locationViewModel, stockViewModel, workerViewModel, errorViewModel)
             }
         }
     }

@@ -17,15 +17,17 @@ const val DATABASE_NAME = "apptravaux"
         Sync::class,
         Categorie::class,
         Produit::class,
-        QuantiteDraft::class
+        QuantiteDraft::class,
+        ErrorLog::class
     ],
-    version = 40,
+    version = 42,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun avaloirDao(): AvaloirDao
     abstract fun stockDao(): StockDao
+    abstract fun errorDao(): ErrorDao
 
     companion object {
         // Singleton prevents multiple instances of database opening at the

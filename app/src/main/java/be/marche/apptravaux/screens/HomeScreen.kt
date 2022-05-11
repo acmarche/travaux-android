@@ -34,7 +34,7 @@ fun HomeScreen(navController: NavController) {
             "Synchronisation",
             { navController.navigate(TravauxRoutes.SyncScreen.route) })
 
-    val d = CardData("Paramètres", { navController.navigate(TravauxRoutes.SettingScreen.route) })
+    val d = CardData("Logs sync", { navController.navigate(TravauxRoutes.SettingScreen.route) })
 
     val cards: List<CardData> = listOf(a, b, c, d)
 

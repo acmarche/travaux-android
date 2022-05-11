@@ -15,10 +15,7 @@ import be.marche.apptravaux.screens.stock.StockAddScreen
 import be.marche.apptravaux.screens.stock.StockDraftScreen
 import be.marche.apptravaux.screens.stock.StockHomeScreen
 import be.marche.apptravaux.screens.stock.StockListScreen
-import be.marche.apptravaux.viewModel.AvaloirViewModel
-import be.marche.apptravaux.viewModel.LocationViewModel
-import be.marche.apptravaux.viewModel.StockViewModel
-import be.marche.apptravaux.viewModel.WorkerViewModel
+import be.marche.apptravaux.viewModel.*
 
 class Navigation {
 
@@ -34,7 +31,8 @@ fun Navigation(
     avaloirViewModel: AvaloirViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
     stockViewModel: StockViewModel = viewModel(),
-    workerViewModel: WorkerViewModel = viewModel()
+    workerViewModel: WorkerViewModel = viewModel(),
+    errorViewModel: ErrorViewModel = viewModel()
 ) {
     val navController = rememberNavController()
 
@@ -65,7 +63,7 @@ fun Navigation(
 
         composable(route = TravauxRoutes.SettingScreen.route) {
             val screen = SettingScreen(navController)
-            screen.MainScreen()
+            screen.MainScreen(errorViewModel)
         }
 
         /**

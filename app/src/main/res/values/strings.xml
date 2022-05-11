@@ -27,6 +27,7 @@
     <string name="add_avaloir">Ajouter un avaloir</string>
     <string name="add_photo_avaloir">Photo de l\'avaloir</string>
     <string name="confirm">Confirmer l\'ajout</string>
+    <string name="vider">Vider tout</string>
     <string name="cancel">Annuler</string>
     <string name="photo_take">Prendre une photo</string>
     <string name="sync_intro1">Si l\'appareil est connecté à internet, \n les données sont synchronisées \n au démarrage de l\'application</string>

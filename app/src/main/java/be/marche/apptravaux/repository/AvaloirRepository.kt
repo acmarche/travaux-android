@@ -67,6 +67,10 @@ class AvaloirRepository @Inject constructor(
         avaloirDao.insertCommentairesNotSuspend(commentaires)
     }
 
+    suspend fun insertCommentaires(commentaires: List<Commentaire>) {
+        avaloirDao.insertCommentaires(commentaires)
+    }
+
     suspend fun insertDates(dates: List<DateNettoyage>) {
         avaloirDao.insertDates(dates)
     }
@@ -98,5 +102,4 @@ class AvaloirRepository @Inject constructor(
     fun deleteCommentaireNotSuspend(commentaire: Commentaire) {
         avaloirDao.deleteCommentaireNotSuspend(commentaire)
     }
-
 }

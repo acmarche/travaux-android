@@ -3,6 +3,7 @@ package be.marche.apptravaux.di
 import android.content.Context
 import be.marche.apptravaux.database.AppDatabase
 import be.marche.apptravaux.database.AvaloirDao
+import be.marche.apptravaux.database.ErrorDao
 import be.marche.apptravaux.database.StockDao
 import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
@@ -46,6 +47,11 @@ class AppModule {
     @Provides
     fun provideStockDao(appDatabase: AppDatabase): StockDao {
         return appDatabase.stockDao()
+    }
+
+    @Provides
+    fun provideErrorDao(appDatabase: AppDatabase): ErrorDao {
+        return appDatabase.errorDao()
     }
 
     @Provides

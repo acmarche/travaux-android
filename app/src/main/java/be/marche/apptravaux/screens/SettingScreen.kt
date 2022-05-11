@@ -1,34 +1,30 @@
 package be.marche.apptravaux.screens
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
-import androidx.work.WorkRequest
-import be.marche.apptravaux.screens.widgets.CardRow
-import be.marche.apptravaux.worker.StockWorker
-
+import be.marche.apptravaux.R
+import be.marche.apptravaux.entities.ErrorLog
+import be.marche.apptravaux.ui.theme.ScreenSizeTheme
+import be.marche.apptravaux.viewModel.ErrorViewModel
 
 class SettingScreen(val navController: NavController) {
 
     @Composable
-    fun MainScreen() {
+    fun MainScreen(errorViewModel: ErrorViewModel) {
         val context = LocalContext.current
         val a = CardData(
             "Local data"
@@ -41,12 +37,14 @@ class SettingScreen(val navController: NavController) {
         }
         val cards: List<CardData> = listOf(a)
 
-        MainContentHome(datas = cards)
+        val errors = errorViewModel.allErrorsFlow.collectAsState().value
+        Content(datas = errors, errorViewModel)
     }
 
     @Composable
-    fun Content(
-        datas: List<CardData>
+    private fun Content(
+        datas: List<ErrorLog>,
+        errorViewModel: ErrorViewModel
     ) {
         Scaffold(
             topBar = {
@@ -64,43 +62,51 @@ class SettingScreen(val navController: NavController) {
             Column(modifier = Modifier.padding(12.dp)) {
                 LazyColumn {
                     items(datas) { data ->
-                        CardRow(data.texte, data.action)
+                        CardError(data.nom, data.description)
                     }
+                }
+                Button(
+                    onClick = {
+                        vider(errorViewModel)
+                    },
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.vider),
+                        modifier = Modifier.padding(8.dp),
+                        textAlign = TextAlign.Center,
+                        color = Color.White
+                    )
                 }
             }
         }
     }
 
     @Composable
-    fun WorkerTest() {
-        val context = LocalContext.current
-        val request: WorkRequest =
-            OneTimeWorkRequestBuilder<StockWorker>()
-                .build()
+    private fun CardError(
+        nom: String,
+        description: String?
+    ) {
+        Card(
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            shape = RoundedCornerShape(corner = CornerSize(16.dp)),
+            elevation = 6.dp
+        ) {
+            Column(
+            ) {
+                Text(text = nom, fontSize = ScreenSizeTheme.textStyle.fontWidth_1)
+                Text(text = "det: $description")
+            }
+        }
+    }
 
-        val lifeCycle = LocalLifecycleOwner.current
-        val workManager = WorkManager.getInstance(context)
-
-        /*     workManager.getWorkInfoByIdLiveData(request.id).observe(lifeCycle) { workInfo ->
-                 workInfo.let {
-                     if (workInfo != null) {
-                         val progress = workInfo.progress
-                         val value = progress.getInt(Progress, 0)
-                     }
-                 }
-             }*/
-
-        workManager
-            // requestId is the WorkRequest id
-            .getWorkInfoByIdLiveData(request.id)
-            .observe(lifeCycle, Observer { workInfo: WorkInfo? ->
-                if (workInfo != null) {
-                    //   val progress = workInfo.progress
-                    //  val value = progress.getInt(Progress, 0)
-                    val progress = workInfo.progress.getInt(StockWorker.Progress, -1)
-                    // Do something with progress information
-                }
-            })
-
+    private fun vider(errorViewModel: ErrorViewModel) {
+        errorViewModel.deleteAll()
     }
 }
