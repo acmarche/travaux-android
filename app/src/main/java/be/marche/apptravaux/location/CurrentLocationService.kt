@@ -1,16 +1,12 @@
 package be.marche.apptravaux.location
 
-import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.location.Location
 import android.os.Binder
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
 import java.util.concurrent.TimeUnit
 
@@ -40,7 +36,7 @@ class CurrentLocationService : Service() {
         }
     }
 
-    fun sendLocation(currentLocation: Location) {
+    fun sendLocation(currentLocation: Location?) {
         if (serviceRunningInForeground) {
             //send currentlocation
         }
