@@ -45,37 +45,40 @@ class AvaloirListScreen(val navController: NavController) {
                     "Liste des avaloirs"
                 ) { navController.navigate(TravauxRoutes.AvaloirHomeScreen.route) }
             }
-        ) {
-            when (val state = avaloirViewModel.uiState.collectAsState().value) {
-                is AvaloirUiState.Loading -> {
-                }
-                is AvaloirUiState.Error -> {
-                    ErrorDialog(state.message)
-                }
-                is AvaloirUiState.Loaded -> {
-                    val widget = AvaloirWidget()
-                    Column {
-                        SearchView(textState, {})
-                        widget.LoadAvaloirs(state.data, textState, navController)
-                    }
-                }
-                is AvaloirUiState.Empty -> {
-                    Column {
-                        ErrorDialog("La liste est vide")
-                        Divider(
-                            modifier = Modifier.height(MEDIUM_PADDING),
-                            color = MaterialTheme.colors.background
-                        )
+        ) { contentPadding ->
+            Box(modifier = Modifier.padding(contentPadding)) {
 
-                        Button(
-                            onClick = { navController.navigate(TravauxRoutes.SyncScreen.route) }
-                        ) {
-                            Text(text = "Synchroniser les données")
+                when (val state = avaloirViewModel.uiState.collectAsState().value) {
+                    is AvaloirUiState.Loading -> {
+                    }
+                    is AvaloirUiState.Error -> {
+                        ErrorDialog(state.message)
+                    }
+                    is AvaloirUiState.Loaded -> {
+                        val widget = AvaloirWidget()
+                        Column {
+                            SearchView(textState, {})
+                            widget.LoadAvaloirs(state.data, textState, navController)
                         }
-                        Divider(
-                            modifier = Modifier.height(MEDIUM_PADDING),
-                            color = MaterialTheme.colors.background
-                        )
+                    }
+                    is AvaloirUiState.Empty -> {
+                        Column {
+                            ErrorDialog("La liste est vide")
+                            Divider(
+                                modifier = Modifier.height(MEDIUM_PADDING),
+                                color = MaterialTheme.colors.background
+                            )
+
+                            Button(
+                                onClick = { navController.navigate(TravauxRoutes.SyncScreen.route) }
+                            ) {
+                                Text(text = "Synchroniser les données")
+                            }
+                            Divider(
+                                modifier = Modifier.height(MEDIUM_PADDING),
+                                color = MaterialTheme.colors.background
+                            )
+                        }
                     }
                 }
             }
@@ -105,7 +108,7 @@ class AvaloirListScreen(val navController: NavController) {
                 .fillMaxWidth()
                 .padding(10.dp),
             textStyle = ScreenSizeTheme.textStyle.fontStyleSearch,
-           // textStyle = TextStyle(color = Color.Black, fontSize = 18.sp),
+            // textStyle = TextStyle(color = Color.Black, fontSize = 18.sp),
             leadingIcon = {
                 Icon(
                     Icons.Default.Search,

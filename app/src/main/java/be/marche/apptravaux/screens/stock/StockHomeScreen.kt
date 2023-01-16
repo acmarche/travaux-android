@@ -1,6 +1,7 @@
 package be.marche.apptravaux.screens.stock
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -54,15 +55,17 @@ class StockHomeScreen(val navController: NavController) {
                     "Gestion des stocks"
                 ) { navController.navigate(TravauxRoutes.HomeScreen.route) }
             }
-        ) {
-            Column(modifier = Modifier.padding(12.dp)) {
-                LazyColumn {
-                    items(datas) { data ->
-                        CardRow(data.texte, data.action)
+        ) { contentPadding ->
+            Box(modifier = Modifier.padding(contentPadding)) {
+
+                Column(modifier = Modifier.padding(12.dp)) {
+                    LazyColumn {
+                        items(datas) { data ->
+                            CardRow(data.texte, data.action)
+                        }
                     }
                 }
             }
         }
-
     }
 }

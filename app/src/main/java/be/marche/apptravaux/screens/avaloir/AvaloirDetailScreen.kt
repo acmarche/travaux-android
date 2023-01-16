@@ -66,12 +66,15 @@ class AvaloirDetailScreen(
                     "Détail avaloir"
                 ) { navController.navigate(TravauxRoutes.AvaloirListScreen.route) }
             }
-        ) {
-            selectedAvaloir.let {
-                if (it != null) {
-                    AvaloirDetailContentScreen(it)
-                } else {
-                    Text(text = "Avaloir non trouvé")
+        ) { contentPadding ->
+            Box(modifier = Modifier.padding(contentPadding)) {
+
+                selectedAvaloir.let {
+                    if (it != null) {
+                        AvaloirDetailContentScreen(it)
+                    } else {
+                        Text(text = "Avaloir non trouvé")
+                    }
                 }
             }
         }
@@ -220,7 +223,7 @@ class AvaloirDetailScreen(
                             MapUiSettings(mapToolbarEnabled = true)
                         )
                     }
-                    // val state: MarkerState = rememberMarkerState(position = singapore)
+                    val state: MarkerState = rememberMarkerState(position = singapore)
                     val cameraPositionState = rememberCameraPositionState {
                         position = CameraPosition.fromLatLngZoom(singapore, 18f)
                     }
@@ -230,7 +233,8 @@ class AvaloirDetailScreen(
                         modifier = Modifier.fillMaxSize(),
                         cameraPositionState = cameraPositionState
                     ) {
-                        Marker(position = singapore)
+                        Marker(state)
+                        //Marker(position = singapore)
                     }
                     isMapLoaded = true
                     if (!isMapLoaded) {

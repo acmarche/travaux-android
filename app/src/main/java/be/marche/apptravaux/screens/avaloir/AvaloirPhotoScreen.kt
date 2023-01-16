@@ -61,24 +61,27 @@ class AvaloirPhotoScreen(
         val resultStateTakePhoto = rememberSaveable {
             mutableStateOf(false)
         }
+
         Scaffold(
             topBar = {
                 TopAppBarJf(
                     stringResource(R.string.add_photo_avaloir)
                 ) { navController.navigate(TravauxRoutes.AvaloirHomeScreen.route) }
             }
-        ) {
-            val state = avaloirViewModel.resultCreateFile.collectAsState().value
+        ) { contentPadding ->
+            Box(modifier = Modifier.padding(contentPadding)) {
+                val state = avaloirViewModel.resultCreateFile.collectAsState().value
 
-            when (state) {
-                is CreateFileState.Error -> {
-                    ErrorDialog(state.message)
-                }
-                is CreateFileState.Success -> {
-                    TakePicureContent(state.file, resultStateTakePhoto, avaloirViewModel)
-                }
-                else -> {
-                    ErrorDialog("Erreur inconnue")
+                when (state) {
+                    is CreateFileState.Error -> {
+                        ErrorDialog(state.message)
+                    }
+                    is CreateFileState.Success -> {
+                        TakePicureContent(state.file, resultStateTakePhoto, avaloirViewModel)
+                    }
+                    else -> {
+                        ErrorDialog("Erreur inconnue")
+                    }
                 }
             }
         }

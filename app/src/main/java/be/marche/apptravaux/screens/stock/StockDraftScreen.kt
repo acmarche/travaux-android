@@ -46,35 +46,38 @@ class StockDraftScreen(
                     "Quantités en brouillons"
                 ) { navController.navigate(TravauxRoutes.StockHomeScreen.route) }
             }
-        ) {
-            stockViewModel.refreshDrafts()
-            val drafts =
-                stockViewModel.allQuantitesDraftsFlow.collectAsState()
+        ) { contentPadding ->
+            Box(modifier = Modifier.padding(contentPadding)) {
 
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = "${drafts.value.count()} quantités brouillons",
-                    style = MaterialTheme.typography.h5
-                )
-                Divider(
-                    modifier = Modifier.height(MEDIUM_PADDING),
-                    color = MaterialTheme.colors.background
-                )
-                Button(
-                    onClick = {
-                        navController.navigate(TravauxRoutes.SyncScreen.route)
-                    }
+                stockViewModel.refreshDrafts()
+                val drafts =
+                    stockViewModel.allQuantitesDraftsFlow.collectAsState()
+
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text(text = "Synchroniser les données")
+                    Text(
+                        text = "${drafts.value.count()} quantités brouillons",
+                        style = MaterialTheme.typography.h5
+                    )
+                    Divider(
+                        modifier = Modifier.height(MEDIUM_PADDING),
+                        color = MaterialTheme.colors.background
+                    )
+                    Button(
+                        onClick = {
+                            navController.navigate(TravauxRoutes.SyncScreen.route)
+                        }
+                    ) {
+                        Text(text = "Synchroniser les données")
+                    }
+                    Divider(
+                        modifier = Modifier.height(MEDIUM_PADDING),
+                        color = MaterialTheme.colors.background
+                    )
+                    FruitListAnimation(drafts.value, stockViewModel)
                 }
-                Divider(
-                    modifier = Modifier.height(MEDIUM_PADDING),
-                    color = MaterialTheme.colors.background
-                )
-                FruitListAnimation(drafts.value, stockViewModel)
             }
         }
     }

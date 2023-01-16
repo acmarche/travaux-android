@@ -55,67 +55,70 @@ class SyncScreen(
                     "Synchronisation des données"
                 ) { navController.navigate(TravauxRoutes.HomeScreen.route) }
             }
-        ) {
-            val lifeCycle = LocalLifecycleOwner.current
-            worker = workerViewModel.workManager
-            val textInputAvaloir = remember { mutableStateOf("") }
-            val textInputStock = remember { mutableStateOf("") }
-            val taskDataAvaloir =
-                Data.Builder().putString(MESSAGE_STATUS_AVALOIR, "Notification Done.").build()
-            val taskDataStock =
-                Data.Builder().putString(MESSAGE_STATUS_STOCK, "Notification Done.").build()
-            val connection by connectivityState()
-            val isConnected = connection == ConnectionState.Available
-            val requestAvaloir = workerViewModel.createRequest(
-                taskDataAvaloir,
-                AvaloirAsyncWorker::class.java,
-                "avaloirSync"
-            )
-            val requestStock = workerViewModel.createRequest(
-                taskDataStock,
-                StockWorker::class.java,
-                "StockSync"
-            )
+        ) { contentPadding ->
+            Box(modifier = Modifier.padding(contentPadding)) {
 
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                ConnectivityStatusBox(isConnected)
-                Spacer(modifier = Modifier.height(30.dp))
-                TextesExplicatifs()
-                Spacer(modifier = Modifier.height(30.dp))
-                Text(text = textInputAvaloir.value)
-                Spacer(modifier = Modifier.height(30.dp))
-                Text(text = textInputStock.value)
-
-                Divider(
-                    modifier = Modifier.height(MEDIUM_PADDING),
-                    color = MaterialTheme.colors.background
+                val lifeCycle = LocalLifecycleOwner.current
+                worker = workerViewModel.workManager
+                val textInputAvaloir = remember { mutableStateOf("") }
+                val textInputStock = remember { mutableStateOf("") }
+                val taskDataAvaloir =
+                    Data.Builder().putString(MESSAGE_STATUS_AVALOIR, "Notification Done.").build()
+                val taskDataStock =
+                    Data.Builder().putString(MESSAGE_STATUS_STOCK, "Notification Done.").build()
+                val connection by connectivityState()
+                val isConnected = connection == ConnectionState.Available
+                val requestAvaloir = workerViewModel.createRequest(
+                    taskDataAvaloir,
+                    AvaloirAsyncWorker::class.java,
+                    "avaloirSync"
+                )
+                val requestStock = workerViewModel.createRequest(
+                    taskDataStock,
+                    StockWorker::class.java,
+                    "StockSync"
                 )
 
-                OutlinedButtonJf(
-                    "Synchroniser les données", isConnected
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    workerViewModel.enqueueWorkRequest(
-                        requestAvaloir,
-                        WorkerViewModel.AVALOIR_SYNC_WORK_REQUEST
+                    ConnectivityStatusBox(isConnected)
+                    Spacer(modifier = Modifier.height(30.dp))
+                    TextesExplicatifs()
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(text = textInputAvaloir.value)
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(text = textInputStock.value)
+
+                    Divider(
+                        modifier = Modifier.height(MEDIUM_PADDING),
+                        color = MaterialTheme.colors.background
                     )
-                    workerViewModel.enqueueWorkRequest(
-                        requestStock,
-                        WorkerViewModel.STOCK_SYNC_WORK_REQUEST
+
+                    OutlinedButtonJf(
+                        "Synchroniser les données", isConnected
+                    ) {
+                        workerViewModel.enqueueWorkRequest(
+                            requestAvaloir,
+                            WorkerViewModel.AVALOIR_SYNC_WORK_REQUEST
+                        )
+                        workerViewModel.enqueueWorkRequest(
+                            requestStock,
+                            WorkerViewModel.STOCK_SYNC_WORK_REQUEST
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Divider(
+                        modifier = Modifier.height(MEDIUM_PADDING),
+                        color = MaterialTheme.colors.background
                     )
+
+                    syncStatutAvaloir(textInputAvaloir, lifeCycle, requestStock)
+                    syncStatutStock(textInputStock, lifeCycle, requestAvaloir)
                 }
-
-                Spacer(modifier = Modifier.height(30.dp))
-                Divider(
-                    modifier = Modifier.height(MEDIUM_PADDING),
-                    color = MaterialTheme.colors.background
-                )
-
-                syncStatutAvaloir(textInputAvaloir, lifeCycle, requestStock)
-                syncStatutStock(textInputStock, lifeCycle, requestAvaloir)
             }
         }
     }

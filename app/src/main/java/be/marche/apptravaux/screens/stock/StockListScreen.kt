@@ -53,13 +53,15 @@ class StockListScreen(val navController: NavController, val stockViewModel: Stoc
                     "Liste des produits"
                 ) { navController.navigate(TravauxRoutes.StockHomeScreen.route) }
             }
-        ) {
-            Column {
-                SearchView(textState, {})
-                ListSelectCategories(categorieState, { onSelectCategorie(it) })
-                ProduitsList(navController, categorieState, textState)
-            }
+        ) { contentPadding ->
+            Box(modifier = Modifier.padding(contentPadding)) {
 
+                Column {
+                    SearchView(textState, {})
+                    ListSelectCategories(categorieState, { onSelectCategorie(it) })
+                    ProduitsList(navController, categorieState, textState)
+                }
+            }
         }
     }
 

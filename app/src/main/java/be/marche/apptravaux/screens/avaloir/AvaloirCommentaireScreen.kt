@@ -47,12 +47,14 @@ class AvaloirCommentaireScreen(
                     "Ajout d'un commentaire"
                 ) { navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/${avaloirId}") }
             }
-        ) {
-            selectedAvaloir.let {
-                if (it != null) {
-                    DetailContentScreen(it)
-                } else {
-                    Text(text = "Avaloir non trouvé")
+        ) { contentPadding ->
+            Box(modifier = Modifier.padding(contentPadding)) {
+                selectedAvaloir.let {
+                    if (it != null) {
+                        DetailContentScreen(it)
+                    } else {
+                        Text(text = "Avaloir non trouvé")
+                    }
                 }
             }
         }

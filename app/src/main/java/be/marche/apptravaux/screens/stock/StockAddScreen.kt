@@ -1,5 +1,6 @@
 package be.marche.apptravaux.screens.stock
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,10 +30,13 @@ class StockAddScreen(val navController: NavController) {
                     "Gestion des stocks"
                 ) { navController.navigate(TravauxRoutes.StockHomeScreen.route) }
             }
-        ) {
-            Column(modifier = Modifier.padding(12.dp)) {
-                LazyColumn {
+        ) { contentPadding ->
+            Box(modifier = Modifier.padding(contentPadding)) {
 
+                Column(modifier = Modifier.padding(12.dp)) {
+                    LazyColumn {
+
+                    }
                 }
             }
         }

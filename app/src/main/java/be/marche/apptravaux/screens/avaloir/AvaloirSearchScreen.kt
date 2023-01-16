@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Settings
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -101,14 +102,17 @@ class AvaloirSearchScreen(
                     }
                 )
             },
-            content = {
-                if (locationEnabled.value)
-                    BeginSearch(avaloirViewModel)
-                else {
-                    Button(
-                        onClick = { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) },
-                    ) {
-                        Text(text = "Activer ma géolocalisation") //todo how on change value result
+            content = { contentPadding ->
+                Box(modifier = Modifier.padding(contentPadding)) {
+
+                    if (locationEnabled.value)
+                        BeginSearch(avaloirViewModel)
+                    else {
+                        Button(
+                            onClick = { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) },
+                        ) {
+                            Text(text = "Activer ma géolocalisation") //todo how on change value result
+                        }
                     }
                 }
             },

@@ -1,5 +1,6 @@
 package be.marche.apptravaux.screens
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -57,14 +58,16 @@ fun MainContentHome(
                 }
             )
         }
-    ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            LazyColumn {
-                items(datas) { data ->
-                    CardRow(data.texte, data.action)
+    ) { contentPadding ->
+        Box(modifier = Modifier.padding(contentPadding)) {
+
+            Column(modifier = Modifier.padding(12.dp)) {
+                LazyColumn {
+                    items(datas) { data ->
+                        CardRow(data.texte, data.action)
+                    }
                 }
             }
         }
-
     }
 }

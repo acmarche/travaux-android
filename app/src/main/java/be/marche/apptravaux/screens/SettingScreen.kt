@@ -58,28 +58,31 @@ class SettingScreen(val navController: NavController) {
                     }
                 )
             }
-        ) {
-            Column(modifier = Modifier.padding(12.dp)) {
-                LazyColumn {
-                    items(datas) { data ->
-                        CardError(data.nom, data.description)
+        ) { contentPadding ->
+            Box(modifier = Modifier.padding(contentPadding)) {
+
+                Column(modifier = Modifier.padding(12.dp)) {
+                    LazyColumn {
+                        items(datas) { data ->
+                            CardError(data.nom, data.description)
+                        }
                     }
-                }
-                Button(
-                    onClick = {
-                        vider(errorViewModel)
-                    },
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.vider),
-                        modifier = Modifier.padding(8.dp),
-                        textAlign = TextAlign.Center,
-                        color = Color.White
-                    )
+                    Button(
+                        onClick = {
+                            vider(errorViewModel)
+                        },
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.vider),
+                            modifier = Modifier.padding(8.dp),
+                            textAlign = TextAlign.Center,
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }

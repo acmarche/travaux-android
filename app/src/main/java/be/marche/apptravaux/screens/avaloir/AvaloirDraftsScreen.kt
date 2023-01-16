@@ -53,46 +53,49 @@ class AvaloirDraftsScreen(
                     "Données en brouillons"
                 ) { navController.navigate(TravauxRoutes.AvaloirHomeScreen.route) }
             }
-        ) {
-            avaloirViewModel.refreshDrafts()
-            val avaloirs =
-                avaloirViewModel.allAvaloirsDraftsFlow.collectAsState()
-            val dates =
-                avaloirViewModel.allDatesDraftsFlow.collectAsState()
-            val commentaires =
-                avaloirViewModel.allCommentairesDraftsFlow.collectAsState()
+        ) { contentPadding ->
+            Box(modifier = Modifier.padding(contentPadding)) {
 
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = "${avaloirs.value.count()} avaloirs brouillons",
-                    style = MaterialTheme.typography.h5
-                )
-                Text(
-                    text = "${dates.value.count()} dates de nettoyages brouillons",
-                    style = MaterialTheme.typography.h5
-                )
-                Text(
-                    text = "${commentaires.value.count()} commentaires brouillons",
-                    style = MaterialTheme.typography.h5
-                )
-                Divider(
-                    modifier = Modifier.height(MEDIUM_PADDING),
-                    color = MaterialTheme.colors.background
-                )
-                Button(
-                    onClick = { navController.navigate(TravauxRoutes.SyncScreen.route) }
+                avaloirViewModel.refreshDrafts()
+                val avaloirs =
+                    avaloirViewModel.allAvaloirsDraftsFlow.collectAsState()
+                val dates =
+                    avaloirViewModel.allDatesDraftsFlow.collectAsState()
+                val commentaires =
+                    avaloirViewModel.allCommentairesDraftsFlow.collectAsState()
+
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text(text = "Synchroniser les données")
+                    Text(
+                        text = "${avaloirs.value.count()} avaloirs brouillons",
+                        style = MaterialTheme.typography.h5
+                    )
+                    Text(
+                        text = "${dates.value.count()} dates de nettoyages brouillons",
+                        style = MaterialTheme.typography.h5
+                    )
+                    Text(
+                        text = "${commentaires.value.count()} commentaires brouillons",
+                        style = MaterialTheme.typography.h5
+                    )
+                    Divider(
+                        modifier = Modifier.height(MEDIUM_PADDING),
+                        color = MaterialTheme.colors.background
+                    )
+                    Button(
+                        onClick = { navController.navigate(TravauxRoutes.SyncScreen.route) }
+                    ) {
+                        Text(text = "Synchroniser les données")
+                    }
+                    Divider(
+                        modifier = Modifier.height(MEDIUM_PADDING),
+                        color = MaterialTheme.colors.background
+                    )
+                    val context = LocalContext.current
+                    FruitListAnimation(avaloirs.value, context, avaloirViewModel)
                 }
-                Divider(
-                    modifier = Modifier.height(MEDIUM_PADDING),
-                    color = MaterialTheme.colors.background
-                )
-                val context = LocalContext.current
-                FruitListAnimation(avaloirs.value, context, avaloirViewModel)
             }
         }
     }
