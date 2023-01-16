@@ -20,7 +20,7 @@ const val DATABASE_NAME = "apptravaux"
         QuantiteDraft::class,
         ErrorLog::class
     ],
-    version = 42,
+    version = 43,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
