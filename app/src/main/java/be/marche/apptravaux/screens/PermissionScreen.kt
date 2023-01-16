@@ -82,7 +82,7 @@ fun RequestPermissionUi(
         // the permissions for the first time, explain why the feature is needed by the app and
         // allow the user decide if they don't want to see the rationale any more.
         multiplePermissionsState.shouldShowRationale ||
-                !multiplePermissionsState.permissionRequested -> {
+                !multiplePermissionsState.allPermissionsGranted -> {
             Column {
                 val revokedPermissions = multiplePermissionsState.revokedPermissions
                 PermissionsText(revokedPermissions)
