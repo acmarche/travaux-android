@@ -37,7 +37,7 @@ class StockHomeScreen(val navController: NavController) {
         }
         val c =
             CardData(
-                "Brouillons",
+                "Mise à jour",
                 { navController.navigate(TravauxRoutes.StockDraftScreen.route) })
 
         val cards: List<CardData> = listOf(a, b, c)

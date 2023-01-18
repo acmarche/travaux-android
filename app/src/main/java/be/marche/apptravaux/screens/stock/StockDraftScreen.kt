@@ -43,7 +43,7 @@ class StockDraftScreen(
         Scaffold(
             topBar = {
                 TopAppBarJf(
-                    "Quantités en brouillons"
+                    "Données à envoyer au serveur"
                 ) { navController.navigate(TravauxRoutes.StockHomeScreen.route) }
             }
         ) { contentPadding ->
@@ -58,7 +58,7 @@ class StockDraftScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = "${drafts.value.count()} quantités brouillons",
+                        text = "${drafts.value.count()} données à envoyer",
                         style = MaterialTheme.typography.h5
                     )
                     Divider(
