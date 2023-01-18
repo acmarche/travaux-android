@@ -16,10 +16,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import be.marche.apptravaux.BuildConfig
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.ErrorLog
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.viewModel.ErrorViewModel
+
 
 class SettingScreen(val navController: NavController) {
 
@@ -61,7 +63,22 @@ class SettingScreen(val navController: NavController) {
         ) { contentPadding ->
             Box(modifier = Modifier.padding(contentPadding)) {
 
+                val versionCode: Int = BuildConfig.VERSION_CODE
+                val versionName: String = BuildConfig.VERSION_NAME
+
+                val text: String = java.lang.String.format(
+                    stringResource(R.string.app_version),
+                    versionCode,
+                    versionName
+                )
+
                 Column(modifier = Modifier.padding(12.dp)) {
+                    Text(
+                        text = text,
+                        modifier = Modifier.padding(8.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(modifier = Modifier.padding(5.dp))
                     LazyColumn {
                         items(datas) { data ->
                             CardError(data.nom, data.description)
