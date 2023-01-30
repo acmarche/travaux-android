@@ -19,6 +19,8 @@ import androidx.navigation.NavController
 import be.marche.apptravaux.BuildConfig
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.ErrorLog
+import be.marche.apptravaux.navigation.TravauxRoutes
+import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.viewModel.ErrorViewModel
 
@@ -50,15 +52,9 @@ class SettingScreen(val navController: NavController) {
     ) {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Paramètres",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                )
+                TopAppBarJf("Version et logs") {
+                    navController.navigate(TravauxRoutes.HomeScreen.route)
+                }
             }
         ) { contentPadding ->
             Box(modifier = Modifier.padding(contentPadding)) {
