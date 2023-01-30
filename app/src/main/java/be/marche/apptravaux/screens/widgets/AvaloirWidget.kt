@@ -30,6 +30,8 @@ import be.marche.apptravaux.utils.DateUtils.Companion.formatDate
 import be.marche.apptravaux.utils.DateUtils.Companion.formatDateTime
 import be.marche.apptravaux.utils.FileHelper
 import coil.compose.rememberImagePainter
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import java.io.File
 import java.util.*
 
@@ -172,10 +174,10 @@ class AvaloirWidget {
                 else -> {
                     var fileUri: Uri? = null
                     try {
-                        val cacheFile = File(avaloir.imageUrl!!)
-                        fileUri = fileHelper.createUri(context, cacheFile)
+                        val cacheFile = avaloir.imageUrl?.let { File(it) }
+                        fileUri = cacheFile?.let { fileHelper.createUri(context, it) }
                     } catch (e: Exception) {
-
+                         Firebase.crashlytics.log("Fail avaloir image load ${e.message}")
                     }
                     if (fileUri != null) {
                         Image(
