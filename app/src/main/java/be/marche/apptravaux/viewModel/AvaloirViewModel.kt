@@ -10,6 +10,7 @@ import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.networking.CoroutineDispatcherProvider
 import be.marche.apptravaux.repository.AvaloirRepository
 import be.marche.apptravaux.ui.entities.SearchRequest
+import be.marche.apptravaux.ui.entities.SearchResponse
 import be.marche.apptravaux.utils.FileHelper
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -250,4 +251,42 @@ class AvaloirViewModel @Inject constructor(
             }
         }
     }
+
+    fun findAllAvaloirsByGeo(latitude: Double, longitude: Double, distance: Int) {
+        _uiState.value = AvaloirUiState.Loading
+        viewModelScope.launch(coroutineDispatcherProvider.IO()) {
+            try {
+                avaloirRepository.getAll()
+                val response = avaloirRepository.findAvaloirsByGeo(latitude, longitude, distance)
+
+                if (response.isEmpty()) {
+                    _uiState.value = AvaloirUiState.Empty
+                } else {
+                    _uiState.value = AvaloirUiState.Loaded(response)
+                }
+
+            } catch (ex: Exception) {
+                onErrorOccurred()
+            }
+        }
+    }
+
+    fun searchByGeoLocal(latitude: Double, longitude: Double, distance: Int) {
+
+        _resultSearch.value = SearchResponseUiState.Loading
+
+        viewModelScope.launch {
+            try {
+                val response = avaloirRepository.findAvaloirsByGeo(latitude, longitude, distance)
+                if (response.isEmpty()) {
+                    val result = SearchResponse(0, "OK", response)
+                    _resultSearch.value = SearchResponseUiState.Loaded(result)
+                }
+            } catch (ex: Exception) {
+                _resultSearch.value =
+                    SearchResponseUiState.Error("Erreur survenue: ${ex.message}")
+            }
+        }
+    }
+
 }

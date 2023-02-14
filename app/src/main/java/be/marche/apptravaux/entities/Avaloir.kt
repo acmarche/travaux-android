@@ -17,7 +17,9 @@ data class Avaloir(
     var imageUrl: String? = null,
     val descriptif: String? = null,
     val createdAt: String
-)
+){
+    var distance: String? = null
+}
 
 @Entity
 data class Commentaire(

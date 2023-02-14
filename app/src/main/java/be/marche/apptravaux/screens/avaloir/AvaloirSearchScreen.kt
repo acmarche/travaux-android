@@ -163,18 +163,19 @@ class AvaloirSearchScreen(
         isConnected: Boolean,
         location: LatLng
     ) {
-        if (isConnected) {
-            if (location.latitude > 0.0) {
+        if (location.latitude > 0.0) {
+            if (isConnected) {
                 LaunchedEffect(true) {
                     avaloirViewModel.search(location.latitude, location.longitude, "25m")
                 }
-                ResultSearch(avaloirViewModel)
+            } else {
+                avaloirViewModel.searchByGeoLocal(location.latitude, location.longitude, 25)
             }
+            ResultSearch(avaloirViewModel)
         } else {
             CardRow(
-                texte = "La recherche par géolocalisation ne peut se faire que si internet est fonctionnel"
+                texte = "Votre géolocalisation n'a pas pu être obtenue. Vérifiez vos paramètres de géoloc"
             ) {
-
             }
             Text(text = "Pas de géolocalisation !!")
             Button(

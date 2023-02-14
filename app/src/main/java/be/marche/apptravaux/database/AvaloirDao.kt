@@ -81,5 +81,6 @@ interface AvaloirDao {
     @Delete()
     fun deleteCommentaireNotSuspend(commentaire: Commentaire)
 
-
+    @Query("SELECT id,idReferent,createdAt,rue,latitude,longitude,latitude,longitude, :cosDistance AS cos_distance FROM avaloir WHERE :cosDistance > :cosRadius ORDER BY :cosDistance DESC")
+    fun findAllAvaloirsByGeo(cosDistance: String, cosRadius: Double): List<Avaloir>
 }
