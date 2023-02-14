@@ -26,10 +26,9 @@ import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
-import be.marche.apptravaux.utils.DateUtils.Companion.formatDate
 import be.marche.apptravaux.utils.DateUtils.Companion.formatDateTime
 import be.marche.apptravaux.utils.FileHelper
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import java.io.File
@@ -136,7 +135,6 @@ class AvaloirWidget {
         }
     }
 
-
     @Composable
     fun ImageAvaloir(
         avaloir: Avaloir,
@@ -162,7 +160,7 @@ class AvaloirWidget {
                 }
                 this.contains("http") -> {
                     Image(
-                        painter = rememberImagePainter(avaloir.imageUrl),
+                        painter = rememberAsyncImagePainter(avaloir.imageUrl),
                         contentDescription = "Image",
                         modifier = Modifier
                             .width(imageWidth)
@@ -181,7 +179,7 @@ class AvaloirWidget {
                     }
                     if (fileUri != null) {
                         Image(
-                            rememberImagePainter(fileUri),
+                            rememberAsyncImagePainter(fileUri),
                             contentDescription = "Image",
                             contentScale = contentScale,
                             modifier = Modifier
