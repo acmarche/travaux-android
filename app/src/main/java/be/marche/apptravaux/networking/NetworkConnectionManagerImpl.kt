@@ -12,6 +12,24 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 //https://medium.com/@veniamin.vynohradov/monitoring-internet-connection-state-in-android-da7ad915b5e5
+/**
+ * Implement in MainActivity
+ *
+ * @Inject
+ * lateinit var networkConnectionManager: NetworkConnectionManager
+ *
+ *  override fun onCreate(savedInstanceState: Bundle?) {
+ * networkConnectionManager.startListenNetworkState()
+ * networkConnectionManager.isNetworkConnectedFlow
+ * .onEach {
+ * if (it) {
+ * //connected
+ * } else {
+ * //not connected
+ * }
+ * }
+ * .launchIn(lifecycleScope)
+ */
 interface NetworkConnectionManager {
     /**
      * Emits [Boolean] value when the current network becomes available or unavailable.
@@ -31,7 +49,8 @@ class NetworkConnectionManagerImpl @Inject constructor(
     coroutineScope: CoroutineScope
 ) : NetworkConnectionManager {
 
-    private val connectivityManager: ConnectivityManager = (context.getSystemService() as ConnectivityManager?)!!
+    private val connectivityManager: ConnectivityManager =
+        (context.getSystemService() as ConnectivityManager?)!!
 
     private val networkCallback = NetworkCallback()
 
