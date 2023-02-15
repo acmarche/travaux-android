@@ -1,6 +1,5 @@
 package be.marche.apptravaux.screens
 
-import android.icu.text.DateFormat
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
@@ -40,9 +39,6 @@ import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.util.*
 
 class AvaloirDetailScreen(
     val navController: NavController,
