@@ -38,11 +38,10 @@ import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.utils.DateUtils
 import be.marche.apptravaux.utils.FileHelper
 import be.marche.apptravaux.viewModel.AvaloirViewModel
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.*
 
 class AvaloirPhotoScreen(
     val navController: NavController,
@@ -181,7 +180,7 @@ class AvaloirPhotoScreen(
     ) {
         if (statePhoto) {
             Image(
-                rememberImagePainter(uri),
+                rememberAsyncImagePainter(uri),
                 contentDescription = "Image",
                 alignment = Alignment.TopCenter,
                 modifier = Modifier
