@@ -110,7 +110,7 @@ class AvaloirWidget {
                 ) {
                     val texteRue = avaloir.rue ?: "non déterminé"
                     Text(
-                        text = "Rue: $texteRue",
+                        text = texteRue,
                         style = ScreenSizeTheme.textStyle.fontStyle_1,
                         fontWeight = FontWeight.Bold
                     )
@@ -119,7 +119,7 @@ class AvaloirWidget {
                     val texteLocalite = avaloir.localite ?: "non déterminé"
 
                     Text(
-                        text = "Localité: $texteLocalite",
+                        text = texteLocalite,
                         style = ScreenSizeTheme.textStyle.fontStyle_1,
                         fontWeight = FontWeight.Normal
                     )
