@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import be.marche.apptravaux.entities.SearchResponseUiState
+import be.marche.apptravaux.location.GeolocationServiceViewModel
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.networking.ConnectionState
 import be.marche.apptravaux.networking.connectivityState
@@ -30,21 +31,20 @@ import be.marche.apptravaux.ui.theme.Colors
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.viewModel.AvaloirViewModel
-import be.marche.apptravaux.viewModel.LocationViewModel
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class AvaloirSearchScreen(
     private val navController: NavController,
-    private val locationViewModel: LocationViewModel
+    private val locationViewModel: GeolocationServiceViewModel
 ) {
-
     @Composable
     fun SearchMainScreen(
         avaloirViewModel: AvaloirViewModel = viewModel()
     ) {
-        val selectedItem = remember { mutableStateOf("home") }
         val context = LocalContext.current
+        val selectedItem = remember { mutableStateOf("home") }
+        locationViewModel.init(context)
         val locationEnabled = remember {
             mutableStateOf(locationViewModel.locationEnabled())
         }
@@ -57,7 +57,7 @@ class AvaloirSearchScreen(
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
-                        onClickAddButton(avaloirViewModel, context)
+                        onClickAddAvaloir(avaloirViewModel, context)
                     },
                     shape = RoundedCornerShape(50),
                     backgroundColor = Colors.Gray900
@@ -76,7 +76,6 @@ class AvaloirSearchScreen(
                             BottomNavigationItem(
                                 selected = selectedItem.value == "home",
                                 onClick = {
-                                    locationViewModel.stopLocation()
                                     navController.navigate(TravauxRoutes.AvaloirHomeScreen.route)
                                 },
                                 icon = {
@@ -89,7 +88,6 @@ class AvaloirSearchScreen(
                                 selected = selectedItem.value == "Search",
                                 onClick =
                                 {
-                                    locationViewModel.stopLocation()
                                     navController.navigate(TravauxRoutes.AvaloirListScreen.route)
                                 },
                                 icon = {
@@ -104,14 +102,13 @@ class AvaloirSearchScreen(
             },
             content = { contentPadding ->
                 Box(modifier = Modifier.padding(contentPadding)) {
-
                     if (locationEnabled.value)
-                        BeginSearch(avaloirViewModel)
+                        HeaderSearch(avaloirViewModel, locationViewModel)
                     else {
                         Button(
                             onClick = { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) },
                         ) {
-                            Text(text = "Activer ma géolocalisation") //todo how on change value result
+                            Text(text = "Activer ma géolocalisation")
                         }
                     }
                 }
@@ -119,46 +116,40 @@ class AvaloirSearchScreen(
         )
     }
 
-    @Composable
-    private fun BeginSearch(
-        avaloirViewModel: AvaloirViewModel,
-    ) {
-        val context = LocalContext.current
-        SideEffect {
-            //locationService.getDeviceLocation(context)
-        }
-        val location = remember {
-            locationViewModel.userCurrentStateLatLng
-        }
-        Column(modifier = Modifier.padding(15.dp)) {
-            ContentSearch1(avaloirViewModel, location.value)
-        }
-    }
-
     @OptIn(ExperimentalCoroutinesApi::class)
     @Composable
-    private fun ContentSearch1(
+    private fun HeaderSearch(
         avaloirViewModel: AvaloirViewModel,
-        location: LatLng
+        locationViewModel: GeolocationServiceViewModel
     ) {
-        LocationText(location)
-        Divider(
-            modifier = Modifier.height(MEDIUM_PADDING),
-            color = MaterialTheme.colors.background
-        )
-        DescriptionText()
-        Divider(
-            modifier = Modifier.height(MEDIUM_PADDING),
-            color = MaterialTheme.colors.background
-        )
-        val connection by connectivityState()
-        val isConnected = connection == ConnectionState.Available
-
-        ContentSearch2(avaloirViewModel, isConnected, location)
+        Column(modifier = Modifier.padding(15.dp)) {
+            val location = remember {
+                locationViewModel.userCurrentStateLatLng
+            }
+            LocationText(location.value)
+            Divider(
+                modifier = Modifier.height(MEDIUM_PADDING),
+                color = MaterialTheme.colors.background
+            )
+            Button(
+                onClick = {
+                    locationViewModel.startLocationUpdates()
+                },
+            ) {
+                Text(text = "Rafraîchir ma géolocalisation")
+            }
+            Divider(
+                modifier = Modifier.height(MEDIUM_PADDING),
+                color = MaterialTheme.colors.background
+            )
+            val connection by connectivityState()
+            val isConnected = connection == ConnectionState.Available
+            ContentSearch(avaloirViewModel, isConnected, location.value)
+        }
     }
 
     @Composable
-    private fun ContentSearch2(
+    private fun ContentSearch(
         avaloirViewModel: AvaloirViewModel,
         isConnected: Boolean,
         location: LatLng
@@ -173,18 +164,7 @@ class AvaloirSearchScreen(
             }
             ResultSearch(avaloirViewModel)
         } else {
-            CardRow(
-                texte = "Votre géolocalisation n'a pas pu être obtenue. Vérifiez vos paramètres de géoloc"
-            ) {
-            }
-            Text(text = "Pas de géolocalisation !!")
-            Button(
-                onClick = {
-                    locationViewModel.start()
-                },
-            ) {
-                Text(text = "Rafraichir ma géolocalisation")
-            }
+            Text(text = "Cliquez sur rafraîchir ma géolocalisation pour lancer une recherche")
         }
     }
 
@@ -192,6 +172,11 @@ class AvaloirSearchScreen(
     private fun ResultSearch(
         avaloirViewModel: AvaloirViewModel
     ) {
+        DescriptionText()
+        Divider(
+            modifier = Modifier.height(MEDIUM_PADDING),
+            color = MaterialTheme.colors.background
+        )
         when (val state = avaloirViewModel.resultSearch.collectAsState().value) {
             is SearchResponseUiState.Loading -> {
                 //LoadScreen()
@@ -245,11 +230,10 @@ class AvaloirSearchScreen(
         CircularProgressIndicator(progress = 0.5f)
     }
 
-    private fun onClickAddButton(
+    private fun onClickAddAvaloir(
         avaloirViewModel: AvaloirViewModel,
         context: Context
     ) {
-        locationViewModel.stopLocation()
         avaloirViewModel.currentLatLng =
             locationViewModel.userCurrentStateLatLng.value
 

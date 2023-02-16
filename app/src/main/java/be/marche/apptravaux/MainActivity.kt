@@ -9,11 +9,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.WorkInfo
+import be.marche.apptravaux.location.GeolocationServiceViewModel
 import be.marche.apptravaux.navigation.Navigation
 import be.marche.apptravaux.networking.NetworkUtils
 import be.marche.apptravaux.screens.SyncScreen
 import be.marche.apptravaux.ui.theme.AppTravaux6Theme
-import be.marche.apptravaux.viewModel.*
+import be.marche.apptravaux.viewModel.AvaloirViewModel
+import be.marche.apptravaux.viewModel.ErrorViewModel
+import be.marche.apptravaux.viewModel.StockViewModel
+import be.marche.apptravaux.viewModel.WorkerViewModel
 import be.marche.apptravaux.worker.AvaloirAsyncWorker
 import be.marche.apptravaux.worker.StockWorker
 import com.google.firebase.crashlytics.ktx.crashlytics
@@ -25,7 +29,7 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
 
     private val avaloirViewModel: AvaloirViewModel by viewModels()
-    private val locationViewModel: LocationViewModel by viewModels()
+    private val locationViewModel: GeolocationServiceViewModel by viewModels()
     private val stockViewModel: StockViewModel by viewModels()
     private val workerViewModel: WorkerViewModel by viewModels()
     private val errorViewModel: ErrorViewModel by viewModels()
@@ -43,7 +47,13 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AppTravaux6Theme {
-                Navigation(avaloirViewModel, locationViewModel, stockViewModel, workerViewModel, errorViewModel)
+                Navigation(
+                    avaloirViewModel,
+                    locationViewModel,
+                    stockViewModel,
+                    workerViewModel,
+                    errorViewModel
+                )
             }
         }
     }

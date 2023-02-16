@@ -19,7 +19,7 @@ import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 
 //import com.google.android.libraries.maps.model.LatLng
-
+//https://developer.android.com/training/location/request-updates?hl=fr
 class LocationService : Service() {
 
     var currentLocationState: MutableState<LatLng> = mutableStateOf(LatLng(00.00, 0.00))

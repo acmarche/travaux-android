@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -275,10 +276,14 @@ class AvaloirViewModel @Inject constructor(
 
         _resultSearch.value = SearchResponseUiState.Loading
 
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatcherProvider.IO()) {
             try {
                 val response = avaloirRepository.findAvaloirsByGeo(latitude, longitude, distance)
                 if (response.isEmpty()) {
+                    _resultSearch.value = SearchResponseUiState.Empty
+                } else {
+                    Timber.e("zeze count " + response.count())
+                    Timber.e("zeze dist " + distance)
                     val result = SearchResponse(0, "OK", response)
                     _resultSearch.value = SearchResponseUiState.Loaded(result)
                 }

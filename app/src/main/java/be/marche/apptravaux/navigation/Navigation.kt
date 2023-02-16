@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import be.marche.apptravaux.location.GeolocationServiceViewModel
 import be.marche.apptravaux.navigation.Navigation.Companion.PARAM_AVALOIR
 import be.marche.apptravaux.screens.*
 import be.marche.apptravaux.screens.avaloir.*
@@ -29,7 +30,7 @@ class Navigation {
 @Composable
 fun Navigation(
     avaloirViewModel: AvaloirViewModel = viewModel(),
-    locationViewModel: LocationViewModel = viewModel(),
+    locationViewModel: GeolocationServiceViewModel = viewModel(),
     stockViewModel: StockViewModel = viewModel(),
     workerViewModel: WorkerViewModel = viewModel(),
     errorViewModel: ErrorViewModel = viewModel()
@@ -86,13 +87,11 @@ fun Navigation(
 
 
         composable(route = TravauxRoutes.AvaloirPhotoScreen.route) {
-            locationViewModel.stopLocation()
             val screen = AvaloirPhotoScreen(navController)
             screen.TakePicureMain(avaloirViewModel)
         }
 
         composable(route = TravauxRoutes.AvaloirSearchScreen.route) {
-            locationViewModel.start()
             val screen = AvaloirSearchScreen(navController, locationViewModel)
             screen.SearchMainScreen(avaloirViewModel)
         }
