@@ -1,6 +1,7 @@
 package be.marche.apptravaux.database
 
 import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
@@ -81,6 +82,6 @@ interface AvaloirDao {
     @Delete()
     fun deleteCommentaireNotSuspend(commentaire: Commentaire)
 
-    @Query("SELECT id,idReferent,createdAt,rue,latitude,longitude,latitude,longitude, :cosDistance AS cos_distance FROM avaloir WHERE :cosDistance > :cosRadius ORDER BY :cosDistance DESC")
-    fun findAllAvaloirsByGeo(cosDistance: String, cosRadius: Double): List<Avaloir>
+    @RawQuery
+   fun findAllAvaloirsByGeoQuery(query: SupportSQLiteQuery): List<Avaloir>
 }

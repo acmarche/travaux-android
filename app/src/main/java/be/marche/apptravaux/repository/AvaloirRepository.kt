@@ -1,11 +1,13 @@
 package be.marche.apptravaux.repository
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import be.marche.apptravaux.database.AvaloirDao
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
 import be.marche.apptravaux.networking.AvaloirService
 import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.cos
 import kotlin.math.sin
@@ -105,17 +107,29 @@ class AvaloirRepository @Inject constructor(
         avaloirDao.deleteCommentaireNotSuspend(commentaire)
     }
 
-    fun findAvaloirsByGeo(latitude: Double, longitude: Double, distance: Int): List<Avaloir> {
-        val pi = 3.14159265358979323846264338327950288419716939937510582
+    fun findAvaloirsByGeo(latitude: Double, longitude: Double, distance: Double): List<Avaloir> {
 
-        val curCosLat = cos(latitude * pi / 180.0);
-        val curSinLat = sin(latitude * pi / 180.0);
-        val curCosLng = cos(longitude * pi / 180.0);
-        val curSinLng = sin(longitude * pi / 180.0);
-        val cosRadius = cos(distance / 6371000.0);
+        val query = createQuery(latitude, longitude, distance)
+
+        return avaloirDao.findAllAvaloirsByGeoQuery(query)
+    }
+
+    fun createQuery(latitude: Double, longitude: Double, radius: Double): SimpleSQLiteQuery {
+        val pi = 3.141592653589793
+        val curCosLat = cos(latitude * pi / 180.0)
+        val curSinLat = sin(latitude * pi / 180.0)
+        val curCosLng = cos(longitude * pi / 180.0)
+        val curSinLng = sin(longitude * pi / 180.0)
+        val cosRadius = cos(radius / 6371000.0)
         val cosDistance =
-            "$curSinLat * sin_lat + $curCosLat * cos_lat * (cos_lon * $curCosLng + sin_lon * $curSinLng)";
+            "$curSinLat * sinLatitude + $curCosLat * cosLatitude * (cosLongitude * $curCosLng + sinLongitude * $curSinLng)"
 
-        return avaloirDao.findAllAvaloirsByGeo(cosDistance, cosRadius)
+        val queryString =
+            "SELECT rue,createdAt,localite,numero,imageUrl,descriptif, latitude, longitude, $cosDistance AS cos_distance FROM Avaloir " +
+                    "WHERE $cosDistance > $cosRadius"
+
+        Timber.e("zeze queryString " + queryString)
+
+        return SimpleSQLiteQuery(queryString)
     }
 }

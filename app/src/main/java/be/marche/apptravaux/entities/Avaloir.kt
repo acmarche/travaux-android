@@ -1,5 +1,6 @@
 package be.marche.apptravaux.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -11,6 +12,10 @@ data class Avaloir(
     val idReferent: Int,
     var latitude: Double,
     var longitude: Double,
+    var cosLatitude: Double = 0.0,
+    var cosLongitude: Double = 0.0,
+    var sinLatitude: Double = 0.0,
+    var sinLongitude: Double = 0.0,
     val rue: String? = null,
     val numero: String? = null,
     val localite: String? = null,
@@ -18,7 +23,7 @@ data class Avaloir(
     val descriptif: String? = null,
     val createdAt: String
 ){
-    var distance: String? = null
+
 }
 
 @Entity

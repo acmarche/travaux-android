@@ -253,26 +253,7 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
-    fun findAllAvaloirsByGeo(latitude: Double, longitude: Double, distance: Int) {
-        _uiState.value = AvaloirUiState.Loading
-        viewModelScope.launch(coroutineDispatcherProvider.IO()) {
-            try {
-                avaloirRepository.getAll()
-                val response = avaloirRepository.findAvaloirsByGeo(latitude, longitude, distance)
-
-                if (response.isEmpty()) {
-                    _uiState.value = AvaloirUiState.Empty
-                } else {
-                    _uiState.value = AvaloirUiState.Loaded(response)
-                }
-
-            } catch (ex: Exception) {
-                onErrorOccurred()
-            }
-        }
-    }
-
-    fun searchByGeoLocal(latitude: Double, longitude: Double, distance: Int) {
+    fun searchByGeoLocal(latitude: Double, longitude: Double, distance: Double) {
 
         _resultSearch.value = SearchResponseUiState.Loading
 

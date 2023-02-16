@@ -160,7 +160,7 @@ class AvaloirSearchScreen(
                     avaloirViewModel.search(location.latitude, location.longitude, "25m")
                 }
             } else {
-                avaloirViewModel.searchByGeoLocal(location.latitude, location.longitude, 25)
+                avaloirViewModel.searchByGeoLocal(location.latitude, location.longitude, 25.00)
             }
             ResultSearch(avaloirViewModel)
         } else {
