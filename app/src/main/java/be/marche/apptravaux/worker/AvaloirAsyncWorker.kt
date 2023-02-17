@@ -16,6 +16,7 @@ import be.marche.apptravaux.networking.AvaloirService
 import be.marche.apptravaux.repository.AvaloirRepository
 import be.marche.apptravaux.repository.ErrorRepository
 import be.marche.apptravaux.ui.entities.Coordinates
+import be.marche.apptravaux.utils.DownloadHelper
 import be.marche.apptravaux.utils.FileHelper
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
@@ -48,6 +49,7 @@ class AvaloirAsyncWorker @AssistedInject constructor(
         uploadContent()
         sleep(15)
         downloadContent()
+        downloadImages()
 
         outputData.putString(WORK_RESULT, "Synchronisation finie").build()
         return Result.success(outputData.build())
@@ -81,9 +83,19 @@ class AvaloirAsyncWorker @AssistedInject constructor(
         result = downloadCommentaires()
         when (result) {
             is NotificationState.Error -> showNotification(
-                "message_channel_uploadCommentaires", 3,
-                "uploadCommentaires",
+                "message_channel_downloadCommentaires", 3,
+                "downloadCommentaires",
                 "Commentaires error: ${result.message}"
+            )
+            is NotificationState.Success -> {}
+        }
+
+        result = downloadImages()
+        when (result) {
+            is NotificationState.Error -> showNotification(
+                "message_channel_downloadImages", 3,
+                "downloadImages",
+                "Images download error: ${result.message}"
             )
             is NotificationState.Success -> {}
         }
@@ -139,7 +151,7 @@ class AvaloirAsyncWorker @AssistedInject constructor(
                     insertError("downloadDate message", e.message)
                     insertError("downloadDate id", "${date.idReferent}")
                     insertError("downloadDate idAval", "${date.avaloirId}")
-                    insertError("downloadDate date", "${date.createdAt}")
+                    insertError("downloadDate date", date.createdAt)
                 }
             }
             if (errorResult.isNotEmpty()) {
@@ -169,8 +181,8 @@ class AvaloirAsyncWorker @AssistedInject constructor(
                         "downloadcommentaire idAval",
                         "${commentaire.avaloirId}"
                     )
-                    insertError("downloadcommentaire date", "${commentaire.createdAt}")
-                    insertError("downloadcommentaire content", "${commentaire.content}")
+                    insertError("downloadcommentaire date", commentaire.createdAt)
+                    insertError("downloadcommentaire content", commentaire.content)
                     Firebase.crashlytics.recordException(e)
                 }
             }
@@ -180,6 +192,41 @@ class AvaloirAsyncWorker @AssistedInject constructor(
             return NotificationState.Success("oki comments")
         } catch (e: Exception) {
             insertError("fetchAllCommentaires", e.message)
+            Firebase.crashlytics.recordException(e)
+            return NotificationState.Error("${e.message}")
+        }
+    }
+
+    private suspend fun downloadImages(): NotificationState {
+        val downloadHelper = DownloadHelper(
+            applicationContext,
+        )
+        try {
+            val avaloirs = avaloirService.fetchAllAvaloirs()
+            var errorResult = ""
+            for (avaloir in avaloirs) {
+                if (avaloir.imageUrl?.isEmpty() == true) {
+                    continue
+                }
+                try {
+                    downloadHelper.downloadImage(
+                        avaloir.idReferent,
+                        avaloir.imageUrl!!
+                    )
+                    NotificationState.Success("OK")
+                } catch (e: Exception) {
+                    errorResult = "error image: ${avaloir.imageUrl}"
+                    insertError("downloadImage", e.message)
+                    Firebase.crashlytics.recordException(e)
+                    NotificationState.Error("${e.message}")
+                }
+            }
+            if (errorResult.isNotEmpty()) {
+                return NotificationState.Error(errorResult)
+            }
+            return NotificationState.Success("oki images")
+        } catch (e: Exception) {
+            insertError("images fetch", e.message)
             Firebase.crashlytics.recordException(e)
             return NotificationState.Error("${e.message}")
         }
