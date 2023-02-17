@@ -19,12 +19,15 @@ class WorkerViewModel @Inject constructor(
     companion object {
         val STOCK_SYNC_WORK_REQUEST = "STOCK_SYNC_WORK_REQUEST"
         val AVALOIR_SYNC_WORK_REQUEST = "AVALOIR_SYNC_WORK_REQUEST"
+        val SYNC_WORK_TAG = "tagSyncAppTravaux"
     }
 
     val workManager by lazy { WorkManager.getInstance(applicationContext) }
 
     internal fun cancelWork(unikWorkName: String) {
-        workManager.cancelUniqueWork(unikWorkName)
+        workManager.cancelAllWorkByTag(unikWorkName)
+        workManager.cancelUniqueWork(AVALOIR_SYNC_WORK_REQUEST)
+        workManager.cancelUniqueWork(STOCK_SYNC_WORK_REQUEST)
     }
 
     fun createRequest(

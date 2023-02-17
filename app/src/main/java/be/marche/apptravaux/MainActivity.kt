@@ -24,6 +24,7 @@ import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -41,6 +42,12 @@ class MainActivity : ComponentActivity() {
             if (it) {
                 lifecycleScope.launch {
                     syncContent()
+                }
+            } else {
+                try {
+                    workerViewModel.cancelWork(WorkerViewModel.SYNC_WORK_TAG)
+                } catch (ex: Exception) {
+                    Timber.e("zeze stop sync")
                 }
             }
         }
@@ -66,7 +73,7 @@ class MainActivity : ComponentActivity() {
         val requestAvaloir = workerViewModel.createRequest(
             taskData,
             AvaloirAsyncWorker::class.java,
-            "autoSyncAvaloir"
+            WorkerViewModel.SYNC_WORK_TAG
         )
         workerViewModel.enqueueWorkRequest(
             requestAvaloir,
@@ -88,7 +95,11 @@ class MainActivity : ComponentActivity() {
         }
 
         val requestStock =
-            workerViewModel.createRequest(taskData, StockWorker::class.java, "AutoSyncStock")
+            workerViewModel.createRequest(
+                taskData,
+                StockWorker::class.java,
+                WorkerViewModel.SYNC_WORK_TAG
+            )
         workerViewModel.enqueueWorkRequest(requestStock, WorkerViewModel.STOCK_SYNC_WORK_REQUEST)
 
         workerAvaloir.getWorkInfoByIdLiveData(requestStock.id).observe(this) {
