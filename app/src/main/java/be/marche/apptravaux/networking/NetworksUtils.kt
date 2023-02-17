@@ -46,4 +46,9 @@ object NetworkUtils : ConnectivityManager.NetworkCallback() {
     override fun onLost(network: Network) {
         networkLiveData.postValue(false)
     }
+
+    override fun onLosing(network: Network, maxMsToLive: Int) {
+        super.onLosing(network, maxMsToLive)
+        //todo cancel worker ?
+    }
 }
