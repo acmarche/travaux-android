@@ -170,6 +170,10 @@ class SyncScreen(
                             val workStatus = workInfo.state
                             textInput.value = workStatus.toString()
                         }
+                        WorkInfo.State.CANCELLED -> {
+                            val workStatus = workInfo.state
+                            textInput.value = workStatus.toString()
+                        }
                         else -> {
                             val workStatus = workInfo.state
                             textInput.value = workStatus.toString()
