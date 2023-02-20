@@ -28,6 +28,8 @@ import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
 import be.marche.apptravaux.navigation.TravauxRoutes
+import be.marche.apptravaux.networking.ConnectionState
+import be.marche.apptravaux.networking.connectivityState
 import be.marche.apptravaux.screens.widgets.AvaloirWidget
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
@@ -35,10 +37,12 @@ import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.utils.DateUtils
 import be.marche.apptravaux.utils.DateUtils.Companion.formatDate
 import be.marche.apptravaux.utils.DateUtils.Companion.formatDateTime
+import be.marche.apptravaux.utils.DownloadHelper
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class AvaloirDetailScreen(
     val navController: NavController,
@@ -76,6 +80,7 @@ class AvaloirDetailScreen(
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Composable
     private fun AvaloirDetailContentScreen(
         avaloir: Avaloir
@@ -85,6 +90,9 @@ class AvaloirDetailScreen(
 
         avaloirViewModel.getDatesAvaloir(avaloir.idReferent)
         avaloirViewModel.getCommentaireAvaloir(avaloir.idReferent)
+
+        val connection by connectivityState()
+        val isConnected = connection == ConnectionState.Available
 
         val context = LocalContext.current
         val messageDate = stringResource(R.string.dateCleanNoPublished)
@@ -105,10 +113,13 @@ class AvaloirDetailScreen(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
+                    val downloadHelper = DownloadHelper(context)
                     val widget = AvaloirWidget()
+                    val imgPath = widget.ImageAvaloirPath(avaloir, isConnected, downloadHelper)
+
                     widget.ImageAvaloir(
-                        avaloir,
-                        context,
+                        imgPath,
                         ScreenSizeTheme.dimens.imageW,
                         ScreenSizeTheme.dimens.imageH,
                         ContentScale.Crop,

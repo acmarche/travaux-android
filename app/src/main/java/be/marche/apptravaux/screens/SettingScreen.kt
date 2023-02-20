@@ -1,5 +1,6 @@
 package be.marche.apptravaux.screens
 
+import android.os.Environment
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,9 +25,12 @@ import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.utils.DownloadHelper
+import be.marche.apptravaux.utils.FileHelper
 import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.viewModel.ErrorViewModel
 import be.marche.apptravaux.viewModel.StockViewModel
+import timber.log.Timber
+import java.io.File
 
 class SettingScreen(val navController: NavController) {
 
@@ -46,7 +50,6 @@ class SettingScreen(val navController: NavController) {
                 Toast.LENGTH_LONG
             ).show()
         }
-        val cards: List<CardData> = listOf(a)
 
         val errors = errorViewModel.allErrorsFlow.collectAsState().value
         Content(datas = errors, errorViewModel, avaloirViewModel, stockViewModel)
@@ -71,6 +74,9 @@ class SettingScreen(val navController: NavController) {
                 val versionCode: Int = BuildConfig.VERSION_CODE
                 val versionName: String = BuildConfig.VERSION_NAME
 
+                val d = DownloadHelper(context)
+                d.listFiles()
+
                 val version: String = java.lang.String.format(
                     stringResource(R.string.app_version),
                     versionCode,
@@ -86,11 +92,12 @@ class SettingScreen(val navController: NavController) {
                     stringResource(R.string.stat_avaloirs),
                     avaloirViewModel._countAvaloirs,
                 )
+
                 val downloadHelper = DownloadHelper(context)
-                val files = downloadHelper.directoryBase().listFiles()
+                val filesCount = downloadHelper.countFiles()
                 val statImages: String = java.lang.String.format(
                     stringResource(R.string.stat_images),
-                    files?.size ?: 0,
+                    filesCount,
                 )
 
                 val statProduits: String = java.lang.String.format(

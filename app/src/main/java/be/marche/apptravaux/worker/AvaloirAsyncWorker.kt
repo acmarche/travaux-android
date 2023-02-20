@@ -3,13 +3,13 @@ package be.marche.apptravaux.worker
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.SystemClock.sleep
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import be.marche.apptravaux.R
+import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.ErrorLog
 import be.marche.apptravaux.entities.NotificationState
 import be.marche.apptravaux.networking.AvaloirService
@@ -23,6 +23,7 @@ import com.google.firebase.ktx.Firebase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import retrofit2.Response
+import timber.log.Timber
 import java.io.File
 
 @HiltWorker
@@ -42,14 +43,17 @@ class AvaloirAsyncWorker @AssistedInject constructor(
         applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     private val outputData = Data.Builder().putString(WORK_RESULT, "Synchronisation démarrée")
+    lateinit var avaloirs: List<Avaloir>
 
     override suspend fun doWork(): Result {
 
+        avaloirs = emptyList()
         outputData.putString(WORK_RESULT, "Zeze").build()
-        uploadContent()
-        sleep(15)
-        downloadContent()
-        downloadImages()
+        //  uploadContent()
+        //  sleep(15)
+        avaloirs = avaloirService.fetchAllAvaloirs()
+        //  downloadContent()
+        //    downloadImages()
 
         outputData.putString(WORK_RESULT, "Synchronisation finie").build()
         return Result.success(outputData.build())
@@ -57,6 +61,7 @@ class AvaloirAsyncWorker @AssistedInject constructor(
 
     private suspend fun downloadContent() {
 
+        Timber.e("zeze start download content")
         var result = downloadAvaloirs()
 
         when (result) {
@@ -114,12 +119,10 @@ class AvaloirAsyncWorker @AssistedInject constructor(
 
     private suspend fun downloadAvaloirs(): NotificationState {
         try {
-            val avaloirs = avaloirService.fetchAllAvaloirs()
             var errorResult = ""
             for (avaloir in avaloirs) {
                 try {
                     avaloirRepository.insertAvaloirs(avaloirs)
-                    NotificationState.Success("OK")
                 } catch (e: Exception) {
                     errorResult = "error avaloir: ${avaloir.idReferent}"
                     insertError("downloadAvaloirs", e.message)
@@ -198,14 +201,16 @@ class AvaloirAsyncWorker @AssistedInject constructor(
     }
 
     private suspend fun downloadImages(): NotificationState {
+        Timber.e("zeze start download images")
         val downloadHelper = DownloadHelper(
             applicationContext,
         )
+        var i = 0
         try {
-            val avaloirs = avaloirService.fetchAllAvaloirs()
             var errorResult = ""
             for (avaloir in avaloirs) {
                 if (avaloir.imageUrl?.isEmpty() == true) {
+                    Timber.e("zeze empty url image")
                     continue
                 }
                 try {
@@ -213,13 +218,15 @@ class AvaloirAsyncWorker @AssistedInject constructor(
                         avaloir.idReferent,
                         avaloir.imageUrl!!
                     )
-                    NotificationState.Success("OK")
                 } catch (e: Exception) {
-                    errorResult = "error image: ${avaloir.imageUrl}"
+                    Timber.e("zeze error download image " + e.message)
+                    errorResult = "error image: ${e.message}"
                     insertError("downloadImage", e.message)
                     Firebase.crashlytics.recordException(e)
-                    NotificationState.Error("${e.message}")
+                    return NotificationState.Error(errorResult)
                 }
+                i++
+                if (i > 5) break
             }
             if (errorResult.isNotEmpty()) {
                 return NotificationState.Error(errorResult)
@@ -259,7 +266,6 @@ class AvaloirAsyncWorker @AssistedInject constructor(
                     if (avaloir.idReferent > 0) {
                         try {
                             avaloirRepository.deleteAvaloirDraftNotSuspend(avaloirDraft)
-                            results.add(NotificationState.Success("OK"))
                         } catch (e: Exception) {
                             Firebase.crashlytics.recordException(e)
                             results.add(NotificationState.Error("${e.message}"))
@@ -270,6 +276,7 @@ class AvaloirAsyncWorker @AssistedInject constructor(
                 Firebase.crashlytics.log("error avaloir upload ${res.code()} ${res.body()}")
                 results.add(NotificationState.Error("${res.body()}"))
             }
+            results.add(NotificationState.Success("OK"))
         }
 
         return results
@@ -298,7 +305,6 @@ class AvaloirAsyncWorker @AssistedInject constructor(
                     if (dateResult.avaloirId > 0) {
                         try {
                             avaloirRepository.deleteDateNettoyageNotSuspend(dateNettoyage)
-                            results.add(NotificationState.Success("OK"))
                         } catch (e: Exception) {
                             Firebase.crashlytics.recordException(e)
                             results.add(NotificationState.Error("${e.message}"))
@@ -339,7 +345,6 @@ class AvaloirAsyncWorker @AssistedInject constructor(
                     if (commentaireResult.avaloirId > 0) {
                         try {
                             avaloirRepository.deleteCommentaireNotSuspend(commentaire)
-                            results.add(NotificationState.Success("OK"))
                         } catch (e: Exception) {
                             Firebase.crashlytics.recordException(e)
                             results.add(NotificationState.Error("${e.message}"))

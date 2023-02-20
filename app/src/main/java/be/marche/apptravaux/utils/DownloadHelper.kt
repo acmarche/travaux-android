@@ -3,37 +3,31 @@ package be.marche.apptravaux.utils
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
-import android.net.Uri
 import android.os.Environment
 import android.os.storage.StorageManager
 import android.os.storage.StorageManager.ACTION_MANAGE_STORAGE
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import timber.log.Timber
 import java.io.File
+import java.net.HttpURLConnection
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 //https://developer.android.com/training/data-storage/app-specific?hl=fr
 //https://johncodeos.com/how-to-download-image-from-the-web-in-android-using-kotlin
 class DownloadHelper(val context: Context) {
-    private var msg: String? = ""
-    private var lastMsg = ""
     private val directory: File
 
-    //private var directory = File(Environment.DIRECTORY_DOWNLOADS)
     private var downloadManager: DownloadManager
 
     init {
-        //   directory = File(
-        //       Environment.getExternalStorageDirectory().toString() + File.separator + "avaloirs"
-        //   )
         directory =
             File(context.filesDir.toString() + File.separator + Environment.DIRECTORY_PICTURES + File.separator + "avaloirs")
-        //directory = File(context.filesDir.toString() + File.separator + "avaloirs")
-        //  directory = File(Environment.DIRECTORY_PICTURES)
         if (!directory.exists()) {
             directory.mkdirs()
         }
@@ -53,98 +47,47 @@ class DownloadHelper(val context: Context) {
         return "aval-$avaloirId.jpg"
     }
 
+    companion object {
+        private const val BUFFER_LENGTH_BYTES = 1024 * 8
+        private const val HTTP_TIMEOUT = 30
+    }
+
+    private var okHttpClient: OkHttpClient
+
+    init {
+        okHttpClient = OkHttpClient()
+        val okHttpBuilder = okHttpClient.newBuilder()
+            .connectTimeout(HTTP_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .readTimeout(HTTP_TIMEOUT.toLong(), TimeUnit.SECONDS)
+        this.okHttpClient = okHttpBuilder.build()
+    }
+
     fun downloadImage(avaloirId: Number, url: String) {
-        val imagePath = imageFullPath(avaloirId)
-        val imageName = imageName(avaloirId)
-
-        val file = File(imagePath)
-
+        val file = File(imageFullPath(avaloirId))
         if (file.canRead()) {
-            Timber.e("zeze can read start img download " + url)
+            Timber.e("zeze can read img " + file.path)
             return
         }
+        val request = Request.Builder().url(url).build()
+        val response = okHttpClient.newCall(request).execute()
+        val body = response.body
+        val responseCode = response.code
 
-        Timber.e("zeze can read start img download " + imagePath)
+        Timber.e("zeze response " + response)
 
-        val downloadUri = Uri.parse(url)
-
-        val request = DownloadManager.Request(downloadUri).apply {
-            setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
-                .setAllowedOverRoaming(false)
-                .setTitle(imageName)
-                .setDescription("")
-                //    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setDestinationInExternalFilesDir(
-                    context,
-                    directoryBase().toString(),
-                    imageName
-                )
-        }
-
-        val downloadId = downloadManager.enqueue(request)
-        val query = DownloadManager.Query().setFilterById(downloadId)
-
-        var downloading = true
-        while (downloading) {
-            val cursor: Cursor = downloadManager.query(query)
-            cursor.moveToFirst()
-            if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
-                downloading = false
+        if (responseCode >= HttpURLConnection.HTTP_OK &&
+            responseCode < HttpURLConnection.HTTP_MULT_CHOICE &&
+            body != null
+        ) {
+            body.byteStream().apply {
+                file.outputStream().use { fileOut ->
+                    copyTo(fileOut, BUFFER_LENGTH_BYTES)
+                }
             }
-            val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-            msg = statusMessage(imagePath, url, status)
-            if (msg != lastMsg) {
-
-                Timber.e("zeze message download" + msg)
-
-                lastMsg = msg ?: ""
-            }
-            cursor.close()
+        } else {
+            Timber.e("zeze error " + url)
+            throw IllegalArgumentException("Error occurred when do http get $url")
         }
-    }
-
-    private fun statusMessage(imagePath: String, url: String, status: Int): String {
-        var msg = ""
-        msg = when (status) {
-            DownloadManager.STATUS_FAILED -> "Download has been failed, please try again"
-            DownloadManager.STATUS_PAUSED -> "Paused"
-            DownloadManager.STATUS_PENDING -> "Pending"
-            DownloadManager.STATUS_RUNNING -> "Downloading..."
-            DownloadManager.STATUS_SUCCESSFUL -> {
-                moveFile(File(imagePath))
-                return "Image ${url} downloaded successfully in ${imagePath}"
-            }
-            else -> "There's nothing to download"
-        }
-
-        return msg
-    }
-
-    fun moveFile(file: File) {
-        val newFile = File(directoryBase().toString() +  File.separator + "aval-new-4.jpg")
-        file.copyTo(newFile )
-    }
-
-    fun getAppSpecificAlbumStorageDir(context: Context, albumName: String): File {
-        // Get the pictures directory that's inside the app-specific directory on
-        // external storage.
-        val file = File(
-            context.getExternalFilesDir(
-                Environment.DIRECTORY_PICTURES
-            ), albumName
-        )
-
-        val file2 =
-            File(context.filesDir.toString() + File.separator + Environment.DIRECTORY_PICTURES + File.separator + "avaloirs")
-
-        try {
-            file2.mkdirs()
-            Timber.e("zeze  " + file2)
-        } catch (e: Exception) {
-            Timber.e("zeze mkdir " + e.message)
-        }
-
-        return file2
     }
 
     fun listFiles() {

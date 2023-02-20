@@ -1,7 +1,5 @@
 package be.marche.apptravaux.screens.widgets
 
-import android.content.Context
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,8 +10,9 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -25,19 +24,19 @@ import androidx.navigation.NavController
 import be.marche.apptravaux.R
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.TravauxRoutes
+import be.marche.apptravaux.networking.ConnectionState
+import be.marche.apptravaux.networking.connectivityState
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
 import be.marche.apptravaux.utils.DateUtils.Companion.formatDateTime
-import be.marche.apptravaux.utils.FileHelper
+import be.marche.apptravaux.utils.DownloadHelper
 import coil.compose.rememberAsyncImagePainter
-import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import timber.log.Timber
 import java.io.File
 import java.util.*
 
 class AvaloirWidget {
-
-    val fileHelper = FileHelper()
-
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Composable
     fun LoadAvaloirs(
         avaloirs: List<Avaloir>,
@@ -45,6 +44,10 @@ class AvaloirWidget {
         navController: NavController
     ) {
         val context = LocalContext.current
+        val connection by connectivityState()
+        val isConnected = connection == ConnectionState.Available
+        val downloadHelper = DownloadHelper(context)
+
         LazyColumn {
             val filteredAvaloirs: List<Avaloir>
             val searchedText = searchState?.value?.text
@@ -63,7 +66,7 @@ class AvaloirWidget {
                 }
             }
             items(filteredAvaloirs) { avaloir ->
-                ItemAvaloir(avaloir, context) {
+                ItemAvaloir(avaloir, isConnected, downloadHelper) {
                     navController.navigate(TravauxRoutes.AvaloirDetailScreen.route + "/${avaloir.idReferent}")
                 }
             }
@@ -83,9 +86,12 @@ class AvaloirWidget {
     @Composable
     fun ItemAvaloir(
         avaloir: Avaloir,
-        context: Context,
+        isConnected: Boolean,
+        downloadHelper: DownloadHelper,
         onItemCLick: (Int) -> Unit
     ) {
+        val imgPath = this.ImageAvaloirPath(avaloir, isConnected, downloadHelper)
+
         Card(
             modifier = Modifier
                 .clickable {
@@ -100,8 +106,7 @@ class AvaloirWidget {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 ImageAvaloir(
-                    avaloir,
-                    context,
+                    imgPath,
                     ScreenSizeTheme.dimens.width,
                     ScreenSizeTheme.dimens.height
                 )
@@ -135,61 +140,51 @@ class AvaloirWidget {
         }
     }
 
+    fun ImageAvaloirPath(
+        avaloir: Avaloir,
+        isConnected: Boolean,
+        downloadHelper: DownloadHelper
+    ): String? {
+
+        val imagePath = downloadHelper.imageFullPath(avaloir.idReferent)
+        Timber.e("zeze aval img path " + imagePath)
+
+        if (isConnected) {
+            if (avaloir.imageUrl !== null) {
+                return avaloir.imageUrl!!
+            }
+        }
+
+        Timber.e("zeze aval img ext " + File(imagePath).readBytes())
+        if (File(imagePath).extension == "jpg") {
+            return imagePath
+        }
+        return null
+    }
+
     @Composable
     fun ImageAvaloir(
-        avaloir: Avaloir,
-        context: Context,
+        imagePath: String?,
         imageWidth: Dp,
         imageHeight: Dp,
         contentScale: ContentScale = ContentScale.Crop,
         padding: Dp = 5.dp
     ) {
-        with(avaloir.imageUrl) {
-            when {
-                this == null -> {
-                    Image(
-                        painterResource(R.drawable.profile_picture),
-                        contentDescription = "Image",
-                        contentScale = contentScale,
-                        // contentScale = ContentScale.FillHeight,
-                        modifier = Modifier
-                            .width(imageWidth)
-                            .height(imageHeight)
-                            .padding(padding)
-                    )
-                }
-                this.contains("http") -> {
-                    Image(
-                        painter = rememberAsyncImagePainter(avaloir.imageUrl),
-                        contentDescription = "Image",
-                        modifier = Modifier
-                            .width(imageWidth)
-                            .height(imageHeight)
-                            .padding(padding)
-                            .clip(RoundedCornerShape(5.dp))
-                    )
-                }
-                else -> {
-                    var fileUri: Uri? = null
-                    try {
-                        val cacheFile = avaloir.imageUrl?.let { File(it) }
-                        fileUri = cacheFile?.let { fileHelper.createUri(context, it) }
-                    } catch (e: Exception) {
-                         Firebase.crashlytics.log("Fail avaloir image load ${e.message}")
-                    }
-                    if (fileUri != null) {
-                        Image(
-                            rememberAsyncImagePainter(fileUri),
-                            contentDescription = "Image",
-                            contentScale = contentScale,
-                            modifier = Modifier
-                                .width(imageWidth)
-                                .height(imageHeight)
-                                .padding(padding)
-                        )
-                    }
-                }
-            }
+        val painterImg: Painter
+        if (imagePath == null) {
+            painterImg = painterResource(R.drawable.profile_picture)
+        } else {
+            painterImg = rememberAsyncImagePainter(imagePath)
         }
+
+        Image(
+            painterImg,
+            contentDescription = "Image",
+            contentScale = contentScale,
+            modifier = Modifier
+                .width(imageWidth)
+                .height(imageHeight)
+                .padding(padding)
+        )
     }
 }

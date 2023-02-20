@@ -1,7 +1,6 @@
 package be.marche.apptravaux.screens.avaloir
 
 import android.content.Context
-import android.icu.text.DateFormat
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -15,10 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,13 +27,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.navigation.TravauxRoutes
+import be.marche.apptravaux.networking.ConnectionState
+import be.marche.apptravaux.networking.connectivityState
 import be.marche.apptravaux.screens.widgets.AvaloirWidget
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
-import be.marche.apptravaux.utils.DateUtils.Companion.formatDate
 import be.marche.apptravaux.utils.DateUtils.Companion.formatDateTime
+import be.marche.apptravaux.utils.DownloadHelper
 import be.marche.apptravaux.viewModel.AvaloirViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class AvaloirDraftsScreen(
     val navController: NavController,
@@ -100,6 +99,7 @@ class AvaloirDraftsScreen(
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @ExperimentalAnimationApi
     @Composable
     fun FruitListAnimation(
@@ -109,6 +109,10 @@ class AvaloirDraftsScreen(
     ) {
         val widget = AvaloirWidget()
         val deletedFruitList = remember { mutableStateListOf<Avaloir>() }
+
+        val connection by connectivityState()
+        val isConnected = connection == ConnectionState.Available
+
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -144,9 +148,17 @@ class AvaloirDraftsScreen(
                                             horizontalArrangement = Arrangement.Start,
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
+
+                                            val downloadHelper = DownloadHelper(context)
+                                            val imgPath =
+                                                widget.ImageAvaloirPath(
+                                                    avaloir,
+                                                    isConnected,
+                                                    downloadHelper
+                                                )
+
                                             widget.ImageAvaloir(
-                                                avaloir,
-                                                context,
+                                                imgPath,
                                                 ScreenSizeTheme.dimens.width70,
                                                 ScreenSizeTheme.dimens.height70,
                                                 ContentScale.FillHeight
