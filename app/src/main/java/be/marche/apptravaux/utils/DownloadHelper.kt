@@ -13,24 +13,32 @@ import androidx.core.content.getSystemService
 import timber.log.Timber
 import java.io.File
 import java.util.*
+import java.nio.file.Files
+import java.nio.file.Paths
 
 //https://developer.android.com/training/data-storage/app-specific?hl=fr
 //https://johncodeos.com/how-to-download-image-from-the-web-in-android-using-kotlin
 class DownloadHelper(val context: Context) {
-    private var msg: String? = ""
+    private var msg: String? = "yes"
     private var lastMsg = "cool"
-    private var directory = context.filesDir
+    private val directory: File
+
+    //private var directory = File(Environment.DIRECTORY_DOWNLOADS)
     private var downloadManager: DownloadManager
 
     init {
-        Timber.e("zeze dir " + directory)
+        directory = File(context.filesDir.toString() + File.separator + "avaloirs")
         if (!directory.exists()) {
             directory.mkdirs()
         }
         downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
     }
 
-    fun imagePath(avaloirId: Number): String {
+    fun directoryBase(): File {
+        return directory
+    }
+
+    fun imageFullPath(avaloirId: Number): String {
         return "$directory" + File.separator + imageName(avaloirId)
     }
 
@@ -42,9 +50,10 @@ class DownloadHelper(val context: Context) {
     fun downloadImage(avaloirId: Number, url: String) {
         //val directory = File(Environment.DIRECTORY_PICTURES)
 
-        val imagePath = imagePath(avaloirId)
+        val imagePath = imageFullPath(avaloirId)
         val imageName = imageName(avaloirId)
-        Timber.e("zeze filename " + imagePath)
+        Timber.e("zeze image path " + imagePath)
+        Timber.e("zeze image name " + imageName)
 
         val file = File(imagePath)
 
@@ -62,8 +71,10 @@ class DownloadHelper(val context: Context) {
                 .setAllowedOverRoaming(false)
                 .setTitle(imageName)
                 .setDescription("")
-                .setDestinationInExternalPublicDir(
-                    directory.toString(),
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setDestinationInExternalFilesDir(
+                    context,
+                    directoryBase().toString(),
                     imageName
                 )
         }
@@ -79,7 +90,7 @@ class DownloadHelper(val context: Context) {
                 downloading = false
             }
             val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-            msg = statusMessage(url, directory, status)
+            msg = statusMessage(imagePath, url, status)
             if (msg != lastMsg) {
 
                 Timber.e("zeze message download" + msg)
@@ -90,24 +101,22 @@ class DownloadHelper(val context: Context) {
         }
         Timber.e(
             "zeze Image downloaded successfully in " + directory.toString() +
-                    imageName
+                    File.separator + imageName
         )
     }
 
-    private fun statusMessage(url: String, directory: File, status: Int): String {
+    private fun statusMessage(imagePath: String, url: String, status: Int): String {
         var msg = ""
         msg = when (status) {
             DownloadManager.STATUS_FAILED -> "Download has been failed, please try again"
             DownloadManager.STATUS_PAUSED -> "Paused"
             DownloadManager.STATUS_PENDING -> "Pending"
             DownloadManager.STATUS_RUNNING -> "Downloading..."
-            DownloadManager.STATUS_SUCCESSFUL -> "Image downloaded successfully in $directory" + File.separator + url.substring(
-                url.lastIndexOf("/") + 1
-            )
+            DownloadManager.STATUS_SUCCESSFUL -> "Image ${url} downloaded successfully in ${imagePath}"
             else -> "There's nothing to download"
         }
 
-        Timber.e("zeze message ici" + msg)
+        Timber.e("zeze message " + msg)
         return msg
     }
 
@@ -152,5 +161,12 @@ class DownloadHelper(val context: Context) {
         val externalStorageVolumes: Array<out File> =
             ContextCompat.getExternalFilesDirs(context.applicationContext, null)
         val primaryExternalStorage = externalStorageVolumes[0]
+    }
+
+    fun listFiles() {
+        Timber.e("zeze dir: " + directory.toString())
+        Files.walk(Paths.get(directory.toString()))
+            .filter { Files.isRegularFile(it) }
+            .forEach { Timber.e("zeze file: " + it) }
     }
 }
