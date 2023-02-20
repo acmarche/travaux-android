@@ -12,15 +12,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import timber.log.Timber
 import java.io.File
-import java.util.*
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.*
 
 //https://developer.android.com/training/data-storage/app-specific?hl=fr
 //https://johncodeos.com/how-to-download-image-from-the-web-in-android-using-kotlin
 class DownloadHelper(val context: Context) {
-    private var msg: String? = "yes"
-    private var lastMsg = "cool"
+    private var msg: String? = ""
+    private var lastMsg = ""
     private val directory: File
 
     //private var directory = File(Environment.DIRECTORY_DOWNLOADS)
@@ -52,8 +52,6 @@ class DownloadHelper(val context: Context) {
 
         val imagePath = imageFullPath(avaloirId)
         val imageName = imageName(avaloirId)
-        Timber.e("zeze image path " + imagePath)
-        Timber.e("zeze image name " + imageName)
 
         val file = File(imagePath)
 
@@ -99,10 +97,6 @@ class DownloadHelper(val context: Context) {
             }
             cursor.close()
         }
-        Timber.e(
-            "zeze Image downloaded successfully in " + directory.toString() +
-                    File.separator + imageName
-        )
     }
 
     private fun statusMessage(imagePath: String, url: String, status: Int): String {
@@ -116,8 +110,16 @@ class DownloadHelper(val context: Context) {
             else -> "There's nothing to download"
         }
 
-        Timber.e("zeze message " + msg)
         return msg
+    }
+
+    fun listFiles() {
+        val t = File(directoryBase().toString())
+        Timber.e("zeze count files " + t.length())
+        Timber.e("zeze list files in dir: " + directoryBase())
+        Files.walk(Paths.get(directoryBase().toString()))
+         //   .filter { Files.isRegularFile(it) }
+            .forEach { Timber.e("zeze file: " + it) }
     }
 
     fun freeSpace(context: Context) {
@@ -163,10 +165,4 @@ class DownloadHelper(val context: Context) {
         val primaryExternalStorage = externalStorageVolumes[0]
     }
 
-    fun listFiles() {
-        Timber.e("zeze dir: " + directory.toString())
-        Files.walk(Paths.get(directory.toString()))
-            .filter { Files.isRegularFile(it) }
-            .forEach { Timber.e("zeze file: " + it) }
-    }
 }
