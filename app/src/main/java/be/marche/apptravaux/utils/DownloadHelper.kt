@@ -27,7 +27,13 @@ class DownloadHelper(val context: Context) {
     private var downloadManager: DownloadManager
 
     init {
-        directory = File(context.filesDir.toString() + File.separator + "avaloirs")
+        //   directory = File(
+        //       Environment.getExternalStorageDirectory().toString() + File.separator + "avaloirs"
+        //   )
+        directory =
+            File(context.filesDir.toString() + File.separator + Environment.DIRECTORY_PICTURES + File.separator + "avaloirs")
+        //directory = File(context.filesDir.toString() + File.separator + "avaloirs")
+        //  directory = File(Environment.DIRECTORY_PICTURES)
         if (!directory.exists()) {
             directory.mkdirs()
         }
@@ -48,19 +54,17 @@ class DownloadHelper(val context: Context) {
     }
 
     fun downloadImage(avaloirId: Number, url: String) {
-        //val directory = File(Environment.DIRECTORY_PICTURES)
-
         val imagePath = imageFullPath(avaloirId)
         val imageName = imageName(avaloirId)
 
         val file = File(imagePath)
 
-        if (file.exists()) {
-            Timber.e("zeze $imagePath does exist.")
+        if (file.canRead()) {
+            Timber.e("zeze can read start img download " + url)
             return
-        } else {
-            Timber.e("zeze $imagePath does not exist.")
         }
+
+        Timber.e("zeze can read start img download " + imagePath)
 
         val downloadUri = Uri.parse(url)
 
@@ -69,7 +73,7 @@ class DownloadHelper(val context: Context) {
                 .setAllowedOverRoaming(false)
                 .setTitle(imageName)
                 .setDescription("")
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                //    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setDestinationInExternalFilesDir(
                     context,
                     directoryBase().toString(),
@@ -106,20 +110,51 @@ class DownloadHelper(val context: Context) {
             DownloadManager.STATUS_PAUSED -> "Paused"
             DownloadManager.STATUS_PENDING -> "Pending"
             DownloadManager.STATUS_RUNNING -> "Downloading..."
-            DownloadManager.STATUS_SUCCESSFUL -> "Image ${url} downloaded successfully in ${imagePath}"
+            DownloadManager.STATUS_SUCCESSFUL -> {
+                moveFile(File(imagePath))
+                return "Image ${url} downloaded successfully in ${imagePath}"
+            }
             else -> "There's nothing to download"
         }
 
         return msg
     }
 
+    fun moveFile(file: File) {
+        val newFile = File(directoryBase().toString() +  File.separator + "aval-new-4.jpg")
+        file.copyTo(newFile )
+    }
+
+    fun getAppSpecificAlbumStorageDir(context: Context, albumName: String): File {
+        // Get the pictures directory that's inside the app-specific directory on
+        // external storage.
+        val file = File(
+            context.getExternalFilesDir(
+                Environment.DIRECTORY_PICTURES
+            ), albumName
+        )
+
+        val file2 =
+            File(context.filesDir.toString() + File.separator + Environment.DIRECTORY_PICTURES + File.separator + "avaloirs")
+
+        try {
+            file2.mkdirs()
+            Timber.e("zeze  " + file2)
+        } catch (e: Exception) {
+            Timber.e("zeze mkdir " + e.message)
+        }
+
+        return file2
+    }
+
     fun listFiles() {
-        val t = File(directoryBase().toString())
-        Timber.e("zeze count files " + t.length())
-        Timber.e("zeze list files in dir: " + directoryBase())
         Files.walk(Paths.get(directoryBase().toString()))
-         //   .filter { Files.isRegularFile(it) }
+            .filter { Files.isRegularFile(it) }
             .forEach { Timber.e("zeze file: " + it) }
+    }
+
+    fun countFiles(): Int {
+        return File(directoryBase().toString()).list()?.size ?: 0
     }
 
     fun freeSpace(context: Context) {
