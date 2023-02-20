@@ -37,4 +37,7 @@
     <string name="dateCleanNoPublished">L\'avaloir doit être publié sur le serveur pour ajouté une date de nettoyage</string>
     <string name="commentaireNoPublished">L\'avaloir doit être publié sur le serveur pour ajouté un commentaire</string>
     <string name="app_version">Code: %1$s Name: %2$s</string>
+    <string name="stat_avaloirs">Avaloirs: %d</string>
+    <string name="stat_images">Images d\'avaloirs: %d</string>
+    <string name="stat_produits">Produits: %d</string>
 </resources>
