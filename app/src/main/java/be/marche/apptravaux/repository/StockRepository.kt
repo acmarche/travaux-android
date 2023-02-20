@@ -33,7 +33,7 @@ class StockRepository @Inject constructor(
     }
 
     fun getProduitsByCategorieAndName(categorieId: Int?, nom: String?): List<Produit> {
-        return stockDao.getProduitsByCategorieAndName(categorieId,nom)
+        return stockDao.getProduitsByCategorieAndName(categorieId, nom)
     }
 
     fun getProduitsByName(nom: String): List<Produit> {
@@ -62,5 +62,9 @@ class StockRepository @Inject constructor(
 
     suspend fun deleteQuantiteDraft(quantiteDraft: QuantiteDraft) {
         stockDao.deleteQuantiteDraft(quantiteDraft)
+    }
+
+    suspend fun countProduit():Int {
+      return  stockDao.countProduits();
     }
 }

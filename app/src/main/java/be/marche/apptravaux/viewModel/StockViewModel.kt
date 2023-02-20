@@ -25,13 +25,12 @@ class StockViewModel @Inject constructor(
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider
 ) : ViewModel() {
 
-    private val STOCK_SYNC_WORK_REQUEST = "STOCK_SYNC_WORK_REQUEST"
-
     private val _produitsUiState = MutableStateFlow<ProduitUiState>(ProduitUiState.Empty)
     val produitsUiState: StateFlow<ProduitUiState> = _produitsUiState
 
     private val _categoriesUiState = MutableStateFlow<CategorieUiState>(CategorieUiState.Empty)
     val categoriessUiState: StateFlow<CategorieUiState> = _categoriesUiState
+    var _countProduit = 0
 
     init {
         fetchCategoriesFromDb()
@@ -122,6 +121,12 @@ class StockViewModel @Inject constructor(
             _produitsUiState.value = ProduitUiState.Loaded(
                 stockRepository.getProduitsByCategorie(categorieId)
             )
+        }
+    }
+
+    fun countProduit() {
+        viewModelScope.launch(coroutineDispatcherProvider.IO()) {
+            _countProduit = stockRepository.countProduit()
         }
     }
 

@@ -64,7 +64,7 @@ fun Navigation(
 
         composable(route = TravauxRoutes.SettingScreen.route) {
             val screen = SettingScreen(navController)
-            screen.MainScreen(errorViewModel)
+            screen.MainScreen(errorViewModel, avaloirViewModel, stockViewModel)
         }
 
         /**

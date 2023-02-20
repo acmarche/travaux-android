@@ -132,4 +132,8 @@ class AvaloirRepository @Inject constructor(
 
         return SimpleSQLiteQuery(queryString)
     }
+
+    fun countProduits(): Int {
+        return avaloirDao.countAvaloirs()
+    }
 }

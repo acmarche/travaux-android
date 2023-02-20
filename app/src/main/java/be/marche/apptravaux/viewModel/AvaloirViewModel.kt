@@ -32,7 +32,6 @@ class AvaloirViewModel @Inject constructor(
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider
 ) : ViewModel() {
 
-    private val AVALOIR_SYNC_WORK_REQUEST = "AVALOIR_SYNC_WORK_REQUEST"
     private val _uiState = MutableStateFlow<AvaloirUiState>(AvaloirUiState.Empty)
     val uiState: StateFlow<AvaloirUiState> = _uiState
 
@@ -44,6 +43,8 @@ class AvaloirViewModel @Inject constructor(
 
     private val _allCommentairesDraftsFlow = MutableStateFlow<List<Commentaire>>(emptyList())
     val allCommentairesDraftsFlow: StateFlow<List<Commentaire>> = _allCommentairesDraftsFlow
+
+    var _countAvaloirs = 0
 
     init {
         fetchAvaloirsFromDb()
@@ -272,6 +273,12 @@ class AvaloirViewModel @Inject constructor(
                 _resultSearch.value =
                     SearchResponseUiState.Error("Erreur survenue: ${ex.message}")
             }
+        }
+    }
+
+    fun countAvaloirs() {
+        viewModelScope.launch(coroutineDispatcherProvider.IO()) {
+            _countAvaloirs = avaloirRepository.countProduits()
         }
     }
 

@@ -31,7 +31,7 @@ interface StockDao {
     fun getCategorieById(categorieId: Int): Categorie?
 
     @Query("SELECT * FROM quantitedraft WHERE produit_id = :produitId ")
-  suspend  fun findQuantiteDraftByIdProduit(produitId: Int): QuantiteDraft?
+    suspend fun findQuantiteDraftByIdProduit(produitId: Int): QuantiteDraft?
 
     @Query("SELECT * FROM quantitedraft")
     fun getAllQuantitesDraftsList(): List<QuantiteDraft>
@@ -44,6 +44,9 @@ interface StockDao {
 
     @Query("SELECT * FROM produit WHERE nom LIKE '%' || :nom || '%' ORDER BY nom ASC")
     fun getProduitsByName(nom: String): List<Produit>
+
+    @Query("SELECT COUNT(nom) FROM produit")
+    fun countProduits(): Int
 
     @Update
     suspend fun updateProduit(produit: Produit)

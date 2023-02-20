@@ -83,5 +83,9 @@ interface AvaloirDao {
     fun deleteCommentaireNotSuspend(commentaire: Commentaire)
 
     @RawQuery
-   fun findAllAvaloirsByGeoQuery(query: SupportSQLiteQuery): List<Avaloir>
+    fun findAllAvaloirsByGeoQuery(query: SupportSQLiteQuery): List<Avaloir>
+
+    @Query("SELECT COUNT(*) FROM avaloir")
+    fun countAvaloirs(): Int
+
 }
