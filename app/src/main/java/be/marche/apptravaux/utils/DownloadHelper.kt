@@ -1,6 +1,5 @@
 package be.marche.apptravaux.utils
 
-import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.os.Environment
@@ -21,9 +20,9 @@ import java.util.concurrent.TimeUnit
 //https://developer.android.com/training/data-storage/app-specific?hl=fr
 //https://johncodeos.com/how-to-download-image-from-the-web-in-android-using-kotlin
 class DownloadHelper(val context: Context) {
-    private val directory: File
 
-    private var downloadManager: DownloadManager
+    private val directory: File
+    private var okHttpClient: OkHttpClient
 
     init {
         directory =
@@ -31,7 +30,16 @@ class DownloadHelper(val context: Context) {
         if (!directory.exists()) {
             directory.mkdirs()
         }
-        downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        okHttpClient = OkHttpClient()
+        val okHttpBuilder = okHttpClient.newBuilder()
+            .connectTimeout(HTTP_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .readTimeout(HTTP_TIMEOUT.toLong(), TimeUnit.SECONDS)
+        this.okHttpClient = okHttpBuilder.build()
+    }
+
+    companion object {
+        private const val BUFFER_LENGTH_BYTES = 1024 * 8
+        private const val HTTP_TIMEOUT = 30
     }
 
     fun directoryBase(): File {
@@ -45,21 +53,6 @@ class DownloadHelper(val context: Context) {
     fun imageName(avaloirId: Number): String {
         //astuce last url element: url.substring(url.lastIndexOf("/") + 1)
         return "aval-$avaloirId.jpg"
-    }
-
-    companion object {
-        private const val BUFFER_LENGTH_BYTES = 1024 * 8
-        private const val HTTP_TIMEOUT = 30
-    }
-
-    private var okHttpClient: OkHttpClient
-
-    init {
-        okHttpClient = OkHttpClient()
-        val okHttpBuilder = okHttpClient.newBuilder()
-            .connectTimeout(HTTP_TIMEOUT.toLong(), TimeUnit.SECONDS)
-            .readTimeout(HTTP_TIMEOUT.toLong(), TimeUnit.SECONDS)
-        this.okHttpClient = okHttpBuilder.build()
     }
 
     fun downloadImage(avaloirId: Number, url: String) {
@@ -95,14 +88,14 @@ class DownloadHelper(val context: Context) {
                 })
     }
 
+    fun countFiles(): Int {
+        return File(directoryBase().toString()).list()?.size ?: 0
+    }
+
     fun listFiles() {
         Files.walk(Paths.get(directoryBase().toString()))
             .filter { Files.isRegularFile(it) }
             .forEach { Timber.e("zeze file: " + it) }
-    }
-
-    fun countFiles(): Int {
-        return File(directoryBase().toString()).list()?.size ?: 0
     }
 
     fun freeSpace(context: Context) {
