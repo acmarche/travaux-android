@@ -31,7 +31,6 @@ import be.marche.apptravaux.utils.DateUtils.Companion.formatDateTime
 import be.marche.apptravaux.utils.DownloadHelper
 import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import timber.log.Timber
 import java.io.File
 import java.util.*
 
@@ -153,7 +152,6 @@ class AvaloirWidget {
         }
 
         val imagePath = downloadHelper.imageFullPath(avaloir.idReferent)
-        Timber.e("zeze img path2 " + imagePath)
 
         if (File(imagePath).canRead()) {
             return imagePath

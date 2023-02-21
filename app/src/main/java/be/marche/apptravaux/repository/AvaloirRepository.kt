@@ -6,7 +6,6 @@ import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
 import kotlinx.coroutines.flow.Flow
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.cos
 import kotlin.math.sin
@@ -29,10 +28,6 @@ class AvaloirRepository @Inject constructor(
 
     fun getAllCommentairessDraftsList(): List<Commentaire> {
         return avaloirDao.getAllCommentairesDraftsList()
-    }
-
-    fun findAvaloirById(avaloirId: Int): Avaloir {
-        return avaloirDao.getById(avaloirId)
     }
 
     fun findAvaloirByIdFlow(avaloirId: Int): Flow<Avaloir> {
@@ -102,23 +97,30 @@ class AvaloirRepository @Inject constructor(
         return avaloirDao.findAllAvaloirsByGeoQuery(query)
     }
 
-    fun createQuery(latitude: Double, longitude: Double, radius: Double): SimpleSQLiteQuery {
+    //https://pixelcarrot.com/listing-nearest-locations-from-sqlite-of-a-mobile-app
+    fun queryString(latitude: Double, longitude: Double, radius: Double): String {
         val pi = 3.141592653589793
-        val curCosLat = cos(latitude * pi / 180.0)
-        val curSinLat = sin(latitude * pi / 180.0)
-        val curCosLng = cos(longitude * pi / 180.0)
-        val curSinLng = sin(longitude * pi / 180.0)
-        val cosRadius = cos(radius / 6371000.0)
+        val curCosLat = cos(latitude * pi / 180.0);
+        val curSinLat = sin(latitude * pi / 180.0);
+        val curCosLng = cos(longitude * pi / 180.0);
+        val curSinLng = sin(longitude * pi / 180.0);
+        val cosRadius = cos(radius / 6371000.0);
         val cosDistance =
-            "$curSinLat * sinLatitude + $curCosLat * cosLatitude * (cosLongitude * $curCosLng + sinLongitude * $curSinLng)"
+            "$curSinLat * sinLatitude + $curCosLat * cosLatitude * (cosLongitude * $curCosLng + sinLongitude * $curSinLng)";
 
-        val queryString =
-            "SELECT rue,createdAt,idReferent,localite,numero,imageUrl,descriptif, latitude, longitude, $cosDistance AS cos_distance FROM Avaloir " +
-                    "WHERE $cosDistance > $cosRadius"
+        return """
+    SELECT rue,createdAt,idReferent,localite,numero,imageUrl,descriptif,latitude,longitude, $cosDistance AS cos_distance 
+    FROM Avaloir
+    WHERE $cosDistance > $cosRadius
+    ORDER BY $cosDistance DESC
+    """
+    }
 
-        Timber.e("zeze queryString " + queryString)
+    fun createQuery(latitude: Double, longitude: Double, radius: Double): SimpleSQLiteQuery {
 
-        return SimpleSQLiteQuery(queryString)
+        val query = queryString(latitude, longitude, radius)
+
+        return SimpleSQLiteQuery(query)
     }
 
     fun countProduits(): Int {
@@ -132,5 +134,6 @@ class AvaloirRepository @Inject constructor(
     fun countDateNettoyage(): Int {
         return avaloirDao.countDatesNettoyages();
     }
+
 
 }
