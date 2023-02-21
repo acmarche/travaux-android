@@ -1,0 +1,7 @@
+SELECT rue, latitude, longitude, 0.7685829613793562 * sin_lat + 0.6397501320651204 * cos_lat * (cos_lon * 0.9956551594366135 + sin_lon * 0.0931171492650617) AS cos_distance
+                                                                                                        FROM avaloir
+                                                                                                        WHERE 0.7685829613793562 * sin_lat + 0.6397501320651204 * cos_lat * (cos_lon * 0.9956551594366135 + sin_lon * 0.0931171492650617) > 0.9999999999923009
+                                                                                                        ORDER BY 0.7685829613793562 * sin_lat + 0.6397501320651204 * cos_lat * (cos_lon * 0.9956551594366135 + sin_lon * 0.0931171492650617) DESC
+
+SELECT rue, latitude, longitude, 0.7685829613793562 * sin_latitude + 0.6397501320651204 * cos_latitude * (cos_longitude * 0.9956551594366135 + sin_longitude * 0.0931171492650617) AS cos_distance
+FROM avaloir WHERE 0.7685829613793562 * sin_latitude + 0.6397501320651204 * cos_latitude * (cos_longitude * 0.9956551594366135 + sin_longitude * 0.0931171492650617) > 0.9999999999923009 ORDER BY 0.7685829613793562 * sin_latitude + 0.6397501320651204 * cos_latitude * (cos_longitude * 0.9956551594366135 + sin_longitude * 0.0931171492650617) DESC;

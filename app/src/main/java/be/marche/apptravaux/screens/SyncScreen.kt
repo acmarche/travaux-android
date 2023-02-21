@@ -8,9 +8,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -29,6 +31,9 @@ import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.LARGEST_PADDING
 import be.marche.apptravaux.ui.theme.MEDIUM_PADDING
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
+import be.marche.apptravaux.utils.DownloadHelper
+import be.marche.apptravaux.viewModel.AvaloirViewModel
+import be.marche.apptravaux.viewModel.StockViewModel
 import be.marche.apptravaux.viewModel.WorkerViewModel
 import be.marche.apptravaux.worker.AvaloirAsyncWorker
 import be.marche.apptravaux.worker.StockWorker
@@ -47,7 +52,9 @@ class SyncScreen(
     @OptIn(ExperimentalCoroutinesApi::class)
     @Composable
     fun MaintContent(
-        workerViewModel: WorkerViewModel = viewModel()
+        workerViewModel: WorkerViewModel = viewModel(),
+        avaloirViewModel: AvaloirViewModel,
+        stockViewModel: StockViewModel
     ) {
         Scaffold(
             topBar = {
@@ -82,14 +89,16 @@ class SyncScreen(
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Top
                 ) {
                     ConnectivityStatusBox(isConnected)
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.padding(5.dp))
+                    Stats(avaloirViewModel, stockViewModel)
+                    Spacer(modifier = Modifier.padding(5.dp))
                     TextesExplicatifs()
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.padding(5.dp))
                     Text(text = textInputAvaloir.value)
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.padding(5.dp))
                     Text(text = textInputStock.value)
 
                     Divider(
@@ -110,7 +119,7 @@ class SyncScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
                     Divider(
                         modifier = Modifier.height(MEDIUM_PADDING),
                         color = MaterialTheme.colors.background
@@ -143,6 +152,79 @@ class SyncScreen(
         Divider(
             modifier = Modifier.height(MEDIUM_PADDING),
             color = MaterialTheme.colors.background
+        )
+    }
+
+    private @Composable
+    fun Stats(
+        avaloirViewModel: AvaloirViewModel,
+        stockViewModel: StockViewModel
+    ) {
+        val context = LocalContext.current
+        val d = DownloadHelper(context)
+        d.listFiles()
+
+        LaunchedEffect(true) {
+            avaloirViewModel.countAvaloirs()
+            stockViewModel.countProduit()
+            avaloirViewModel.countDatesNettoyages()
+            avaloirViewModel.countCommentaire()
+        }
+
+        val statAvaloirs: String = java.lang.String.format(
+            stringResource(R.string.stat_avaloirs),
+            avaloirViewModel._countAvaloirs,
+        )
+        val statCommentaires: String = java.lang.String.format(
+            stringResource(R.string.stat_commentaires),
+            avaloirViewModel._countCommentaire,
+        )
+        val statDatesNettoyages: String = java.lang.String.format(
+            stringResource(R.string.stat_dates_nettoyages),
+            avaloirViewModel._countDateNettoyage,
+        )
+
+        val downloadHelper = DownloadHelper(context)
+        val filesCount = downloadHelper.countFiles()
+        val statImages: String = java.lang.String.format(
+            stringResource(R.string.stat_images),
+            filesCount,
+        )
+
+        val statProduits: String = java.lang.String.format(
+            stringResource(R.string.stat_produits),
+            stockViewModel._countProduit,
+        )
+
+        Spacer(modifier = Modifier.padding(5.dp))
+        Text(
+            text = statAvaloirs,
+            modifier = Modifier.padding(8.dp),
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.padding(5.dp))
+        Text(
+            text = statImages,
+            modifier = Modifier.padding(8.dp),
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.padding(5.dp))
+        Text(
+            text = statDatesNettoyages,
+            modifier = Modifier.padding(8.dp),
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.padding(5.dp))
+        Text(
+            text = statCommentaires,
+            modifier = Modifier.padding(8.dp),
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.padding(5.dp))
+        Text(
+            text = statProduits,
+            modifier = Modifier.padding(8.dp),
+            textAlign = TextAlign.Center,
         )
     }
 

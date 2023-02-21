@@ -88,4 +88,9 @@ interface AvaloirDao {
     @Query("SELECT COUNT(*) FROM avaloir")
     fun countAvaloirs(): Int
 
+    @Query("SELECT COUNT(idReferent) FROM commentaire")
+    fun countCommentaires(): Int
+
+    @Query("SELECT COUNT(idReferent) FROM dateNettoyage")
+    fun countDatesNettoyages(): Int
 }

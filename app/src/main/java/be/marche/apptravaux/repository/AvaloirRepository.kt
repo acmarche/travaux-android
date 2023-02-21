@@ -5,7 +5,6 @@ import be.marche.apptravaux.database.AvaloirDao
 import be.marche.apptravaux.entities.Avaloir
 import be.marche.apptravaux.entities.Commentaire
 import be.marche.apptravaux.entities.DateNettoyage
-import be.marche.apptravaux.networking.AvaloirService
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import javax.inject.Inject
@@ -13,8 +12,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class AvaloirRepository @Inject constructor(
-    private val avaloirDao: AvaloirDao,
-    private val avaloirService: AvaloirService
+    private val avaloirDao: AvaloirDao
 ) {
 
     fun getAll(): List<Avaloir> {
@@ -33,10 +31,6 @@ class AvaloirRepository @Inject constructor(
         return avaloirDao.getAllCommentairesDraftsList()
     }
 
-    fun getAllAvaloirsDraftsFlow(): Flow<List<Avaloir>> {
-        return avaloirDao.getFlowList()
-    }
-
     fun findAvaloirById(avaloirId: Int): Avaloir {
         return avaloirDao.getById(avaloirId)
     }
@@ -53,10 +47,16 @@ class AvaloirRepository @Inject constructor(
         return avaloirDao.getCommentairesByAvaloirIdFlow(avaloirId)
     }
 
-    suspend fun getAllAvaloirsFromApi() = avaloirService.fetchAllAvaloirs()
-
     suspend fun insertAvaloirs(avaloirs: List<Avaloir>) {
         avaloirDao.insertAvaloirs(avaloirs)
+    }
+
+    suspend fun insertDates(dates: List<DateNettoyage>) {
+        avaloirDao.insertDates(dates)
+    }
+
+    suspend fun insertCommentaires(commentaires: List<Commentaire>) {
+        avaloirDao.insertCommentaires(commentaires)
     }
 
     fun insertAvaloirsNotSuspend(avaloirs: List<Avaloir>) {
@@ -71,24 +71,12 @@ class AvaloirRepository @Inject constructor(
         avaloirDao.insertCommentairesNotSuspend(commentaires)
     }
 
-    suspend fun insertCommentaires(commentaires: List<Commentaire>) {
-        avaloirDao.insertCommentaires(commentaires)
-    }
-
-    suspend fun insertDates(dates: List<DateNettoyage>) {
-        avaloirDao.insertDates(dates)
-    }
-
     suspend fun insertCommentaireDb(commentaire: Commentaire) {
         avaloirDao.insertCommentaire(commentaire)
     }
 
     suspend fun insertDateNettoyageDb(dateNettoyage: DateNettoyage) {
         avaloirDao.insertDateNettoyage(dateNettoyage)
-    }
-
-    suspend fun insertAvaloir(avaloir: Avaloir) {
-        avaloirDao.insertAvaloir(avaloir)
     }
 
     suspend fun deleteAvaloirDraft(avaloirDraft: Avaloir) {
@@ -136,4 +124,13 @@ class AvaloirRepository @Inject constructor(
     fun countProduits(): Int {
         return avaloirDao.countAvaloirs()
     }
+
+    fun countCommentaire(): Int {
+        return avaloirDao.countCommentaires();
+    }
+
+    fun countDateNettoyage(): Int {
+        return avaloirDao.countDatesNettoyages();
+    }
+
 }

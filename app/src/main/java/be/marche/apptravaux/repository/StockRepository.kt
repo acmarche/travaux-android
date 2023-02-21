@@ -4,12 +4,10 @@ import be.marche.apptravaux.database.StockDao
 import be.marche.apptravaux.entities.Categorie
 import be.marche.apptravaux.entities.Produit
 import be.marche.apptravaux.entities.QuantiteDraft
-import be.marche.apptravaux.networking.StockService
 import javax.inject.Inject
 
 class StockRepository @Inject constructor(
-    private val stockDao: StockDao,
-    private val stockService: StockService
+    private val stockDao: StockDao
 ) {
 
     fun getAllProduits(): List<Produit> {
@@ -64,7 +62,7 @@ class StockRepository @Inject constructor(
         stockDao.deleteQuantiteDraft(quantiteDraft)
     }
 
-    suspend fun countProduit():Int {
-      return  stockDao.countProduits();
+    fun countProduit(): Int {
+        return stockDao.countProduits();
     }
 }

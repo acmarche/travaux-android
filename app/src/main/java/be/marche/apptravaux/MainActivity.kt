@@ -24,7 +24,6 @@ import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -47,7 +46,7 @@ class MainActivity : ComponentActivity() {
                 try {
                     workerViewModel.cancelWork(WorkerViewModel.SYNC_WORK_TAG)
                 } catch (ex: Exception) {
-                    Timber.e("zeze stop sync")
+
                 }
             }
         }
@@ -84,8 +83,7 @@ class MainActivity : ComponentActivity() {
             if (it != null) {
                 when (it.state) {
                     WorkInfo.State.FAILED -> {
-                        val workStatus = it.state
-                        Firebase.crashlytics.log("Failt auto sync avaloir $workStatus")
+                        Firebase.crashlytics.log("Failt auto sync avaloir ${it.state}")
                     }
                     else -> {
 
@@ -106,8 +104,7 @@ class MainActivity : ComponentActivity() {
             if (it != null) {
                 when (it.state) {
                     WorkInfo.State.FAILED -> {
-                        val workStatus = it.state
-                        Firebase.crashlytics.log("Failt auto sync stock $workStatus")
+                        Firebase.crashlytics.log("Failt auto sync stock ${it.state}")
                     }
                     else -> {
 

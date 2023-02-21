@@ -1,15 +1,16 @@
 package be.marche.apptravaux.screens
 
-import android.os.Environment
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Card
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,21 +25,13 @@ import be.marche.apptravaux.entities.ErrorLog
 import be.marche.apptravaux.navigation.TravauxRoutes
 import be.marche.apptravaux.screens.widgets.TopAppBarJf
 import be.marche.apptravaux.ui.theme.ScreenSizeTheme
-import be.marche.apptravaux.utils.DownloadHelper
-import be.marche.apptravaux.utils.FileHelper
-import be.marche.apptravaux.viewModel.AvaloirViewModel
 import be.marche.apptravaux.viewModel.ErrorViewModel
-import be.marche.apptravaux.viewModel.StockViewModel
-import timber.log.Timber
-import java.io.File
 
 class SettingScreen(val navController: NavController) {
 
     @Composable
     fun MainScreen(
-        errorViewModel: ErrorViewModel,
-        avaloirViewModel: AvaloirViewModel,
-        stockViewModel: StockViewModel
+        errorViewModel: ErrorViewModel
     ) {
         val context = LocalContext.current
         val a = CardData(
@@ -52,15 +45,13 @@ class SettingScreen(val navController: NavController) {
         }
 
         val errors = errorViewModel.allErrorsFlow.collectAsState().value
-        Content(datas = errors, errorViewModel, avaloirViewModel, stockViewModel)
+        Content(datas = errors, errorViewModel)
     }
 
     @Composable
     private fun Content(
         datas: List<ErrorLog>,
-        errorViewModel: ErrorViewModel,
-        avaloirViewModel: AvaloirViewModel,
-        stockViewModel: StockViewModel
+        errorViewModel: ErrorViewModel
     ) {
         Scaffold(
             topBar = {
@@ -70,39 +61,12 @@ class SettingScreen(val navController: NavController) {
             }
         ) { contentPadding ->
             Box(modifier = Modifier.padding(contentPadding)) {
-                val context = LocalContext.current
                 val versionCode: Int = BuildConfig.VERSION_CODE
                 val versionName: String = BuildConfig.VERSION_NAME
-
-                val d = DownloadHelper(context)
-                d.listFiles()
-
                 val version: String = java.lang.String.format(
                     stringResource(R.string.app_version),
                     versionCode,
                     versionName
-                )
-
-                LaunchedEffect(true) {
-                    avaloirViewModel.countAvaloirs()
-                    stockViewModel.countProduit()
-                }
-
-                val statAvaloirs: String = java.lang.String.format(
-                    stringResource(R.string.stat_avaloirs),
-                    avaloirViewModel._countAvaloirs,
-                )
-
-                val downloadHelper = DownloadHelper(context)
-                val filesCount = downloadHelper.countFiles()
-                val statImages: String = java.lang.String.format(
-                    stringResource(R.string.stat_images),
-                    filesCount,
-                )
-
-                val statProduits: String = java.lang.String.format(
-                    stringResource(R.string.stat_produits),
-                    stockViewModel._countProduit,
                 )
 
                 Column(modifier = Modifier.padding(12.dp)) {
@@ -111,24 +75,7 @@ class SettingScreen(val navController: NavController) {
                         modifier = Modifier.padding(8.dp),
                         textAlign = TextAlign.Center,
                     )
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    Text(
-                        text = statAvaloirs,
-                        modifier = Modifier.padding(8.dp),
-                        textAlign = TextAlign.Center,
-                    )
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    Text(
-                        text = statImages,
-                        modifier = Modifier.padding(8.dp),
-                        textAlign = TextAlign.Center,
-                    )
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    Text(
-                        text = statProduits,
-                        modifier = Modifier.padding(8.dp),
-                        textAlign = TextAlign.Center,
-                    )
+
                     Spacer(modifier = Modifier.padding(5.dp))
                     LazyColumn {
                         items(datas) { data ->

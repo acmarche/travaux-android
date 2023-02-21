@@ -3,6 +3,7 @@ package be.marche.apptravaux.worker
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.os.SystemClock.sleep
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
@@ -50,20 +51,18 @@ class AvaloirAsyncWorker @AssistedInject constructor(
         avaloirs = emptyList()
         outputData.putString(WORK_RESULT, "Zeze").build()
         //  uploadContent()
-        //  sleep(15)
+        sleep(15)
         avaloirs = avaloirService.fetchAllAvaloirs()
-        //  downloadContent()
-        //    downloadImages()
+        downloadContent()
+        sleep(15)
+        downloadImagesContent()
 
         outputData.putString(WORK_RESULT, "Synchronisation finie").build()
         return Result.success(outputData.build())
     }
 
     private suspend fun downloadContent() {
-
-        Timber.e("zeze start download content")
         var result = downloadAvaloirs()
-
         when (result) {
             is NotificationState.Error -> {
                 showNotification(
@@ -74,12 +73,11 @@ class AvaloirAsyncWorker @AssistedInject constructor(
             }
             is NotificationState.Success -> {}
         }
-
         result = downloadDates()
         when (result) {
             is NotificationState.Error -> showNotification(
                 "message_channel_downlodate", 2,
-                "downlodates",
+                "download dates",
                 "Dates error: ${result.message}"
             )
             is NotificationState.Success -> {}
@@ -89,17 +87,18 @@ class AvaloirAsyncWorker @AssistedInject constructor(
         when (result) {
             is NotificationState.Error -> showNotification(
                 "message_channel_downloadCommentaires", 3,
-                "downloadCommentaires",
+                "download Commentaires",
                 "Commentaires error: ${result.message}"
             )
             is NotificationState.Success -> {}
         }
+    }
 
-        result = downloadImages()
-        when (result) {
+    private suspend fun downloadImagesContent() {
+        when (val result = downloadImages()) {
             is NotificationState.Error -> showNotification(
                 "message_channel_downloadImages", 3,
-                "downloadImages",
+                "download Images",
                 "Images download error: ${result.message}"
             )
             is NotificationState.Success -> {}
@@ -120,22 +119,18 @@ class AvaloirAsyncWorker @AssistedInject constructor(
     private suspend fun downloadAvaloirs(): NotificationState {
         try {
             var errorResult = ""
-            for (avaloir in avaloirs) {
-                try {
-                    avaloirRepository.insertAvaloirs(avaloirs)
-                } catch (e: Exception) {
-                    errorResult = "error avaloir: ${avaloir.idReferent}"
-                    insertError("downloadAvaloirs", e.message)
-                    Firebase.crashlytics.recordException(e)
-                    NotificationState.Error("${e.message}")
-                }
-            }
-            if (errorResult.isNotEmpty()) {
+            try {
+                avaloirRepository.insertAvaloirs(avaloirs)
+            } catch (e: Exception) {
+                errorResult = "error insert avaloirs: ${e.message}"
+                insertError("download Avaloirs", e.message)
+                Firebase.crashlytics.recordException(e)
+                NotificationState.Error("${e.message}")
                 return NotificationState.Error(errorResult)
             }
             return NotificationState.Success("oki avaloirs")
         } catch (e: Exception) {
-            insertError("downloadAvaloirs fetch", e.message)
+            insertError("download Avaloirs fetch", e.message)
             Firebase.crashlytics.recordException(e)
             return NotificationState.Error("${e.message}")
         }
@@ -145,24 +140,17 @@ class AvaloirAsyncWorker @AssistedInject constructor(
         try {
             val dates = avaloirService.fetchAllDates()
             var errorResult = ""
-            for (date in dates) {
-                try {
-                    avaloirRepository.insertDateNettoyageDb(date)
-                } catch (e: Exception) {
-                    errorResult = "error comment: ${date.idReferent}"
-                    Firebase.crashlytics.log("error sync date id referent ${date.idReferent} date ${date.createdAt}")
-                    insertError("downloadDate message", e.message)
-                    insertError("downloadDate id", "${date.idReferent}")
-                    insertError("downloadDate idAval", "${date.avaloirId}")
-                    insertError("downloadDate date", date.createdAt)
-                }
-            }
-            if (errorResult.isNotEmpty()) {
+            try {
+                avaloirRepository.insertDates(dates)
+            } catch (e: Exception) {
+                errorResult = "error comment: ${e.message}"
+                Firebase.crashlytics.log("error sync dates ${e.message}")
+                insertError("downloadDate message", e.message)
                 return NotificationState.Error(errorResult)
             }
             return NotificationState.Success("oki dates")
         } catch (e: Exception) {
-            insertError("downloadDates", e.message)
+            insertError("download Dates", e.message)
             Firebase.crashlytics.recordException(e)
             return NotificationState.Error("${e.message}")
         }
@@ -172,24 +160,13 @@ class AvaloirAsyncWorker @AssistedInject constructor(
         try {
             val commentaires = avaloirService.fetchAllCommentaires()
             var errorResult = ""
-            for (commentaire in commentaires) {
-                try {
-                    avaloirRepository.insertCommentaireDb(commentaire)
-                } catch (e: Exception) {
-                    Firebase.crashlytics.log("error sync comment id referent ${commentaire.idReferent} date ${commentaire.createdAt} content ${commentaire.content}")
-                    errorResult = "error comment: ${commentaire.idReferent}"
-                    insertError("downloadCommentaire message", e.message)
-                    insertError("downloadcommentaire id", "${commentaire.idReferent}")
-                    insertError(
-                        "downloadcommentaire idAval",
-                        "${commentaire.avaloirId}"
-                    )
-                    insertError("downloadcommentaire date", commentaire.createdAt)
-                    insertError("downloadcommentaire content", commentaire.content)
-                    Firebase.crashlytics.recordException(e)
-                }
-            }
-            if (errorResult.isNotEmpty()) {
+            try {
+                avaloirRepository.insertCommentaires(commentaires)
+            } catch (e: Exception) {
+                Firebase.crashlytics.log("error sync comment id referent ${e.message}")
+                errorResult = "error comment: ${e.message}"
+                insertError("download Commentaire message", e.message)
+                Firebase.crashlytics.recordException(e)
                 return NotificationState.Error(errorResult)
             }
             return NotificationState.Success("oki comments")
@@ -210,7 +187,6 @@ class AvaloirAsyncWorker @AssistedInject constructor(
             var errorResult = ""
             for (avaloir in avaloirs) {
                 if (avaloir.imageUrl?.isEmpty() == true) {
-                    Timber.e("zeze empty url image")
                     continue
                 }
                 try {

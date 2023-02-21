@@ -32,12 +32,14 @@
     <string name="photo_take">Prendre une photo</string>
     <string name="sync_intro1">Si l\'appareil est connecté à internet, \n les données sont synchronisées \n au démarrage de l\'application</string>
     <string name="sync_intro2">Télécharge la liste des avaloirs et des stocks</string>
-    <string name="sync_intro3">Envoie vers le serveur les données non encore synchronisées</string>
+    <string name="sync_intro3">Envoie les données non encore synchronisées</string>
     <string name="toast_draft">Cet avaloir n\'est pas encore publier sur le serveur</string>
     <string name="dateCleanNoPublished">L\'avaloir doit être publié sur le serveur pour ajouté une date de nettoyage</string>
     <string name="commentaireNoPublished">L\'avaloir doit être publié sur le serveur pour ajouté un commentaire</string>
     <string name="app_version">Code: %1$s Name: %2$s</string>
     <string name="stat_avaloirs">Avaloirs: %d</string>
+    <string name="stat_commentaires">Commentaires: %d</string>
+    <string name="stat_dates_nettoyages">Dates nettoyages: %d</string>
     <string name="stat_images">Images d\'avaloirs: %d</string>
     <string name="stat_produits">Produits: %d</string>
 </resources>

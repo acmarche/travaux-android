@@ -59,12 +59,12 @@ fun Navigation(
 
         composable(route = TravauxRoutes.SyncScreen.route) {
             val screen = SyncScreen(navController)
-            screen.MaintContent(workerViewModel)
+            screen.MaintContent(workerViewModel, avaloirViewModel, stockViewModel)
         }
 
         composable(route = TravauxRoutes.SettingScreen.route) {
             val screen = SettingScreen(navController)
-            screen.MainScreen(errorViewModel, avaloirViewModel, stockViewModel)
+            screen.MainScreen(errorViewModel)
         }
 
         /**
@@ -95,7 +95,6 @@ fun Navigation(
             val screen = AvaloirSearchScreen(navController, locationViewModel)
             screen.SearchMainScreen(avaloirViewModel)
         }
-
 
         composable(
             route = TravauxRoutes.AvaloirDetailScreen.route + "/{$PARAM_AVALOIR}",

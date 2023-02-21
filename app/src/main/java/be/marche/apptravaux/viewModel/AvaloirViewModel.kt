@@ -45,6 +45,8 @@ class AvaloirViewModel @Inject constructor(
     val allCommentairesDraftsFlow: StateFlow<List<Commentaire>> = _allCommentairesDraftsFlow
 
     var _countAvaloirs = 0
+    var _countCommentaire = 0
+    var _countDateNettoyage = 0
 
     init {
         fetchAvaloirsFromDb()
@@ -55,19 +57,6 @@ class AvaloirViewModel @Inject constructor(
             _allAvaloirsDraftsFlow.value = avaloirRepository.getAllAvaloirsDraftsList()
             _allDatesDraftsFlow.value = avaloirRepository.getAllDatesNettoyagesDraftsList()
             _allCommentairesDraftsFlow.value = avaloirRepository.getAllCommentairessDraftsList()
-        }
-    }
-
-    private fun fetchAvaloirsFromApi() {
-        _uiState.value = AvaloirUiState.Loading
-        viewModelScope.launch(coroutineDispatcherProvider.IO()) {
-            try {
-                val response = avaloirRepository.getAllAvaloirsFromApi()
-                _uiState.value = AvaloirUiState.Loaded(response)
-
-            } catch (ex: Exception) {
-                onErrorOccurred()
-            }
         }
     }
 
@@ -136,20 +125,6 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
-    val allAvaloirs: Flow<List<Avaloir>> = flow {
-        viewModelScope.launch {
-            emit(avaloirRepository.getAllAvaloirsFromApi())
-        }
-    }
-
-    val allAvaloirsDraftFlow: Flow<List<Avaloir>> = flow {
-        avaloirRepository.getAllAvaloirsDraftsFlow()
-    }
-
-    /*  fun getAllAvaloirsFromServer(): LiveData<List<Avaloir>> = liveData {
-          emit(avaloirRepository.getAllAvaloirsFromApi())
-      }*/
-
     fun insertAvaloir(avaloir: Avaloir) {
         viewModelScope.launch {
             avaloirRepository.insertAvaloirs(listOf(avaloir))
@@ -175,34 +150,6 @@ class AvaloirViewModel @Inject constructor(
     fun deleteAvaloirDraft(avaloir: Avaloir) {
         viewModelScope.launch {
             avaloirRepository.deleteAvaloirDraft(avaloir)
-        }
-    }
-
-    fun insertAvaloirs(avaloirs: List<Avaloir>) {
-        viewModelScope.launch {
-            avaloirRepository.insertAvaloirs(avaloirs)
-        }
-    }
-
-    fun addCleaningDateAsync(avaloir: Avaloir, date: String) {
-        viewModelScope.launch {
-            val response = avaloirService.cleanAvaloir(avaloir.idReferent, date, avaloir)
-            if (response.isSuccessful) {
-                response.body()?.let { dataMessage ->
-                    if (dataMessage.error == 1) {
-
-                    } else {
-                        insertDates(listOf(dataMessage.date))
-                        getDatesAvaloir(avaloir.idReferent)
-                    }
-                }
-            }
-        }
-    }
-
-    fun insertDates(dates: List<DateNettoyage>) {
-        viewModelScope.launch {
-            avaloirRepository.insertDates(dates)
         }
     }
 
@@ -282,4 +229,15 @@ class AvaloirViewModel @Inject constructor(
         }
     }
 
+    fun countCommentaire() {
+        viewModelScope.launch(coroutineDispatcherProvider.IO()) {
+            _countCommentaire = avaloirRepository.countCommentaire()
+        }
+    }
+
+    fun countDatesNettoyages() {
+        viewModelScope.launch(coroutineDispatcherProvider.IO()) {
+            _countDateNettoyage = avaloirRepository.countDateNettoyage()
+        }
+    }
 }
