@@ -101,14 +101,12 @@ class AvaloirDetailScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-            //  .padding(horizontal = 25.dp)
         )
         {
             item {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        //     .wrapContentHeight()
                         .padding(vertical = 25.dp),
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
@@ -126,16 +124,16 @@ class AvaloirDetailScreen(
                         25.dp
                     )
                     Column {
-                        val texteRue = avaloir.rue ?: "non déterminé"
+                        val texteRue = avaloir.rue ?: "Non déterminé"
                         Text(
-                            text = "Rue: $texteRue",
+                            text = texteRue,
                             fontWeight = FontWeight.Bold,
                             fontSize = ScreenSizeTheme.textStyle.fontWidth_1
                         )
                         Spacer(modifier = Modifier.padding(5.dp))
-                        val texteLocalite = avaloir.localite ?: "non déterminé"
+                        val texteLocalite = avaloir.localite ?: "Non déterminé"
                         Text(
-                            text = "Localité: $texteLocalite",
+                            text = texteLocalite,
                             fontWeight = FontWeight.Bold,
                             fontSize = ScreenSizeTheme.textStyle.fontWidth_1
                         )

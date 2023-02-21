@@ -113,7 +113,7 @@ class AvaloirRepository @Inject constructor(
             "$curSinLat * sinLatitude + $curCosLat * cosLatitude * (cosLongitude * $curCosLng + sinLongitude * $curSinLng)"
 
         val queryString =
-            "SELECT rue,createdAt,localite,numero,imageUrl,descriptif, latitude, longitude, $cosDistance AS cos_distance FROM Avaloir " +
+            "SELECT rue,createdAt,idReferent,localite,numero,imageUrl,descriptif, latitude, longitude, $cosDistance AS cos_distance FROM Avaloir " +
                     "WHERE $cosDistance > $cosRadius"
 
         Timber.e("zeze queryString " + queryString)

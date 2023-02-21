@@ -65,15 +65,12 @@ class DownloadHelper(val context: Context) {
     fun downloadImage(avaloirId: Number, url: String) {
         val file = File(imageFullPath(avaloirId))
         if (file.canRead()) {
-            Timber.e("zeze can read img " + file.path)
             return
         }
         val request = Request.Builder().url(url).build()
         val response = okHttpClient.newCall(request).execute()
         val body = response.body
         val responseCode = response.code
-
-        Timber.e("zeze response " + response)
 
         if (responseCode >= HttpURLConnection.HTTP_OK &&
             responseCode < HttpURLConnection.HTTP_MULT_CHOICE &&
@@ -85,7 +82,6 @@ class DownloadHelper(val context: Context) {
                 }
             }
         } else {
-            Timber.e("zeze error " + url)
             throw IllegalArgumentException("Error occurred when do http get $url")
         }
     }

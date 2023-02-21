@@ -179,7 +179,6 @@ class AvaloirSearchScreen(
         )
         when (val state = avaloirViewModel.resultSearch.collectAsState().value) {
             is SearchResponseUiState.Loading -> {
-                //LoadScreen()
                 Text(text = "Recherche en cours...")
                 CircularProgressIndicatorSample()
             }

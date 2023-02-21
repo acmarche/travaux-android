@@ -178,11 +178,9 @@ class AvaloirAsyncWorker @AssistedInject constructor(
     }
 
     private suspend fun downloadImages(): NotificationState {
-        Timber.e("zeze start download images")
         val downloadHelper = DownloadHelper(
             applicationContext,
         )
-        var i = 0
         try {
             var errorResult = ""
             for (avaloir in avaloirs) {
@@ -195,17 +193,11 @@ class AvaloirAsyncWorker @AssistedInject constructor(
                         avaloir.imageUrl!!
                     )
                 } catch (e: Exception) {
-                    Timber.e("zeze error download image " + e.message)
                     errorResult = "error image: ${e.message}"
                     insertError("downloadImage", e.message)
                     Firebase.crashlytics.recordException(e)
                     return NotificationState.Error(errorResult)
                 }
-                i++
-                if (i > 5) break
-            }
-            if (errorResult.isNotEmpty()) {
-                return NotificationState.Error(errorResult)
             }
             return NotificationState.Success("oki images")
         } catch (e: Exception) {
@@ -350,6 +342,7 @@ class AvaloirAsyncWorker @AssistedInject constructor(
 
     private fun showNotification(id: String, idNotify: Int, name: String, desc: String) {
 
+        Timber.e("zeze error show " + desc)
         val channelId = id
         val channelName = name
 

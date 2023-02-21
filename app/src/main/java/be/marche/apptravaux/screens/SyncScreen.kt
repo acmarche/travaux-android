@@ -161,8 +161,7 @@ class SyncScreen(
         stockViewModel: StockViewModel
     ) {
         val context = LocalContext.current
-        val d = DownloadHelper(context)
-        d.listFiles()
+        val downloadHelper = DownloadHelper(context)
 
         LaunchedEffect(true) {
             avaloirViewModel.countAvaloirs()
@@ -184,7 +183,6 @@ class SyncScreen(
             avaloirViewModel._countDateNettoyage,
         )
 
-        val downloadHelper = DownloadHelper(context)
         val filesCount = downloadHelper.countFiles()
         val statImages: String = java.lang.String.format(
             stringResource(R.string.stat_images),

@@ -146,19 +146,19 @@ class AvaloirWidget {
         downloadHelper: DownloadHelper
     ): String? {
 
-        val imagePath = downloadHelper.imageFullPath(avaloir.idReferent)
-        Timber.e("zeze aval img path " + imagePath)
-
         if (isConnected) {
             if (avaloir.imageUrl !== null) {
                 return avaloir.imageUrl!!
             }
         }
 
-        Timber.e("zeze aval img ext " + File(imagePath).readBytes())
-        if (File(imagePath).extension == "jpg") {
+        val imagePath = downloadHelper.imageFullPath(avaloir.idReferent)
+        Timber.e("zeze img path2 " + imagePath)
+
+        if (File(imagePath).canRead()) {
             return imagePath
         }
+
         return null
     }
 
