@@ -8,10 +8,10 @@ import android.os.storage.StorageManager
 import android.os.storage.StorageManager.ACTION_MANAGE_STORAGE
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import okhttp3.*
 import timber.log.Timber
 import java.io.File
+import java.io.IOException
 import java.net.HttpURLConnection
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -68,22 +68,31 @@ class DownloadHelper(val context: Context) {
             return
         }
         val request = Request.Builder().url(url).build()
-        val response = okHttpClient.newCall(request).execute()
-        val body = response.body
-        val responseCode = response.code
 
-        if (responseCode >= HttpURLConnection.HTTP_OK &&
-            responseCode < HttpURLConnection.HTTP_MULT_CHOICE &&
-            body != null
-        ) {
-            body.byteStream().apply {
-                file.outputStream().use { fileOut ->
-                    copyTo(fileOut, BUFFER_LENGTH_BYTES)
-                }
-            }
-        } else {
-            throw IllegalArgumentException("Error occurred when do http get $url")
-        }
+        okHttpClient.newCall(request)
+            .enqueue(
+                object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        val body = response.body
+                        val responseCode = response.code
+                        if (responseCode >= HttpURLConnection.HTTP_OK &&
+                            responseCode < HttpURLConnection.HTTP_MULT_CHOICE &&
+                            body != null
+                        ) {
+                            body.byteStream().apply {
+                                file.outputStream().use { fileOut ->
+                                    copyTo(fileOut, BUFFER_LENGTH_BYTES)
+                                }
+                            }
+                        } else {
+                            throw IllegalArgumentException("Error occurred when do http get $url")
+                        }
+                    }
+                })
     }
 
     fun listFiles() {
