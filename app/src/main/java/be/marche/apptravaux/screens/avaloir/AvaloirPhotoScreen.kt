@@ -69,9 +69,7 @@ class AvaloirPhotoScreen(
             }
         ) { contentPadding ->
             Box(modifier = Modifier.padding(contentPadding)) {
-                val state = avaloirViewModel.resultCreateFile.collectAsState().value
-
-                when (state) {
+                when (val state = avaloirViewModel.resultCreateFile.collectAsState().value) {
                     is CreateFileState.Error -> {
                         ErrorDialog(state.message)
                     }
@@ -100,7 +98,6 @@ class AvaloirPhotoScreen(
         ) { result: Boolean ->
             if (result) {
                 resultStateTakePhoto.value = true
-            } else {
             }
         }
 

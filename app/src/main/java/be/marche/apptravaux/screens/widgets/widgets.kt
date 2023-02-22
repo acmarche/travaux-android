@@ -1,6 +1,5 @@
 package be.marche.apptravaux.screens.widgets
 
-import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -12,21 +11,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.marche.apptravaux.R
@@ -70,46 +65,6 @@ fun ErrorDialog(message: String) {
 }
 
 @Composable
-fun ToastMessage(message: String) {
-    val context = LocalContext.current
-    Toast.makeText(
-        context,
-        message,
-        Toast.LENGTH_LONG
-    ).show()
-}
-
-//call  onClick = {
-//                    openDialog.value = true
-//                },
-@Composable
-fun FloatAlertDialog(openDialog: MutableState<Boolean>) {
-    if (openDialog.value) {
-        AlertDialog(
-            onDismissRequest = {
-                openDialog.value = false
-            },
-            title = {
-                Text(text = "Floating Action", fontWeight = FontWeight.Bold)
-            },
-            text = {
-                Text(text = "Let's Start...")
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        openDialog.value = false
-                    }
-                ) {
-                    Text(text = "Ok")
-                }
-            }
-        )
-    }
-}
-
-
-@Composable
 fun ConnectivityStatusBox(
     isConnected: Boolean
 ) {
@@ -145,48 +100,6 @@ fun ConnectivityStatusBox(
             }
         }
     }
-}
-
-@Composable
-fun MyScaffold(textTopBar: String, contentParam: @Composable (PaddingValues) -> Unit) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = textTopBar,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
-            )
-        },
-        content = contentParam
-    )
-}
-
-@Composable
-fun MyAppTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
-    TopAppBar(
-        title = {
-            Text(
-                text = topAppBarText,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = onBackPressed) {
-                Icon(
-                    Icons.Filled.ArrowBack,
-                    contentDescription = "rrrrr"
-                )
-            }
-        },
-        // ...
-    )
 }
 
 @Composable
