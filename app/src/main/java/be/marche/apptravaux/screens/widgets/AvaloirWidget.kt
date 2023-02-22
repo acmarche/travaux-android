@@ -51,9 +51,9 @@ class AvaloirWidget {
             val filteredAvaloirs: List<Avaloir>
             val searchedText = searchState?.value?.text
 
-            when {
-                searchedText == null -> filteredAvaloirs = avaloirs
-                searchedText.isEmpty() -> filteredAvaloirs = avaloirs
+            filteredAvaloirs = when {
+                searchedText == null -> avaloirs
+                searchedText.isEmpty() -> avaloirs
                 else -> {
                     val resultList = ArrayList<Avaloir>()
                     for (avaloir in avaloirs) {
@@ -61,7 +61,7 @@ class AvaloirWidget {
                             resultList.add(avaloir)
                         }
                     }
-                    filteredAvaloirs = resultList
+                    resultList
                 }
             }
             items(filteredAvaloirs) { avaloir ->
@@ -149,6 +149,10 @@ class AvaloirWidget {
             if (avaloir.imageUrl !== null) {
                 return avaloir.imageUrl!!
             }
+        }
+
+        if (avaloir.idReferent == 0) {
+            return avaloir.imageUrl
         }
 
         val imagePath = downloadHelper.imageFullPath(avaloir.idReferent)
