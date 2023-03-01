@@ -24,7 +24,6 @@ import com.google.firebase.ktx.Firebase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import retrofit2.Response
-import timber.log.Timber
 import java.io.File
 
 @HiltWorker
@@ -50,7 +49,7 @@ class AvaloirAsyncWorker @AssistedInject constructor(
 
         avaloirs = emptyList()
         outputData.putString(WORK_RESULT, "Zeze").build()
-        //  uploadContent()
+        uploadContent()
         sleep(15)
         avaloirs = avaloirService.fetchAllAvaloirs()
         downloadContent()
@@ -139,7 +138,7 @@ class AvaloirAsyncWorker @AssistedInject constructor(
     private suspend fun downloadDates(): NotificationState {
         try {
             val dates = avaloirService.fetchAllDates()
-            var errorResult = ""
+            val errorResult: String
             try {
                 avaloirRepository.insertDates(dates)
             } catch (e: Exception) {
@@ -214,10 +213,20 @@ class AvaloirAsyncWorker @AssistedInject constructor(
 
         avaloirRepository.getAllAvaloirsDraftsList().forEach { avaloirDraft ->
 
-            val imgFile = File(avaloirDraft.imageUrl)
+            val imgFile: File?
+            try {
+                imgFile = avaloirDraft.imageUrl?.let { File(it) }
+            } catch (e: Exception) {
+                Firebase.crashlytics.recordException(e)
+                results.add(NotificationState.Error("${e.message}"))
+                return@forEach
+            }
+
+            if (imgFile == null)
+                return@forEach
+
             val requestBody = fileHelper.createRequestBody(imgFile)
             val part = fileHelper.createPart(imgFile, requestBody)
-
             val coordinates = Coordinates(avaloirDraft.latitude, avaloirDraft.longitude)
             val response = avaloirService.insertAvaloirNotSuspend(coordinates, part, requestBody)
 
@@ -329,7 +338,7 @@ class AvaloirAsyncWorker @AssistedInject constructor(
 
     private fun treatmentResults(name: String, idNotify: Int, results: List<NotificationState>) {
         val errors = results.filterIsInstance(NotificationState.Error::class.java)
-        if (errors.count() > 0) {
+        if (errors.isNotEmpty()) {
             showNotification(
                 "message_channel_$name", idNotify,
                 name,
@@ -342,7 +351,6 @@ class AvaloirAsyncWorker @AssistedInject constructor(
 
     private fun showNotification(id: String, idNotify: Int, name: String, desc: String) {
 
-        Timber.e("zeze error show " + desc)
         val channelId = id
         val channelName = name
 
