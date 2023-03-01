@@ -211,8 +211,6 @@ class AvaloirViewModel @Inject constructor(
                 if (response.isEmpty()) {
                     _resultSearch.value = SearchResponseUiState.Empty
                 } else {
-                    Timber.e("zeze count " + response.count())
-                    Timber.e("zeze dist " + distance)
                     val result = SearchResponse(0, "OK", response)
                     _resultSearch.value = SearchResponseUiState.Loaded(result)
                 }
