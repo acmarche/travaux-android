@@ -45,12 +45,6 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".location.CurrentLocationService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="location" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
