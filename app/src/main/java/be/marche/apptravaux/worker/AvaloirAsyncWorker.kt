@@ -186,6 +186,9 @@ class AvaloirAsyncWorker @AssistedInject constructor(
                 if (avaloir.imageUrl?.isEmpty() == true) {
                     continue
                 }
+                if (avaloir.imageUrl == null) {
+                    continue
+                }
                 try {
                     downloadHelper.downloadImage(
                         avaloir.idReferent,
@@ -193,7 +196,10 @@ class AvaloirAsyncWorker @AssistedInject constructor(
                     )
                 } catch (e: Exception) {
                     errorResult = "error image: ${e.message}"
-                    insertError("downloadImage", e.message)
+                    insertError(
+                        "downloadImage avaloir id ",
+                        "${avaloir.idReferent} :  ${e.message}"
+                    )
                     Firebase.crashlytics.recordException(e)
                     return NotificationState.Error(errorResult)
                 }
