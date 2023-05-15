@@ -91,22 +91,21 @@ class AvaloirRepository @Inject constructor(
     }
 
     fun findAvaloirsByGeo(latitude: Double, longitude: Double, distance: Double): List<Avaloir> {
-
-        val query = createQuery(latitude, longitude, distance)
-
-        return avaloirDao.findAllAvaloirsByGeoQuery(query)
+        val query = queryString(latitude, longitude, distance)
+        val querySql = SimpleSQLiteQuery(query)
+        return avaloirDao.findAllAvaloirsByGeoQuery(querySql)
     }
 
     //https://pixelcarrot.com/listing-nearest-locations-from-sqlite-of-a-mobile-app
     fun queryString(latitude: Double, longitude: Double, radius: Double): String {
         val pi = 3.141592653589793
-        val curCosLat = cos(latitude * pi / 180.0);
-        val curSinLat = sin(latitude * pi / 180.0);
-        val curCosLng = cos(longitude * pi / 180.0);
-        val curSinLng = sin(longitude * pi / 180.0);
-        val cosRadius = cos(radius / 6371000.0);
+        val curCosLat = cos(latitude * pi / 180.0)
+        val curSinLat = sin(latitude * pi / 180.0)
+        val curCosLng = cos(longitude * pi / 180.0)
+        val curSinLng = sin(longitude * pi / 180.0)
+        val cosRadius = cos(radius / 6371000.0)
         val cosDistance =
-            "$curSinLat * sinLatitude + $curCosLat * cosLatitude * (cosLongitude * $curCosLng + sinLongitude * $curSinLng)";
+            "$curSinLat * sinLatitude + $curCosLat * cosLatitude * (cosLongitude * $curCosLng + sinLongitude * $curSinLng)"
 
         return """
     SELECT rue,createdAt,idReferent,localite,numero,imageUrl,descriptif,latitude,longitude, $cosDistance AS cos_distance 
@@ -116,23 +115,16 @@ class AvaloirRepository @Inject constructor(
     """
     }
 
-    fun createQuery(latitude: Double, longitude: Double, radius: Double): SimpleSQLiteQuery {
-
-        val query = queryString(latitude, longitude, radius)
-
-        return SimpleSQLiteQuery(query)
-    }
-
     fun countProduits(): Int {
         return avaloirDao.countAvaloirs()
     }
 
     fun countCommentaire(): Int {
-        return avaloirDao.countCommentaires();
+        return avaloirDao.countCommentaires()
     }
 
     fun countDateNettoyage(): Int {
-        return avaloirDao.countDatesNettoyages();
+        return avaloirDao.countDatesNettoyages()
     }
 
 
